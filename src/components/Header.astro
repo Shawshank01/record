@@ -27,7 +27,7 @@ const initialSubtitle = options[0] ?? '';
         {initialSubtitle}
       </p>
     </div>
-    <div class="relative ml-auto flex items-center">
+    <div class="relative ml-auto flex w-full max-w-xs items-center md:w-auto md:max-w-none">
       <button
         type="button"
         class="search-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-200 shadow-soft transition md:hidden"
@@ -43,7 +43,7 @@ const initialSubtitle = options[0] ?? '';
         name="search"
         type="search"
         placeholder="Search posts..."
-        class="search-input hidden h-11 w-64 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-gray-100 shadow-soft outline-none transition md:block md:w-72 md:text-base"
+        class="search-input hidden h-11 w-full rounded-full border border-white/10 bg-white/5 px-4 text-base text-gray-100 shadow-soft outline-none transition md:block md:w-72"
         autocomplete="off"
       />
     </div>
