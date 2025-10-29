@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import searchScript from '../scripts/search.ts?url';
 
 const {
   pageTitle = "Michifumi's Blog",
@@ -69,9 +70,7 @@ const headerSubtitleOptions = [
 
             window.addEventListener('resize', applyOffset, { passive: true });
           </script>
-          <script type="module">
-            import '../scripts/search.ts';
-          </script>
+          <script type="module" src={searchScript}></script>
         </Fragment>
       )
     }
