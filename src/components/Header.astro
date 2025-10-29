@@ -1,11 +1,31 @@
 ---
-const { title, subtitle } = Astro.props;
+const {
+  title,
+  subtitle,
+  subtitleOptions = []
+} = Astro.props as {
+  title: string;
+  subtitle?: string;
+  subtitleOptions?: string[];
+};
+
+const options = subtitleOptions && subtitleOptions.length > 0 ? subtitleOptions : [subtitle ?? ''];
+const initialSubtitle = options[0] ?? '';
 ---
-<header class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur">
+<header
+  class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur"
+  data-site-header
+>
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5 md:px-6">
     <div class="flex flex-col gap-1">
       <a href="/" class="text-2xl font-semibold text-white drop-shadow-sm md:text-3xl">{title}</a>
-      <p class="text-sm text-gray-400 md:text-base">{subtitle}</p>
+      <p
+        class="text-sm text-gray-400 md:text-base"
+        data-subtitle
+        data-subtitle-options={JSON.stringify(options)}
+      >
+        {initialSubtitle}
+      </p>
     </div>
     <div class="relative ml-auto flex items-center">
       <button
@@ -32,6 +52,7 @@ const { title, subtitle } = Astro.props;
 <script is:inline>
   const toggle = document.querySelector('.search-toggle');
   const input = document.querySelector('#blog-search');
+  const subtitleEl = document.querySelector('[data-subtitle]');
 
   const collapse = () => {
     input.classList.add('hidden');
@@ -59,4 +80,16 @@ const { title, subtitle } = Astro.props;
       input.classList.add('hidden');
     }
   });
+
+  if (subtitleEl instanceof HTMLElement) {
+    try {
+      const choices = JSON.parse(subtitleEl.dataset.subtitleOptions || '[]');
+      if (Array.isArray(choices) && choices.length > 1) {
+        const index = Math.floor(Math.random() * choices.length);
+        subtitleEl.textContent = choices[index];
+      }
+    } catch {
+      /* ignore */
+    }
+  }
 </script>

@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: dark;
+  --header-offset: 8rem;
 }
 
 body {
