@@ -40,7 +40,7 @@ const sortedTags = [{ label: 'All', normalized: 'all', count: allCount }, ...tag
     </button>
     <div
       data-tag-menu
-      class="hidden flex flex-wrap gap-2 rounded-2xl border border-white/5 bg-soft/90 p-4 shadow-soft"
+      class="hidden flex w-full flex-wrap gap-2 rounded-2xl border border-white/5 bg-soft/90 p-4 shadow-soft md:w-auto md:max-h-none md:overflow-visible max-h-56 overflow-y-auto"
     >
       {sortedTags.map((tag) => (
         <button
