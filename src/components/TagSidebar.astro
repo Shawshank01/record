@@ -56,26 +56,4 @@ const sortedTags = [{ label: 'All', normalized: 'all', count: allCount }, ...tag
       ))}
     </div>
   </div>
-  <script is:inline>
-    const root = document.currentScript?.closest('[data-tag-sidebar]');
-    const toggle = root?.querySelector('[data-tag-toggle]');
-    const menu = root?.querySelector('[data-tag-menu]');
-
-    if (!toggle || !menu) {
-      document.currentScript?.remove();
-      return;
-    }
-
-    const setOpenState = (isOpen) => {
-      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      menu.classList.toggle('hidden', !isOpen);
-    };
-
-    toggle.addEventListener('click', () => {
-      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-      setOpenState(!isOpen);
-    });
-
-    setOpenState(false);
-  </script>
 </div>

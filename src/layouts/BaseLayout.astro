@@ -69,7 +69,9 @@ const headerSubtitleOptions = [
 
             window.addEventListener('resize', applyOffset, { passive: true });
           </script>
-          <script type="module" src="/scripts/search.js"></script>
+          <script type="module">
+            import '../scripts/search.ts';
+          </script>
         </Fragment>
       )
     }
