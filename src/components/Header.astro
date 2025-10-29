@@ -1,0 +1,62 @@
+---
+const { title, subtitle } = Astro.props;
+---
+<header class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5 md:px-6">
+    <div class="flex flex-col gap-1">
+      <a href="/" class="text-2xl font-semibold text-white drop-shadow-sm md:text-3xl">{title}</a>
+      <p class="text-sm text-gray-400 md:text-base">{subtitle}</p>
+    </div>
+    <div class="relative ml-auto flex items-center">
+      <button
+        type="button"
+        class="search-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-200 shadow-soft transition md:hidden"
+        aria-label="Open search"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="6" />
+          <path d="M20 20L17 17" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <input
+        id="blog-search"
+        name="search"
+        type="search"
+        placeholder="Search posts..."
+        class="search-input hidden h-11 w-64 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-gray-100 shadow-soft outline-none transition md:block md:w-72 md:text-base"
+        autocomplete="off"
+      />
+    </div>
+  </div>
+</header>
+<script is:inline>
+  const toggle = document.querySelector('.search-toggle');
+  const input = document.querySelector('#blog-search');
+
+  const collapse = () => {
+    input.classList.add('hidden');
+    toggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  const expand = () => {
+    input.classList.remove('hidden');
+    input.focus();
+    toggle?.setAttribute('aria-expanded', 'true');
+  };
+
+  toggle?.addEventListener('click', () => {
+    if (input.classList.contains('hidden')) {
+      expand();
+    } else {
+      collapse();
+    }
+  });
+
+  window?.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      input.classList.remove('hidden');
+    } else if (!toggle?.getAttribute('aria-expanded') || toggle?.getAttribute('aria-expanded') === 'false') {
+      input.classList.add('hidden');
+    }
+  });
+</script>

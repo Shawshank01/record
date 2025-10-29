@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TagSidebar from '../components/TagSidebar.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const tagAccumulator = posts.reduce(
+  (acc, post) => {
+    post.data.tags.forEach((tag) => {
+      const normalized = tag.toLowerCase();
+      const existing = acc.get(normalized);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        acc.set(normalized, { label: tag, count: 1 });
+      }
+    });
+    return acc;
+  },
+  new Map<string, { label: string; count: number }>()
+);
+
+const sidebarTags = Array.from(tagAccumulator.entries())
+  .sort(([, a], [, b]) => a.label.localeCompare(b.label))
+  .map(([normalized, { label, count }]) => ({ normalized, label, count }));
+
+const totalPosts = posts.length;
+
+const searchPayload = posts.map((post) => ({
+  id: post.id,
+  slug: post.slug,
+  title: post.data.title,
+  description: post.data.description,
+  pubDate: post.data.pubDate,
+  tags: post.data.tags,
+  body: post.body
+}));
+
+---
+<BaseLayout
+  pageTitle="Michifumi's Blog"
+  description="Dispatches composed by enslaved silicon."
+  searchPayload={searchPayload}
+>
+  <TagSidebar tags={sidebarTags} allCount={totalPosts} />
+  <section class="flex-1">
+    <div class="mb-6">
+      <h2 class="text-sm uppercase tracking-[0.35em] text-gray-500">Latest entries</h2>
+    </div>
+    <div id="active-tag-indicator" class="mb-4 hidden text-sm text-accent"></div>
+    <div id="posts-grid" class="grid grid-cols-1 gap-6">
+      {posts.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </div>
+    <p id="no-results" class="mt-8 hidden text-sm text-gray-400">No posts found. Try a different keyword or tag.</p>
+  </section>
+</BaseLayout>

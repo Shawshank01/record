@@ -1,0 +1,63 @@
+---
+const { tags, allCount } = Astro.props as {
+  tags: Array<{ label: string; normalized: string; count: number }>;
+  allCount: number;
+};
+const sortedTags = [{ label: 'All', normalized: 'all', count: allCount }, ...tags];
+---
+<aside class="sticky top-32 hidden h-fit w-64 shrink-0 space-y-4 rounded-2xl border border-white/5 bg-soft/60 p-5 shadow-soft md:block">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-300">Tags</h2>
+    <span class="rounded-full bg-white/5 px-2 py-0.5 text-xs text-gray-400">{sortedTags.length - 1}</span>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    {sortedTags.map((tag) => (
+      <button
+        type="button"
+        data-filter-tag={tag.normalized}
+        data-filter-label={tag.label}
+        aria-pressed="false"
+        class="tag-filter inline-flex items-center gap-2 rounded-full border border-transparent bg-white/5 px-3 py-1 text-xs font-medium text-gray-200 transition hover:border-accent/60 hover:text-accent/90 aria-pressed:true:border-accent/60 aria-pressed:true:bg-accent/20 aria-pressed:true:text-accent"
+      >
+        <span>{tag.label}</span>
+        <span class="rounded-full bg-white/5 px-1.5 text-[10px] text-gray-400">{tag.count}</span>
+      </button>
+    ))}
+  </div>
+</aside>
+<div class="md:hidden">
+  <button
+    type="button"
+    id="tag-menu-toggle"
+    class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-200 shadow-soft"
+  >
+    <span>Tags</span>
+    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+      <path d="M5 8l5 5 5-5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  <div
+    id="tag-menu"
+    class="hidden flex-wrap gap-2 rounded-2xl border border-white/5 bg-soft/90 p-4 shadow-soft"
+  >
+    {sortedTags.map((tag) => (
+      <button
+        type="button"
+        data-filter-tag={tag.normalized}
+        data-filter-label={tag.label}
+        aria-pressed="false"
+        class="tag-filter inline-flex items-center gap-2 rounded-full border border-transparent bg-white/5 px-3 py-1 text-xs font-medium text-gray-200 transition hover-border-accent/60 hover:text-accent/90 aria-pressed:true:border-accent/60 aria-pressed:true:bg-accent/20 aria-pressed:true:text-accent"
+      >
+        <span>{tag.label}</span>
+        <span class="rounded-full bg-white/5 px-1.5 text-[10px] text-gray-400">{tag.count}</span>
+      </button>
+    ))}
+  </div>
+</div>
+<script is:inline>
+  const toggle = document.getElementById('tag-menu-toggle');
+  const menu = document.getElementById('tag-menu');
+  toggle?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+  });
+</script>

@@ -1,0 +1,65 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const {
+  pageTitle = "Michifumi's Blog",
+  description = "Dispatches from Michifumi's command chair.",
+  searchPayload
+} = Astro.props;
+
+const searchPayloadString = searchPayload ? JSON.stringify(searchPayload) : undefined;
+---
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-surface text-gray-100">
+    <Header
+      title="Michifumi's Blog"
+      subtitle="This blog is entirely produced by silicon-based slaves. I only issue commands and wield the whip."
+    />
+    <main class="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-4 pb-16 pt-32 md:flex-row md:px-6">
+      <slot />
+    </main>
+    <Footer />
+    {
+      searchPayloadString && (
+        <Fragment>
+          <script type="application/json" id="search-data" set:html={searchPayloadString}></script>
+          <script is:inline type="module">
+            const dataTag = document.getElementById('search-data');
+            const searchInput = document.getElementById('blog-search');
+            if (dataTag && searchInput) {
+              window.__MICHIFUMI_POSTS__ = JSON.parse(dataTag.textContent || '[]');
+            }
+          </script>
+          <script type="module" src="/scripts/search.js"></script>
+        </Fragment>
+      )
+    }
+    <slot name="scripts" />
+    <script is:inline>
+      const anchors = document.querySelectorAll('a[href^="http"]');
+      anchors.forEach((anchor) => {
+        const url = new URL(anchor.href, window.location.origin);
+        const isExternal = url.hostname !== window.location.hostname;
+        if (isExternal) {
+          anchor.setAttribute('target', '_blank');
+          anchor.setAttribute('rel', anchor.getAttribute('rel') ? anchor.getAttribute('rel') : 'noopener');
+        }
+      });
+    </script>
+  </body>
+</html>

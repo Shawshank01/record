@@ -16,3 +16,12 @@ _site/
 # counterproductive to check this file into the repository.
 # Details at https://github.com/github/pages-gem/issues/768
 Gemfile.lock
+node_modules
+
+# Astro build artifacts
+.astro/
+dist/
+
+# macOS files
+.DS_Store
+.AppleDouble
