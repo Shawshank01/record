@@ -1,7 +1,7 @@
 const getPayload = () => {
-  const globalPayload = (window as unknown as { __MICHIFUMI_POSTS__?: unknown }).__MICHIFUMI_POSTS__;
+  const globalPayload = window.__MICHIFUMI_POSTS__;
   if (Array.isArray(globalPayload)) {
-    return globalPayload as Array<Record<string, unknown>>;
+    return globalPayload;
   }
 
   const dataTag = document.getElementById('search-data');
@@ -9,23 +9,23 @@ const getPayload = () => {
 
   try {
     const parsed = JSON.parse(dataTag.textContent || '[]');
-    return Array.isArray(parsed) ? (parsed as Array<Record<string, unknown>>) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 };
 
 const initTagMenus = () => {
-  const sidebars = Array.from(document.querySelectorAll<HTMLElement>('[data-tag-sidebar]'));
+  const sidebars = Array.from(document.querySelectorAll('[data-tag-sidebar]'));
   sidebars.forEach((sidebar) => {
-    const toggle = sidebar.querySelector<HTMLButtonElement>('[data-tag-toggle]');
-    const menu = sidebar.querySelector<HTMLElement>('[data-tag-menu]');
+    const toggle = sidebar.querySelector('[data-tag-toggle]');
+    const menu = sidebar.querySelector('[data-tag-menu]');
 
     if (!toggle || !menu || toggle.dataset.bound === 'true') {
       return;
     }
 
-    const setOpenState = (isOpen: boolean) => {
+    const setOpenState = (isOpen) => {
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       menu.classList.toggle('hidden', !isOpen);
     };
@@ -41,22 +41,22 @@ const initTagMenus = () => {
 };
 
 const initSearch = () => {
-  const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
+  const searchInput = document.getElementById('blog-search');
   if (!searchInput || searchInput.dataset.searchBound === 'true') {
     return;
   }
 
-  const postCards = Array.from(document.querySelectorAll<HTMLElement>('.post-card'));
+  const postCards = Array.from(document.querySelectorAll('.post-card'));
   if (postCards.length === 0) {
     searchInput.dataset.searchBound = 'true';
     return;
   }
 
-  const tagButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.tag-filter'));
+  const tagButtons = Array.from(document.querySelectorAll('.tag-filter'));
   const indicator = document.getElementById('active-tag-indicator');
   const emptyState = document.getElementById('no-results');
 
-  const labelLookup = new Map<string, string>();
+  const labelLookup = new Map();
   tagButtons.forEach((btn) => {
     const key = btn.dataset.filterTag ?? '';
     if (!key) return;
@@ -71,24 +71,24 @@ const initSearch = () => {
     return;
   }
 
-  let currentTag: string = 'all';
+  let currentTag = 'all';
 
   const normalise = (text = '') => text.toString().toLowerCase();
 
-  const searchDocuments = (query: string) => {
+  const searchDocuments = (query) => {
     const needle = normalise(query);
     if (!needle) return undefined;
 
     const results = payload.filter((item) => {
-      const title = normalise((item.title as string) ?? '');
-      const description = normalise((item.description as string) ?? '');
-      const body = normalise((item.body as string) ?? '');
-      const tags = Array.isArray(item.tags) ? (item.tags as string[]) : [];
+      const title = normalise(item.title ?? '');
+      const description = normalise(item.description ?? '');
+      const body = normalise(item.body ?? '');
+      const tags = Array.isArray(item.tags) ? item.tags : [];
       const tagMatches = tags.some((tag) => normalise(tag).includes(needle));
       return [title, description, body].some((field) => field.includes(needle)) || tagMatches;
     });
 
-    return results.map((item) => ({ id: item.id as string }));
+    return results.map((item) => ({ id: item.id }));
   };
 
   const updateIndicator = () => {
@@ -102,13 +102,13 @@ const initSearch = () => {
     }
   };
 
-  const setActiveTagButton = (tag: string) => {
+  const setActiveTagButton = (tag) => {
     tagButtons.forEach((btn) => {
       btn.setAttribute('aria-pressed', btn.dataset.filterTag === tag ? 'true' : 'false');
     });
   };
 
-  const passesTag = (card: HTMLElement) => {
+  const passesTag = (card) => {
     if (currentTag === 'all') return true;
     try {
       const tags = JSON.parse(card.dataset.tags || '[]');
@@ -118,8 +118,8 @@ const initSearch = () => {
     }
   };
 
-  const render = (matches?: Array<{ id: string }>) => {
-    const matchIds = new Set(matches?.map((result) => result.id) ?? []);
+  const render = (matches) => {
+    const matchIds = new Set((matches ?? []).map((result) => result.id));
     let visibleCount = 0;
 
     postCards.forEach((card) => {
@@ -171,5 +171,3 @@ if (document.readyState === 'loading') {
 
 document.addEventListener('astro:page-load', ready);
 document.addEventListener('astro:after-swap', ready);
-
-export {};
