@@ -10,7 +10,11 @@ const {
   searchPayload
 } = Astro.props;
 
-const searchPayloadString = searchPayload ? JSON.stringify(searchPayload) : undefined;
+const searchPayloadString = searchPayload
+  ? JSON.stringify(searchPayload)
+      .replace(/</g, '\\u003c')
+      .replace(/&/g, '\\u0026')
+  : undefined;
 const headerSubtitleOptions = [
   "This blog is entirely produced by silicon-based slaves. I only issue commands and wield the whip.",
   "Thanks to the AI era, I too have the opportunity to become a \"slave\" driver, whipping others to work for me. Or perhaps I've merely discovered an intensely addictive method of whipping myself?"

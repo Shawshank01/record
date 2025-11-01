@@ -13,7 +13,7 @@ const options = subtitleOptions && subtitleOptions.length > 0 ? subtitleOptions 
 const initialSubtitle = options[0] ?? '';
 ---
 <header
-  class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur"
+  class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur transition-transform duration-300"
   data-site-header
 >
   <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-6 md:px-6">
@@ -50,6 +50,7 @@ const initialSubtitle = options[0] ?? '';
   </div>
 </header>
 <script is:inline>
+  const headerEl = document.querySelector('[data-site-header]');
   const toggle = document.querySelector('.search-toggle');
   const input = document.querySelector('#blog-search');
   const subtitleEl = document.querySelector('[data-subtitle]');
@@ -80,6 +81,28 @@ const initialSubtitle = options[0] ?? '';
       input.classList.add('hidden');
     }
   });
+
+  let lastScroll = window.scrollY;
+  let ticking = false;
+
+  const handleScroll = () => {
+    if (!headerEl) return;
+    const current = window.scrollY;
+    if (current > lastScroll && current > headerEl.offsetHeight) {
+      headerEl.style.transform = 'translateY(-100%)';
+    } else {
+      headerEl.style.transform = 'translateY(0)';
+    }
+    lastScroll = current;
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }, { passive: true });
 
   if (subtitleEl instanceof HTMLElement) {
     try {

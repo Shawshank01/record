@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import TagSidebar from '../../components/TagSidebar.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -18,28 +17,6 @@ const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-const tagAccumulator = allPosts.reduce(
-  (acc, entry) => {
-    entry.data.tags.forEach((tag) => {
-      const normalized = tag.toLowerCase();
-      const existing = acc.get(normalized);
-      if (existing) {
-        existing.count += 1;
-      } else {
-        acc.set(normalized, { label: tag, count: 1 });
-      }
-    });
-    return acc;
-  },
-  new Map<string, { label: string; count: number }>()
-);
-
-const sidebarTags = Array.from(tagAccumulator.entries())
-  .sort(([, a], [, b]) => a.label.localeCompare(b.label))
-  .map(([normalized, { label, count }]) => ({ normalized, label, count }));
-
-const totalPosts = allPosts.length;
-
 const searchPayload = allPosts.map((entry) => ({
   id: entry.id,
   slug: entry.slug,
@@ -56,8 +33,7 @@ const searchPayload = allPosts.map((entry) => ({
   description={post.data.description}
   searchPayload={searchPayload}
 >
-  <TagSidebar tags={sidebarTags} allCount={totalPosts} />
-  <article class="prose prose-invert prose-headings:tracking-tight max-w-none flex-1 space-y-6">
+  <article class="prose prose-invert prose-headings:tracking-tight w-full max-w-3xl space-y-6 mx-auto">
     <header class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft">
       <p class="text-xs uppercase tracking-[0.3em] text-gray-500">
         {new Date(post.data.pubDate).toLocaleDateString(undefined, {
