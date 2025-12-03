@@ -4,6 +4,7 @@ description: "How I added privacy‑friendly visitor statistics to a static Astr
 pubDate: 2025-11-01
 tags:
   - IT
+  - Linux
 ---
 
 > Instead of using third‑party analytics like Cloudflare, I’m running a tiny **self‑hosted** tracker so you can also learn how it works and replicate it.
