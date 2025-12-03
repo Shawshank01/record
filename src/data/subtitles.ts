@@ -9,5 +9,6 @@ export const headerSubtitleOptions: string[] = [
   "Most people would rather die than think and many of them do!\n\u2014 Bertrand Russell",
   "In the end the Party would announce that two and two made five, and you would have to believe it.\n\u2014 1984 by George Orwell",
   "Three passions, simple but overwhelmingly strong, have governed my life: the longing for love, the search for knowledge, and unbearable pity for the suffering of mankind. These passions, like great winds, have blown me hither and thither, in a wayward course, over a deep ocean of anguish, reaching to the very verge of despair.\n\u2014 What I Have Lived For by Bertrand Russell",
-  "The unexamined life is not worth living.\n\u2014 Socrates"
+  "The unexamined life is not worth living.\n\u2014 Socrates",
+  "Every man dies. Not every man really lives.\n— Braveheart (1995)",
 ];
