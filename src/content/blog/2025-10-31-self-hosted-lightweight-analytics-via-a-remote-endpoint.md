@@ -54,22 +54,34 @@ const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const app = express();
+app.set("trust proxy", 1);
 const db = new sqlite3.Database("stats.db");
 
 const EXPORT_PASSWORD = "secretkey";
 
-app.use(express.json());
-// Accept plain text or JSON from browsers (needed for no-cors fetch)
-app.use(express.text({ type: "*/*" }));
+app.use(express.json({ limit: "2kb" }));
+// Accept plain text for no-cors fetch (simple request)
+app.use(express.text({ type: "text/plain", limit: "2kb" }));
 
-db.run(`CREATE TABLE IF NOT EXISTS visits (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  path TEXT,
-  referrer TEXT,
-  ua TEXT,
-  ip TEXT,
-  ts DATETIME DEFAULT CURRENT_TIMESTAMP
-)`);
+db.serialize(() => {
+  db.exec(`
+    PRAGMA journal_mode = WAL;
+    PRAGMA synchronous = NORMAL;
+    PRAGMA busy_timeout = 5000;
+  `);
+
+  db.run(`CREATE TABLE IF NOT EXISTS visits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    path TEXT,
+    referrer TEXT,
+    ua TEXT,
+    ip TEXT,
+    ts DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  db.run(`CREATE INDEX IF NOT EXISTS idx_visits_path ON visits(path)`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)`);
+});
 
 app.post("/track", (req, res) => {
   let body = req.body;
@@ -83,8 +95,11 @@ app.post("/track", (req, res) => {
     }
   }
 
-  const { path, referrer, ua } = body || {};
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
+  const { path: rawPath, referrer: rawReferrer, ua } = body || {};
+  const path = typeof rawPath === "string" ? rawPath : "";
+  const referrer = typeof rawReferrer === "string" ? rawReferrer : "";
+  const userAgent = ua || req.headers["user-agent"] || "";
+  const ip = req.ip || "";
 
   if (!path) {
     console.warn("[analytics] Missing path field in request body");
@@ -93,7 +108,7 @@ app.post("/track", (req, res) => {
 
   db.run(
     `INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`,
-    [path, referrer || "", ua || "", ip],
+    [path, referrer, userAgent, ip],
     (err) => {
       if (err) {
         console.error("DB insert error:", err);
@@ -130,12 +145,13 @@ app.get("/export", (req, res) => {
   });
 });
 
-// --- Daily summary (views per day) ---
+// --- Daily summary (views per day and path, last 30 days) ---
 app.get("/daily", (req, res) => {
   db.all(
-    `SELECT DATE(ts) AS day, COUNT(*) AS views
+    `SELECT DATE(ts) AS day, path, COUNT(*) AS views
      FROM visits
-     GROUP BY day
+     WHERE ts >= DATE('now', '-30 days')
+     GROUP BY day, path
      ORDER BY day DESC`,
     (err, rows) => {
       if (err) return res.status(500).json({ error: err.message });
@@ -144,37 +160,49 @@ app.get("/daily", (req, res) => {
   );
 });
 
-// --- Totals summary (overall + by path + by day) ---
+// --- Totals summary (overall + by path + by day, last 30 days) ---
 app.get("/summary", (req, res) => {
   const result = {};
 
-  db.get(`SELECT COUNT(*) AS total_visits FROM visits`, (err, totalRow) => {
-    if (err) return res.status(500).json({ error: err.message });
-    result.total_visits = totalRow.total_visits;
+  db.get(
+    `SELECT
+       COUNT(*) AS total_views,
+       COUNT(DISTINCT path) AS unique_paths,
+       MIN(ts) AS first_visit,
+       MAX(ts) AS last_visit
+     FROM visits`,
+    (err, totalRow) => {
+      if (err) return res.status(500).json({ error: err.message });
+      result.total_views = totalRow.total_views;
+      result.unique_paths = totalRow.unique_paths;
+      result.first_visit = totalRow.first_visit;
+      result.last_visit = totalRow.last_visit;
 
-    db.all(
-      `SELECT path, COUNT(*) AS views
-       FROM visits
-       GROUP BY path
-       ORDER BY views DESC`,
-      (err, pathRows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        result.by_path = pathRows;
+      db.all(
+        `SELECT path, COUNT(*) AS views
+         FROM visits
+         GROUP BY path
+         ORDER BY views DESC`,
+        (err, pathRows) => {
+          if (err) return res.status(500).json({ error: err.message });
+          result.by_path = pathRows;
 
-        db.all(
-          `SELECT DATE(ts) AS day, COUNT(*) AS views
-           FROM visits
-           GROUP BY day
-           ORDER BY day DESC`,
-          (err, dayRows) => {
-            if (err) return res.status(500).json({ error: err.message });
-            result.by_day = dayRows;
-            res.json(result);
-          }
-        );
-      }
-    );
-  });
+          db.all(
+            `SELECT DATE(ts) AS day, COUNT(*) AS views
+             FROM visits
+             WHERE ts >= DATE('now', '-30 days')
+             GROUP BY day
+             ORDER BY day DESC`,
+            (err, dayRows) => {
+              if (err) return res.status(500).json({ error: err.message });
+              result.by_day = dayRows;
+              res.json(result);
+            }
+          );
+        }
+      );
+    }
+  );
 });
 
 app.listen(8080, () => console.log("Analytics server running on port 8080"));
@@ -187,8 +215,8 @@ Quick test:
 node server.js
 # In another shell:
 curl -X POST http://localhost:8080/track \
-  -H "Content-Type: application/json" \
-  -d '{"path":"/hello","referrer":"","ua":"curl"}'
+  -H "Content-Type: text/plain" \
+  -d '{"path":"/hello","referrer":""}'
 curl http://localhost:8080/stats
 ```
 
@@ -286,13 +314,12 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
     const endpoint = 'https://stats.zaku.eu.org/track'; // You need to replace it with you own domain!
     const payload = JSON.stringify({
       path: window.location.pathname,
-      referrer: document.referrer || '',
-      ua: navigator.userAgent
+      referrer: document.referrer || ''
     });
 
     try {
       if (navigator.sendBeacon) {
-        const blob = new Blob([payload], { type: 'application/json' });
+        const blob = new Blob([payload], { type: 'text/plain' });
         const ok = navigator.sendBeacon(endpoint, blob);
         if (ok) return;
       }
@@ -301,7 +328,7 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
         body: payload,
         keepalive: true,
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'text/plain' }
       }).catch(err => console.warn('[analytics] fetch failed', err));
     } catch (err) {
       console.warn('[analytics] unexpected error', err);
@@ -309,6 +336,8 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
   })();
 </script>
 ```
+
+The server reads the User-Agent from headers, so the client payload stays small.
 
 This avoids mixed content and should be works across modern browsers without AdBlocker extensions.
 
@@ -328,8 +357,8 @@ Manual POST test over HTTPS:
 
 ```bash
 curl -X POST https://stats.zaku.eu.org/track \
-  -H "Content-Type: application/json" \
-  -d '{"path":"/test","referrer":"","ua":"curl"}'
+  -H "Content-Type: text/plain" \
+  -d '{"path":"/test","referrer":""}'
 ```
 
 CSV export:
@@ -345,7 +374,7 @@ curl -L -o stats.csv "https://stats.zaku.eu.org/export?token=secretkey"
 The analytics API includes two useful endpoints for viewing detailed statistics:
 
 - **`/daily`**: Returns daily visit counts per path for the last 30 days. Useful for tracking trends over time.
-- **`/summary`**: Returns total counts (all-time) and unique paths, suitable for quick dashboard overviews.
+- **`/summary`**: Returns totals (all-time) plus breakdowns by path and by day (last 30 days), suitable for quick dashboard overviews.
 
 These endpoints make it easy to visualise daily activity or build a simple dashboard.
 
@@ -356,17 +385,17 @@ Returns a JSON array with daily stats for each path:
 ```json
 [
   {
-    "date": "2025-10-30",
+    "day": "2025-10-30",
     "path": "/",
     "views": 12
   },
   {
-    "date": "2025-10-30",
+    "day": "2025-10-30",
     "path": "/about",
     "views": 3
   },
   {
-    "date": "2025-10-31",
+    "day": "2025-10-31",
     "path": "/",
     "views": 15
   }
@@ -381,14 +410,22 @@ curl https://stats.zaku.eu.org/daily
 
 ### `/summary` endpoint
 
-Returns top-level summary stats:
+Returns top-level summary stats plus breakdowns:
 
 ```json
 {
   "total_views": 1234,
   "unique_paths": 8,
-  "first_visit": "2025-10-01T09:00:00Z",
-  "last_visit": "2025-10-31T11:45:12Z"
+  "first_visit": "2025-10-01 09:00:00",
+  "last_visit": "2025-10-31 11:45:12",
+  "by_path": [
+    { "path": "/", "views": 800 },
+    { "path": "/about", "views": 120 }
+  ],
+  "by_day": [
+    { "day": "2025-10-31", "views": 45 },
+    { "day": "2025-10-30", "views": 38 }
+  ]
 }
 ```
 
@@ -448,8 +485,8 @@ You can manually test your tracking endpoint with:
 
 ```bash
 curl -X POST http://localhost:8080/track \
-  -H "Content-Type: application/json" \
-  -d '{"path":"/hello","referrer":"","ua":"curl"}'
+  -H "Content-Type: text/plain" \
+  -d '{"path":"/hello","referrer":""}'
 curl http://localhost:8080/stats
 ```
 

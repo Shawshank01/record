@@ -27,3 +27,49 @@ a:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 9999px;
 }
+
+pre {
+  position: relative;
+  padding-top: 2.75rem;
+  padding-right: 3rem;
+}
+
+.code-copy-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(17, 19, 22, 0.85);
+  color: rgba(229, 231, 235, 0.95);
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.code-copy-button:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.code-copy-button[data-copied="true"] {
+  color: rgba(178, 153, 110, 0.95);
+  border-color: rgba(178, 153, 110, 0.7);
+}
+
+.code-copy-button svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
