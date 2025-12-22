@@ -33,7 +33,7 @@ const searchPayload = allPosts.map((entry) => ({
   description={post.data.description}
   searchPayload={searchPayload}
 >
-  <article class="prose prose-invert prose-headings:tracking-tight w-full max-w-3xl space-y-6 mx-auto">
+  <article class="prose prose-invert prose-headings:tracking-tight w-full max-w-3xl space-y-6 mx-auto lg:max-w-4xl xl:max-w-5xl">
     <header class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft">
       <p class="text-xs uppercase tracking-[0.3em] text-gray-500">
         {new Date(post.data.pubDate).toLocaleDateString(undefined, {

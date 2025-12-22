@@ -246,7 +246,7 @@ pm2 ls
 
 Install Caddy (on Ubuntu). Then configure `/etc/caddy/Caddyfile`:
 
-```caddy
+```text
 stats.zaku.eu.org {
 
     reverse_proxy localhost:8080
