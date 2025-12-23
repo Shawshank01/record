@@ -45,6 +45,17 @@ const searchPayloadString = searchPayload
       <slot />
     </main>
     <Footer />
+    <button
+      type="button"
+      class="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-soft/90 text-gray-100 shadow-soft transition hover:border-accent/60 hover:text-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 opacity-0 pointer-events-none translate-y-2"
+      data-back-to-top
+      aria-label="Back to top"
+      title="Back to top"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5l-6 6m6-6l6 6M12 5v14" />
+      </svg>
+    </button>
     {
       searchPayloadString && (
         <Fragment>
@@ -88,6 +99,38 @@ const searchPayloadString = searchPayload
           anchor.setAttribute('rel', anchor.getAttribute('rel') ? anchor.getAttribute('rel') : 'noopener');
         }
       });
+    </script>
+    <script is:inline>
+      (() => {
+        const button = document.querySelector('[data-back-to-top]');
+        if (!button) return;
+
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const update = () => {
+          const show = window.scrollY > 0;
+          button.classList.toggle('opacity-0', !show);
+          button.classList.toggle('pointer-events-none', !show);
+          button.classList.toggle('translate-y-2', !show);
+        };
+
+        button.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+        });
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              update();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }, { passive: true });
+
+        update();
+      })();
     </script>
     <script is:inline>
       (() => {

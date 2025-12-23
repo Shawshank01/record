@@ -82,18 +82,12 @@ const initialSubtitle = options[0] ?? '';
     }
   });
 
-  let lastScroll = window.scrollY;
   let ticking = false;
 
   const handleScroll = () => {
     if (!headerEl) return;
-    const current = window.scrollY;
-    if (current > lastScroll && current > headerEl.offsetHeight) {
-      headerEl.style.transform = 'translateY(-100%)';
-    } else {
-      headerEl.style.transform = 'translateY(0)';
-    }
-    lastScroll = current;
+    const atTop = window.scrollY <= 0;
+    headerEl.style.transform = atTop ? 'translateY(0)' : 'translateY(-100%)';
     ticking = false;
   };
 
@@ -103,6 +97,8 @@ const initialSubtitle = options[0] ?? '';
       ticking = true;
     }
   }, { passive: true });
+
+  handleScroll();
 
   if (subtitleEl instanceof HTMLElement) {
     try {
