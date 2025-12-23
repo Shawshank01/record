@@ -285,7 +285,7 @@ stats.zaku.eu.org {
 ```
 If ports 80/443 are already in use, you can run Caddy on alternate ports (the URL must include the port):
 
-```caddy
+```text
 {
   http_port 8081
   https_port 8443
@@ -389,7 +389,7 @@ sudo systemctl daemon-reload
 
 9) Update the Caddyfile:
 
-```caddy
+```text
 {
   http_port 8081
   https_port 8443
