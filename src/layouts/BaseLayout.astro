@@ -162,9 +162,18 @@ const searchPayloadString = searchPayload
 
         const blocks = document.querySelectorAll('pre');
         blocks.forEach((pre) => {
-          if (pre.querySelector('.code-copy-button')) return;
           const code = pre.querySelector('code');
           if (!code) return;
+
+          let wrapper = pre.parentElement;
+          if (!wrapper || !wrapper.classList.contains('code-block')) {
+            wrapper = document.createElement('div');
+            wrapper.className = 'code-block';
+            pre.parentNode?.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+          }
+
+          if (wrapper.querySelector('.code-copy-button')) return;
 
           const copyIcon = `
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -224,7 +233,7 @@ const searchPayloadString = searchPayload
             resetTimer = window.setTimeout(() => setState('idle'), 2000);
           });
 
-          pre.appendChild(button);
+          wrapper.appendChild(button);
         });
       })();
     </script>

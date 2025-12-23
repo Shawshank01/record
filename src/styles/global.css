@@ -28,8 +28,11 @@ a:hover {
   border-radius: 9999px;
 }
 
-pre {
+.code-block {
   position: relative;
+}
+
+pre {
   padding-top: 2.75rem;
   padding-right: 3rem;
 }
