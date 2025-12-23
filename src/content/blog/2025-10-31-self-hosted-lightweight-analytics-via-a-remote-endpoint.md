@@ -5,6 +5,8 @@ pubDate: 2025-11-01
 tags:
   - IT
   - Linux
+  - Caddy
+  - Cloudflare
 ---
 
 > Instead of using third‑party analytics like Cloudflare, I’m running a tiny **self‑hosted** tracker so you can also learn how it works and replicate it.
@@ -229,9 +231,9 @@ You should see a JSON array with counts.
 ```bash
 sudo npm install -g pm2
 pm2 start server.js --name stats
-pm2 save
 pm2 startup
-# Follow the one-line command pm2 prints for systemd
+# Run the one-line command pm2 prints for systemd, then:
+pm2 save
 ```
 
 Check status:
@@ -244,7 +246,9 @@ pm2 ls
 
 ## 3) Obtain HTTPS with Caddy (reverse proxy)
 
-Install Caddy (on Ubuntu). Then configure `/etc/caddy/Caddyfile`:
+Install Caddy: [Caddy install guide](https://caddyserver.com/docs/install)
+
+Then configure `/etc/caddy/Caddyfile`:
 
 ```text
 stats.zaku.eu.org {
@@ -278,12 +282,167 @@ stats.zaku.eu.org {
     }
 }
 ```
+If ports 80/443 are already in use, you can run Caddy on alternate ports (the URL must include the port):
+
+```caddy
+{
+  http_port 8081
+  https_port 8443
+}
+
+https://stats.zaku.eu.org:8443/stats {
+  reverse_proxy localhost:8080
+}
+```
+
+Note: for a publicly trusted TLS cert on non-443, you typically need DNS-01 validation (see below).
+
 Remember to change the domain name to yours.  
 Reload and tail logs:
 
 ```bash
 sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl enable --now caddy
+# Use reload after the service is running and you make future changes
 sudo systemctl reload caddy
+sudo journalctl -u caddy -f
+```
+
+### Optional: DNS-01 with Cloudflare (when 80/443 are busy)
+
+If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. This requires a Caddy build with the Cloudflare DNS module.
+
+1) Install Go 1.25.x (official):
+
+```bash
+sudo apt remove -y golang-go golang || true
+cd /tmp
+curl -LO https://go.dev/dl/go1.25.5.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.25.5.linux-amd64.tar.gz
+echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev/null
+source /etc/profile.d/go.sh
+```
+
+Verify:
+
+```bash
+go version
+```
+
+2) Lock Go to the local toolchain:
+
+```bash
+go env -w GOTOOLCHAIN=local
+go env -w GOPROXY=https://proxy.golang.org,direct
+```
+
+3) Install xcaddy:
+
+```bash
+go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+export PATH="$PATH:$HOME/go/bin"
+```
+
+4) Build Caddy with the Cloudflare DNS module:
+
+```bash
+xcaddy build --with github.com/caddy-dns/cloudflare
+```
+
+5) Replace the system Caddy binary:
+
+```bash
+sudo systemctl stop caddy
+sudo install -m 0755 ./caddy /usr/bin/caddy
+sudo systemctl start caddy
+```
+
+6) Verify the module exists:
+
+```bash
+caddy list-modules | grep cloudflare
+```
+
+7) Create a Cloudflare API token with:
+
+- `Zone.Zone:Read`
+- `Zone.DNS:Edit`
+
+Scope it to your zone.
+
+8) Add the token to the Caddy systemd service:
+
+```bash
+sudo systemctl edit caddy
+```
+
+```ini
+[Service]
+Environment=CLOUDFLARE_API_TOKEN=YOUR_TOKEN_HERE
+```
+
+```bash
+sudo systemctl daemon-reload
+```
+
+9) Update the Caddyfile:
+
+```caddy
+{
+  http_port 8081
+  https_port 8443
+}
+
+stats.zaku.eu.org {
+  tls {
+    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+  }
+
+  reverse_proxy localhost:8080
+
+  root * /usr/share/caddy
+  file_server
+
+  header {
+    Access-Control-Allow-Origin "https://x.zaku.eu.org"
+    Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers "Content-Type"
+    Access-Control-Allow-Credentials true
+    Access-Control-Max-Age "86400"
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "no-referrer-when-downgrade"
+  }
+
+  @options method OPTIONS
+  respond @options 204
+
+  log {
+    output file /var/log/caddy/stats-access.log {
+      roll_size 10MB
+      roll_keep 10
+      roll_keep_for 720h
+    }
+  }
+}
+```
+
+With `https_port 8443` set, access the API at `https://stats.zaku.eu.org:8443` and update your tracking endpoint to include `:8443`.
+
+10) Validate and reload:
+
+```bash
+sudo caddy validate --config /etc/caddy/Caddyfile
+# Format the file if you want
+sudo caddy fmt --overwrite /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+```
+
+11) Confirm issuance:
+
+```bash
 sudo journalctl -u caddy -f
 ```
 
@@ -455,28 +614,17 @@ You can also snapshot/export CSV periodically.
 
 ---
 
-## 8) Privacy notes
-
-- No third‑party beacons, no cookies, no cross‑site tracking.
-- IP is stored for basic uniqueness/debug, feel free to anonymise or drop it.
-- Respect DNT if you wish (read `navigator.doNotTrack === "1"` and skip).
-
-Example anonymisation tweak:
-
-```js
-function anonymizeIp(raw) {
-  const m = String(raw || "").match(/(\d+\.\d+\.\d+)\.\d+/);
-  return m ? m[1] + ".0" : raw;
-}
-```
-
----
-
-## 9) Troubleshooting
+## 8) Troubleshooting
 
 - **“Cannot GET /”** when visiting the VM IP: normal — define `/` or go to `/stats`.
 - **Mixed content blocked**: ensure the endpoint is **HTTPS** and CORS allows your blog origin.
 - **DNS check fails**: gray‑cloud the `stats` record until the certificate is issued.
+- **Caddy fails to start (permission denied on log file)**: ensure the log path is owned by the `caddy` user:
+  ```bash
+  sudo mkdir -p /var/log/caddy
+  sudo touch /var/log/caddy/stats-access.log
+  sudo chown -R caddy:caddy /var/log/caddy
+  ```
 - **No data appears**: test with a direct `curl -X POST .../track` and check `pm2 logs`.
 
 ### Test your endpoint manually
@@ -494,4 +642,4 @@ A new entry appearing in `/stats` confirms your endpoint is working correctly.
 
 ---
 
-That’s it. This blog now uses a **self‑hosted, portable, privacy‑friendly analytics** system. If you build your own, feel free to fork these snippets and adapt the endpoints to your domain.
+Hooray! This blog now uses a **self‑hosted, portable, privacy‑friendly analytics** system. If you build your own, feel free to fork these snippets and adapt the endpoints to your domain.
