@@ -260,7 +260,7 @@ stats.zaku.eu.org {
     file_server
 
     header {
-        Access-Control-Allow-Origin "https://x.zaku.eu.org"
+        Access-Control-Allow-Origin "https://zaku.eu.org"
         Access-Control-Allow-Methods "GET, POST, OPTIONS"
         Access-Control-Allow-Headers "Content-Type"
         Access-Control-Allow-Credentials true
@@ -406,7 +406,7 @@ stats.zaku.eu.org {
   file_server
 
   header {
-    Access-Control-Allow-Origin "https://x.zaku.eu.org"
+    Access-Control-Allow-Origin "https://zaku.eu.org"
     Access-Control-Allow-Methods "GET, POST, OPTIONS"
     Access-Control-Allow-Headers "Content-Type"
     Access-Control-Allow-Credentials true
