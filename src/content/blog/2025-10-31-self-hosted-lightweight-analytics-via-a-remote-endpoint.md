@@ -57,6 +57,7 @@ const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const app = express();
 app.set("trust proxy", 1);
+app.set("json spaces", 2);
 const db = new sqlite3.Database("stats.db");
 
 const EXPORT_PASSWORD = "secretkey";

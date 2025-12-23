@@ -189,16 +189,15 @@ const searchPayloadString = searchPayload
   (() => {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
 
-    const endpoint = 'https://stats.zaku.eu.org/track';
+    const endpoint = 'https://stats.zaku.eu.org:8443/track';
     const payload = JSON.stringify({
       path: window.location.pathname,
-      referrer: document.referrer || '',
-      ua: navigator.userAgent
+      referrer: document.referrer || ''
     });
 
     try {
       if (navigator.sendBeacon) {
-        const blob = new Blob([payload], { type: 'application/json' });
+        const blob = new Blob([payload], { type: 'text/plain' });
         const ok = navigator.sendBeacon(endpoint, blob);
         if (ok) return;
       }
@@ -207,7 +206,7 @@ const searchPayloadString = searchPayload
         body: payload,
         keepalive: true,
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'text/plain' }
       }).catch(err => console.warn('[analytics] fetch failed', err));
     } catch (err) {
       console.warn('[analytics] unexpected error', err);
