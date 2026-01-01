@@ -6,6 +6,7 @@ tags:
   - IT
   - Linux
   - Ubuntu
+  - VPS
 ---
 
 ## Introduction
