@@ -6,10 +6,15 @@ import searchScript from '../scripts/search.js?url';
 import { headerSubtitleOptions } from '../data/subtitles';
 
 const {
+  site = 'https://zaku.eu.org',
   pageTitle = "Michifumi's Blog",
   description = "Dispatches from Michifumi's command chair.",
-  searchPayload
+  searchPayload,
+  image = '/icon.svg'
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImageURL = new URL(image, Astro.url);
 
 const searchPayloadString = searchPayload
   ? JSON.stringify(searchPayload)
@@ -23,6 +28,27 @@ const searchPayloadString = searchPayload
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://stats.zaku.eu.org:8443;" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageURL} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={pageTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImageURL} />
+
     <title>{pageTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,6 +56,8 @@ const searchPayloadString = searchPayload
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Michifumi's Blog" href={`${Astro.site}rss.xml`} />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="alternate icon" href="/icon.svg" />
   </head>
