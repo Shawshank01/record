@@ -1,11 +1,13 @@
 ---
-title: "Mastering the Art of Daily Updates on Linux"
+title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
+updatedDate: 2026-01-09
 tags:
-  - Linux
   - Bash
+  - Linux
   - Docker
+  - macOS
 ---
 
 There are two types of people: those who never update their software and those who do it every day.
@@ -73,3 +75,15 @@ sudo chmod +x /usr/local/bin/up.sh
 ```bash
 up.sh
 ```
+
+## Bonus: Daily Updates on macOS (Homebrew)
+
+If you are on macOS and want to satisfy your update craving with Homebrew, this single command is all you need for aggressive maintenance:
+
+```bash
+brew upgrade && brew autoremove && brew cleanup --prune=all
+```
+
+- **brew upgrade**: Upgrades all packages.
+- **brew autoremove**: Removes orphan dependencies that are no longer needed.
+- **brew cleanup --prune=all**: Aggressively clears the cache to free up maximum disk space (I recommend using it with the 256 GB SSD MacBook Air).

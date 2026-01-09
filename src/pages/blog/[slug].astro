@@ -41,6 +41,15 @@ const searchPayload = allPosts.map((entry) => ({
           month: 'short',
           day: 'numeric'
         })}
+        {post.data.updatedDate && (
+          <span class="ml-2">
+            · Updated on {new Date(post.data.updatedDate).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })}
+          </span>
+        )}
       </p>
       <h1 class="mt-4 text-3xl font-bold text-white md:text-4xl">{post.data.title}</h1>
       <p class="mt-3 max-w-2xl text-base text-gray-300">{post.data.description}</p>
