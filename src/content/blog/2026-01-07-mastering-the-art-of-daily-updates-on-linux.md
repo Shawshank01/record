@@ -18,6 +18,8 @@ Anyway, while updating functions on popular operating systems like iOS, macOS, A
 
 That's why I need to write an update script to satisfy my perverted desire to update.
 
+---
+
 ## The Script
 
 Here is the `up.sh` script that handles system and Docker updates:
@@ -54,6 +56,8 @@ sudo docker builder prune -f
 echo "Update complete!"
 ```
 
+---
+
 ## Installation and Usage
 
 1. Create the script file:
@@ -75,6 +79,8 @@ sudo chmod +x /usr/local/bin/up.sh
 ```bash
 up.sh
 ```
+
+---
 
 ## Bonus: Daily Updates on macOS (Homebrew)
 

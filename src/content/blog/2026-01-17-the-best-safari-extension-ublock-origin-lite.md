@@ -19,6 +19,8 @@ Those familiar with it will have long heard its reputation, while if you're enco
 
 Moreover, if you couldn't care less about short videos but find yourself constantly bombarded by sites like YouTube, which seem determined to use every trick in the book to push short-form content on you, then uBlock Origin Lite is absolutely the solution for you.
 
+---
+
 ## Here is how this magic is achieved
 
 First, download and install it from the [App Store](https://apps.apple.com/us/app/ublock-origin-lite/id6745342698).
@@ -28,6 +30,8 @@ First, download and install it from the [App Store](https://apps.apple.com/us/ap
 Then enable it, open the dashboard and select the native filter lists. Don't forget to select your regions and languages using the filter at the bottom of the page.
 
 ![uBlock Origin Lite Native Filter Lists](/UBOL%20Native%20Filter%20Lists.png)
+
+---
 
 ## Now for the important part
 
@@ -73,6 +77,8 @@ These rules may change from time to time, so it's a good idea to check the [offi
 Then, in the dashboard, go to **Custom filters > Import / Export** and import the `.txt` file that you just saved. It should look like this:
 
 ![uBlock Origin Lite Custom Filter Lists](/UBOL%20Custom%20Filter%20Lists.png)
+
+---
 
 Then you need to quit Safari completely by pressing **cmd + Q**. This is **essential**.
 
