@@ -71,7 +71,8 @@ const initSearch = () => {
     return;
   }
 
-  let currentTag = 'all';
+  // Use a Set for multi-tag selection
+  let selectedTags = new Set();
 
   const normalise = (text = '') => text.toString().toLowerCase();
 
@@ -93,26 +94,33 @@ const initSearch = () => {
 
   const updateIndicator = () => {
     if (!indicator) return;
-    if (currentTag === 'all') {
+    if (selectedTags.size === 0) {
       indicator.classList.add('hidden');
       indicator.textContent = '';
     } else {
       indicator.classList.remove('hidden');
-      indicator.textContent = `Filtering by tag: #${labelLookup.get(currentTag) ?? currentTag}`;
+      const tagLabels = Array.from(selectedTags).map((t) => `#${labelLookup.get(t) ?? t}`);
+      const prefix = selectedTags.size === 1 ? 'Filtering by tag:' : 'Filtering by tags:';
+      indicator.textContent = `${prefix} ${tagLabels.join(', ')}`;
     }
   };
 
-  const setActiveTagButton = (tag) => {
+  const setActiveTagButtons = () => {
     tagButtons.forEach((btn) => {
-      btn.setAttribute('aria-pressed', btn.dataset.filterTag === tag ? 'true' : 'false');
+      const tag = btn.dataset.filterTag ?? '';
+      const isAll = tag === 'all';
+      const isSelected = isAll ? selectedTags.size === 0 : selectedTags.has(tag);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
     });
   };
 
   const passesTag = (card) => {
-    if (currentTag === 'all') return true;
+    if (selectedTags.size === 0) return true;
     try {
       const tags = JSON.parse(card.dataset.tags || '[]');
-      return Array.isArray(tags) && tags.includes(currentTag);
+      if (!Array.isArray(tags)) return false;
+      // Show post if it matches ANY of the selected tags (OR logic)
+      return tags.some((t) => selectedTags.has(t));
     } catch {
       return false;
     }
@@ -144,14 +152,26 @@ const initSearch = () => {
   tagButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       const tag = btn.dataset.filterTag ?? 'all';
-      currentTag = currentTag === tag ? 'all' : tag;
-      setActiveTagButton(currentTag);
+
+      if (tag === 'all') {
+        // Clicking "All" clears all selections
+        selectedTags.clear();
+      } else {
+        // Toggle tag in/out of selection
+        if (selectedTags.has(tag)) {
+          selectedTags.delete(tag);
+        } else {
+          selectedTags.add(tag);
+        }
+      }
+
+      setActiveTagButtons();
       updateIndicator();
       performSearch();
     });
   });
 
-  setActiveTagButton('all');
+  setActiveTagButtons();
   updateIndicator();
   render();
 
