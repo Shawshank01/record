@@ -2,6 +2,7 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
+updatedDate: 2026-01-21
 tags:
   - Safari
   - uBlock Origin
@@ -83,3 +84,7 @@ Then, in the dashboard, go to **Custom filters > Import / Export** and import th
 Then you need to quit Safari completely by pressing **cmd + Q**. This is **essential**.
 
 Now reopen Safari, open YouTube, and savour your triumph! Those pesky adverts and short video pushes have vanished!
+
+---
+
+Keep it in mind, this is rather like a game of cat and mouse, so perhaps one day this extension may cease to function (but it is not this day!). Should you wish to contribute to the cause of a free internet, when encountering usage issues, you may visit [this GitHub issue](https://github.com/uBlockOrigin/uAssets/issues/30158) to help the developers identify the problem more quickly.
