@@ -97,7 +97,7 @@ Typing the launch command every time is annoying, so I made a tiny Automator app
 
 Here’s what the Automator setup looks like:
 
-![Automator launcher setup](/Screenshot-2025-12-03-0.png)
+![Automator launcher setup](/Automator%20setup.png)
 
 Now every time I click the Dock icon, Brave launches using the AMD GPU.
 

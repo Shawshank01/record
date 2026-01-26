@@ -2,13 +2,28 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updatedDate: 2026-01-21
+updatedDate: 2026-01-26
 tags:
   - Safari
   - uBlock Origin
   - YouTube
   - Browser Extensions
 ---
+
+### Update
+
+If you use this every day (damn I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following two steps.
+
+Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready.
+
+Secondly, open the YouTube website and find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
+
+![UBOL Settings](/UBOL%20Settings.png)
+
+Then change it back to 'Optimal'. The webpage will refresh automatically and the ads and shorts will have disappeared!
+
+---
+
 
 The [uBlock Origin Lite](https://ublockorigin.com/) was released on the App Store in August last year. Although it's the 'Lite' version, which is not as powerful as the original, it's still one of the best things to happen in the last year, especially for users who sometimes have to use Safari as their browser, like me.
 

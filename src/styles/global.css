@@ -19,6 +19,50 @@ a:hover {
   @apply text-accent/80;
 }
 
+/* Centre images in blog content */
+.prose img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(100%, 500px);
+  height: auto;
+  cursor: zoom-in;
+  border-radius: 0.5rem;
+  transition: opacity 150ms ease;
+}
+
+.prose img:hover {
+  opacity: 0.9;
+}
+
+/* Lightbox overlay */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  cursor: zoom-out;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms ease, visibility 200ms ease;
+}
+
+.lightbox-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-overlay img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
