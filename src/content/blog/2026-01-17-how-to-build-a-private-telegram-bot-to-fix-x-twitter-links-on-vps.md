@@ -110,6 +110,21 @@ if __name__ == "__main__":
     main()
 ```
 
+
+#### Optional: Match Links Only at the Start of Messages
+
+By default, the bot will detect and fix X/Twitter links anywhere in a message. If you prefer the bot to **only** process links that appear at the very beginning of a message, modify the `X_PATTERN`:
+
+```python
+# Default: matches links anywhere in the message
+X_PATTERN = r'(https?://(?:www\.)?)(x\.com|twitter\.com)(/\S*)'
+
+# Alternative: matches links only at the start of the message
+X_PATTERN = r'^(https?://(?:www\.)?)(x\.com|twitter\.com)(/\S*)'
+```
+
+The `^` anchor ensures the pattern only triggers when the link is at the start of the message. This is useful if you want to allow regular X links in conversation while only fixing "intentional" shares that start with the link.
+
 ---
 
 ### 4. Deploy as a Background Service
