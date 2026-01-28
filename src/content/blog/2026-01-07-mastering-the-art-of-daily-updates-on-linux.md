@@ -82,6 +82,75 @@ up.sh
 
 ---
 
+## Other Linux Distributions
+
+The script above is designed for **Debian-based systems** (Debian, Ubuntu, Linux Mint, etc.) because it uses APT package manager commands. If you're using a different Linux distribution, here are the equivalent commands:
+
+### Fedora/RHEL/CentOS (DNF)
+
+```bash
+#!/bin/bash
+set -e
+
+echo "--- Starting System Update ---"
+sudo dnf upgrade -y
+sudo dnf autoremove -y
+
+# Docker section remains the same as above
+
+echo "Update complete!"
+```
+
+### Arch Linux (Pacman)
+
+```bash
+#!/bin/bash
+set -e
+
+echo "--- Starting System Update ---"
+sudo pacman -Syu --noconfirm
+sudo pacman -Sc --noconfirm
+
+# Docker section remains the same as above
+
+echo "Update complete!"
+```
+
+### openSUSE (Zypper)
+
+```bash
+#!/bin/bash
+set -e
+
+echo "--- Starting System Update ---"
+sudo zypper refresh
+sudo zypper update -y
+sudo zypper clean
+
+# Docker section remains the same as above
+
+echo "Update complete!"
+```
+
+### Alpine Linux (APK)
+
+```bash
+#!/bin/bash
+set -e
+
+echo "--- Starting System Update ---"
+sudo apk update
+sudo apk upgrade
+
+# Docker section remains the same as above
+
+echo "Update complete!"
+```
+
+**Note**: The Docker/Watchtower portion works identically across all distributions.
+
+---
+
 ## Bonus: Daily Updates on macOS (Homebrew)
 
 If you are on macOS and want to satisfy your update craving with Homebrew, this single command is all you need for aggressive maintenance:
