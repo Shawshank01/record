@@ -30,7 +30,7 @@ const searchPayloadString = searchPayload
     <meta name="description" content={description} />
     
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://stats.zaku.eu.org:8443; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://stats.zaku.eu.org; base-uri 'self'; form-action 'self';" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -269,7 +269,7 @@ const searchPayloadString = searchPayload
   (() => {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
 
-    const endpoint = 'https://stats.zaku.eu.org:8443/track';
+    const endpoint = 'https://stats.zaku.eu.org/track';
     const payload = JSON.stringify({
       path: window.location.pathname,
       referrer: document.referrer || ''
