@@ -2,6 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for This Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
+updateDate: 2026-01-29
 tags:
   - IT
   - Linux
@@ -32,9 +33,19 @@ You can adapt this for any static site (Astro, Hugo, etc.).
 - Basic DNS access (Cloudflare in my case)
 - Node.js 18+ and npm
 
+> [!WARNING]
+> **Do not use** `sudo apt install nodejs npm` — default repositories often contain **severely outdated** Node.js versions (e.g., Node.js 10.x or 12.x) with **known security vulnerabilities** and **no security patches**. Always install from NodeSource to get current, supported versions.
+
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y nodejs npm git
+
+# Install Node.js 20.x LTS from NodeSource (secure, up-to-date)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs git
+
+# Verify installation
+node --version  # Should show v20.x.x
+npm --version
 ```
 
 ---
@@ -43,22 +54,25 @@ sudo apt install -y nodejs npm git
 
 Create a new folder and initialise a Node project:
 
+> [!TIP]
+> We use `better-sqlite3` instead of `sqlite3` to avoid npm vulnerabilities and get better performance. It's synchronous (simpler) and has zero security issues.
+
 ```bash
 mkdir ~/page-stats && cd ~/page-stats
 npm init -y
-npm install express sqlite3 cors
+npm install express better-sqlite3 cors
 ```
 
 Create `server.js`:
 
 ```js
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 const cors = require("cors");
 const app = express();
 app.set("trust proxy", 1);
 app.set("json spaces", 2);
-const db = new sqlite3.Database("stats.db");
+const db = new Database("stats.db");
 
 const EXPORT_PASSWORD = "secretkey";
 
@@ -66,25 +80,25 @@ app.use(express.json({ limit: "2kb" }));
 // Accept plain text for no-cors fetch (simple request)
 app.use(express.text({ type: "text/plain", limit: "2kb" }));
 
-db.serialize(() => {
-  db.exec(`
-    PRAGMA journal_mode = WAL;
-    PRAGMA synchronous = NORMAL;
-    PRAGMA busy_timeout = 5000;
-  `);
+// Initialize database (synchronous with better-sqlite3)
+db.exec(`
+  PRAGMA journal_mode = WAL;
+  PRAGMA synchronous = NORMAL;
+  PRAGMA busy_timeout = 5000;
+`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS visits (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    path TEXT,
-    referrer TEXT,
-    ua TEXT,
-    ip TEXT,
-    ts DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
+db.exec(`CREATE TABLE IF NOT EXISTS visits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  path TEXT,
+  referrer TEXT,
+  ua TEXT,
+  ip TEXT,
+  ts DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
 
-  db.run(`CREATE INDEX IF NOT EXISTS idx_visits_path ON visits(path)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)`);
-});
+db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_path ON visits(path)`);
+db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)`);
+
 
 app.post("/track", (req, res) => {
   let body = req.body;
@@ -109,25 +123,24 @@ app.post("/track", (req, res) => {
     return res.sendStatus(400);
   }
 
-  db.run(
-    `INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`,
-    [path, referrer, userAgent, ip],
-    (err) => {
-      if (err) {
-        console.error("DB insert error:", err);
-        return res.sendStatus(500);
-      }
-      res.sendStatus(204);
-    }
-  );
+  try {
+    const stmt = db.prepare(`INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`);
+    stmt.run(path, referrer, userAgent, ip);
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("DB insert error:", err);
+    res.sendStatus(500);
+  }
 });
 
 // Basic visualisation endpoint (JSON)
 app.get("/stats", (req, res) => {
-  db.all(`SELECT path, COUNT(*) as views FROM visits GROUP BY path ORDER BY views DESC`, (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const rows = db.prepare(`SELECT path, COUNT(*) as views FROM visits GROUP BY path ORDER BY views DESC`).all();
     res.json(rows);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // CSV export
@@ -137,75 +150,70 @@ app.get("/export", (req, res) => {
     return res.status(403).send("Forbidden: Invalid export token");
   }
 
-  db.all(`SELECT * FROM visits ORDER BY ts DESC`, (err, rows) => {
-    if (err) return res.status(500).send(err.message);
+  try {
+    const rows = db.prepare(`SELECT * FROM visits ORDER BY ts DESC`).all();
     const csv = [
       "id,path,referrer,ua,ip,ts",
       ...rows.map(r => `${r.id},"${r.path}","${r.referrer}","${r.ua}","${r.ip}","${r.ts}"`)
     ].join("\n");
     res.setHeader("Content-Disposition", "attachment; filename=stats.csv");
     res.type("text/csv").send(csv);
-  });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 // --- Daily summary (views per day and path, last 30 days) ---
 app.get("/daily", (req, res) => {
-  db.all(
-    `SELECT DATE(ts) AS day, path, COUNT(*) AS views
-     FROM visits
-     WHERE ts >= DATE('now', '-30 days')
-     GROUP BY day, path
-     ORDER BY day DESC`,
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(rows);
-    }
-  );
+  try {
+    const rows = db.prepare(`
+      SELECT DATE(ts) AS day, path, COUNT(*) AS views
+      FROM visits
+      WHERE ts >= DATE('now', '-30 days')
+      GROUP BY day, path
+      ORDER BY day DESC
+    `).all();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // --- Totals summary (overall + by path + by day, last 30 days) ---
 app.get("/summary", (req, res) => {
-  const result = {};
+  try {
+    const totalRow = db.prepare(`
+      SELECT
+        COUNT(*) AS total_views,
+        COUNT(DISTINCT path) AS unique_paths,
+        MIN(ts) AS first_visit,
+        MAX(ts) AS last_visit
+      FROM visits
+    `).get();
 
-  db.get(
-    `SELECT
-       COUNT(*) AS total_views,
-       COUNT(DISTINCT path) AS unique_paths,
-       MIN(ts) AS first_visit,
-       MAX(ts) AS last_visit
-     FROM visits`,
-    (err, totalRow) => {
-      if (err) return res.status(500).json({ error: err.message });
-      result.total_views = totalRow.total_views;
-      result.unique_paths = totalRow.unique_paths;
-      result.first_visit = totalRow.first_visit;
-      result.last_visit = totalRow.last_visit;
+    const pathRows = db.prepare(`
+      SELECT path, COUNT(*) AS views
+      FROM visits
+      GROUP BY path
+      ORDER BY views DESC
+    `).all();
 
-      db.all(
-        `SELECT path, COUNT(*) AS views
-         FROM visits
-         GROUP BY path
-         ORDER BY views DESC`,
-        (err, pathRows) => {
-          if (err) return res.status(500).json({ error: err.message });
-          result.by_path = pathRows;
+    const dayRows = db.prepare(`
+      SELECT DATE(ts) AS day, COUNT(*) AS views
+      FROM visits
+      WHERE ts >= DATE('now', '-30 days')
+      GROUP BY day
+      ORDER BY day DESC
+    `).all();
 
-          db.all(
-            `SELECT DATE(ts) AS day, COUNT(*) AS views
-             FROM visits
-             WHERE ts >= DATE('now', '-30 days')
-             GROUP BY day
-             ORDER BY day DESC`,
-            (err, dayRows) => {
-              if (err) return res.status(500).json({ error: err.message });
-              result.by_day = dayRows;
-              res.json(result);
-            }
-          );
-        }
-      );
-    }
-  );
+    res.json({
+      ...totalRow,
+      by_path: pathRows,
+      by_day: dayRows
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(8080, () => console.log("Analytics server running on port 8080"));
@@ -248,6 +256,18 @@ pm2 ls
 ## 3) Obtain HTTPS with Caddy (reverse proxy)
 
 Install Caddy: [Caddy install guide](https://caddyserver.com/docs/install)
+
+### Create log directory
+
+Before configuring Caddy, create the log directory with correct permissions:
+
+```bash
+sudo mkdir -p /var/log/caddy
+sudo chown -R caddy:caddy /var/log/caddy
+sudo chmod 755 /var/log/caddy
+```
+
+### Configure Caddyfile
 
 Then configure `/etc/caddy/Caddyfile`:
 
@@ -306,7 +326,6 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl enable --now caddy
 # Use reload after the service is running and you make future changes
 sudo systemctl reload caddy
-sudo journalctl -u caddy -f
 ```
 
 ### Optional: DNS-01 with Cloudflare (when 80/443 are busy)
@@ -620,12 +639,6 @@ You can also snapshot/export CSV periodically.
 - **“Cannot GET /”** when visiting the VM IP: normal — define `/` or go to `/stats`.
 - **Mixed content blocked**: ensure the endpoint is **HTTPS** and CORS allows your blog origin.
 - **DNS check fails**: gray‑cloud the `stats` record until the certificate is issued.
-- **Caddy fails to start (permission denied on log file)**: ensure the log path is owned by the `caddy` user:
-  ```bash
-  sudo mkdir -p /var/log/caddy
-  sudo touch /var/log/caddy/stats-access.log
-  sudo chown -R caddy:caddy /var/log/caddy
-  ```
 - **No data appears**: test with a direct `curl -X POST .../track` and check `pm2 logs`.
 
 ### Test your endpoint manually
