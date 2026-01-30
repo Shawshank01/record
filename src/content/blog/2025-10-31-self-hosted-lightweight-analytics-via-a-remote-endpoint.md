@@ -262,6 +262,8 @@ You should see a JSON object with total views and breakdowns.
 
 ## 2) Keep it running with pm2
 
+### Debian/Ubuntu
+
 ```bash
 sudo npm install -g pm2
 pm2 start server.js --name stats
@@ -276,11 +278,186 @@ Check status:
 pm2 ls
 ```
 
+### Fedora CoreOS Alternative: Podman + Systemd
+
+**Step 1: Create a Dockerfile (inside toolbox)**
+
+Inside toolbox, in ~/page-stats directory
+```bash
+cat > Dockerfile <<'EOF'
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY server.js ./
+EXPOSE 8080
+CMD ["node", "server.js"]
+EOF
+```
+
+**Step 2: Exit toolbox and build the container image on the host**
+
+```bash
+exit  # Exit toolbox since podman is only available on the host
+```
+
+On the Fedora CoreOS host, build the image
+```
+cd ~/page-stats
+podman build -t localhost/page-stats:latest .
+```
+
+**Step 3: Create systemd service**
+
+Create systemd user service directory:
+
+```bash
+mkdir -p ~/.config/systemd/user/
+```
+
+Create the service file:
+
+```bash
+cat > ~/.config/systemd/user/page-stats.service <<'EOF'
+[Unit]
+Description=Page Stats Analytics Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStart=/usr/bin/podman run --rm --name page-stats \
+  -p 8080:8080 \
+  -v %h/page-stats/stats.db:/app/stats.db:Z \
+  localhost/page-stats:latest
+
+ExecStop=/usr/bin/podman stop -t 10 page-stats
+
+[Install]
+WantedBy=default.target
+EOF
+```
+
+**Step 4: Enable and start the service**
+
+Reload systemd:
+
+```bash
+systemctl --user daemon-reload
+```
+
+Enable service to start on boot:
+
+```bash
+loginctl enable-linger $USER
+```
+
+Start the service:
+
+```bash
+systemctl --user enable --now page-stats.service
+```
+
+Check status:
+
+```bash
+systemctl --user status page-stats.service
+```
+
+**Step 5: View logs**
+
+Follow logs in real-time:
+
+```bash
+journalctl --user -u page-stats.service -f
+```
+
+View recent logs:
+
+```bash
+journalctl --user -u page-stats.service -n 50
+```
+
+> [!IMPORTANT]  
+> **Updating the code**: If you modify `server.js` (e.g., changing the password), you must rebuild the container image and restart the service:
+> 
+> ```bash
+> cd ~/page-stats
+> podman build -t localhost/page-stats:latest .
+> systemctl --user restart page-stats.service
+> ```
+> 
+> The container runs a snapshot of your code from when it was built, not the live file.
+
 ---
 
 ## 3) Obtain HTTPS with Caddy (reverse proxy)
 
-Install Caddy: [Caddy install guide](https://caddyserver.com/docs/install)
+### Debian/Ubuntu: Install Caddy
+
+[Caddy install guide](https://caddyserver.com/docs/install)
+
+### Fedora CoreOS: Install Caddy Static Binary
+
+Download and install Caddy:
+
+```bash
+curl -o caddy 'https://caddyserver.com/api/download?os=linux&arch=amd64'
+```
+
+Make it executable:
+
+```bash
+chmod +x caddy
+```
+
+Move to system location:
+
+```bash
+sudo mv caddy /usr/local/bin/
+```
+
+Verify installation:
+
+```bash
+caddy version
+```
+
+Create Caddy user and group:
+
+```bash
+sudo groupadd --system caddy
+sudo useradd --system --gid caddy --create-home --home-dir /var/lib/caddy --shell /usr/sbin/nologin caddy
+```
+
+Create systemd service:
+
+```bash
+sudo tee /etc/systemd/system/caddy.service > /dev/null <<'EOF'
+[Unit]
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=notify
+User=caddy
+Group=caddy
+ExecStart=/usr/local/bin/caddy run --environ --config /etc/caddy/Caddyfile
+ExecReload=/usr/local/bin/caddy reload --config /etc/caddy/Caddyfile --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
 
 ### Create log directory
 
@@ -296,61 +473,60 @@ sudo chmod 755 /var/log/caddy
 
 Then configure `/etc/caddy/Caddyfile`:
 
+```bash
+sudo nano /etc/caddy/Caddyfile
+```
+
+Add the following:
+
 ```text
 stats.zaku.eu.org {
+        reverse_proxy localhost:8080
 
-    reverse_proxy localhost:8080
+        root * /usr/share/caddy
+        file_server
 
-    root * /usr/share/caddy
-    file_server
-
-    header {
-        Access-Control-Allow-Origin "https://zaku.eu.org"
-        Access-Control-Allow-Methods "GET, POST, OPTIONS"
-        Access-Control-Allow-Headers "Content-Type"
-        Access-Control-Allow-Credentials true
-        Access-Control-Max-Age "86400"
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "DENY"
-        Referrer-Policy "no-referrer-when-downgrade"
-    }
-
-    @options method OPTIONS
-    respond @options 204
-
-    log {
-        output file /var/log/caddy/stats-access.log {
-            roll_size 10MB
-            roll_keep 10
-            roll_keep_for 720h
+        header {
+                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Methods "GET, POST, OPTIONS"
+                Access-Control-Allow-Headers "Content-Type"
+                Access-Control-Allow-Credentials true
+                Access-Control-Max-Age "86400"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "no-referrer-when-downgrade"
         }
-    }
-}
-```
-If ports 80/443 are already in use, you can run Caddy on alternate ports (the URL must include the port):
 
-```text
-{
-  http_port 8081
-  https_port 8443
-}
+        @options method OPTIONS
+        respond @options 204
 
-https://stats.zaku.eu.org:8443/stats {
-  reverse_proxy localhost:8080
-# Others remains the same as above
+        log {
+                output file /var/log/caddy/stats-access.log {
+                        roll_size 10MB
+                        roll_keep 10
+                        roll_keep_for 720h
+                }
+        }
 }
 ```
 
-Note: for a publicly trusted TLS cert on non-443, you typically need DNS-01 validation (see below).
+> If ports 80/443 are already in use, you can run Caddy on alternate ports, and for a publicly trusted TLS cert on non-443, you typically need DNS-01 validation (see below optional).
 
-Remember to change the domain name to yours.  
-Reload and tail logs:
-
+Safely updating Caddy configurations
 ```bash
+sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
+```
+
+Start the service and check status:
+```bash
 sudo systemctl enable --now caddy
-# Use reload after the service is running and you make future changes
+sudo systemctl status caddy -l --no-pager
+```
+
+Use reload after the service is running and you make future changes:
+```bash
 sudo systemctl reload caddy
 ```
 
@@ -376,16 +552,15 @@ echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev
 source /etc/profile.d/go.sh
 ```
 
-**Fedora/RHEL:**
+**Fedora CoreOS:**
 
 ```bash
-sudo dnf remove -y golang || true
 cd /tmp
 # Replace 1.25.6 with the latest version from https://go.dev/dl/
 curl -LO https://go.dev/dl/go1.25.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf go1.25.6.linux-amd64.tar.gz
-echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev/null
+echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh > /dev/null
 source /etc/profile.d/go.sh
 ```
 
@@ -415,11 +590,11 @@ export PATH="$PATH:$HOME/go/bin"
 xcaddy build --with github.com/caddy-dns/cloudflare
 ```
 
-5) Replace the system Caddy binary:
+5) Replace the Caddy binary:
 
 ```bash
 sudo systemctl stop caddy
-sudo install -m 0755 ./caddy /usr/bin/caddy
+sudo install -m 0755 ./caddy /usr/local/bin/caddy
 sudo systemctl start caddy
 ```
 
@@ -455,42 +630,41 @@ sudo systemctl daemon-reload
 
 ```text
 {
-  http_port 8081
-  https_port 8443
+        http_port 8081
+        https_port 8443
 }
 
 stats.zaku.eu.org {
-  tls {
-    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-  }
+        tls {
+                dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy localhost:8080
 
-  reverse_proxy localhost:8080
+        root * /usr/share/caddy
+        file_server
 
-  root * /usr/share/caddy
-  file_server
+        header {
+                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Methods "GET, POST, OPTIONS"
+                Access-Control-Allow-Headers "Content-Type"
+                Access-Control-Allow-Credentials true
+                Access-Control-Max-Age "86400"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "no-referrer-when-downgrade"
+        }
 
-  header {
-    Access-Control-Allow-Origin "https://zaku.eu.org"
-    Access-Control-Allow-Methods "GET, POST, OPTIONS"
-    Access-Control-Allow-Headers "Content-Type"
-    Access-Control-Allow-Credentials true
-    Access-Control-Max-Age "86400"
-    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-    X-Content-Type-Options "nosniff"
-    X-Frame-Options "DENY"
-    Referrer-Policy "no-referrer-when-downgrade"
-  }
+        @options method OPTIONS
+        respond @options 204
 
-  @options method OPTIONS
-  respond @options 204
-
-  log {
-    output file /var/log/caddy/stats-access.log {
-      roll_size 10MB
-      roll_keep 10
-      roll_keep_for 720h
-    }
-  }
+        log {
+                output file /var/log/caddy/stats-access.log {
+                        roll_size 10MB
+                        roll_keep 10
+                        roll_keep_for 720h
+                }
+        }
 }
 ```
 
@@ -499,10 +673,10 @@ With `https_port 8443` set, access the API at `https://stats.zaku.eu.org:8443` a
 10) Validate and reload:
 
 ```bash
-sudo caddy validate --config /etc/caddy/Caddyfile
-# Format the file if you want
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
+sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
+sudo systemctl status caddy -l --no-pager
 ```
 
 11) Confirm issuance:
