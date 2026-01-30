@@ -49,10 +49,21 @@ node --version  # Should show the latest LTS version
 npm --version
 ```
 
-### Fedora
+### Fedora CoreOS
 
-> [!TIP]  
-> Fedora's default repositories ship with **modern Node.js versions**. You can safely use the default repositories without NodeSource.
+> [!IMPORTANT]  
+> Fedora CoreOS is an **immutable operating system** designed for containerized workloads. You cannot install packages directly with `dnf install`. Instead, use **toolbox** to create a mutable container environment.
+> 
+> For more information about Fedora CoreOS on GCP, see the [official documentation](https://docs.fedoraproject.org/en-US/fedora-coreos/provisioning-gcp/).
+
+**Step 1: Create and enter a toolbox**
+
+```bash
+toolbox create
+toolbox enter
+```
+
+**Step 2: Install Node.js inside the toolbox**
 
 ```bash
 # Install Node.js from Fedora's default repositories
@@ -63,14 +74,12 @@ node --version  # Should show v22.x.x
 npm --version
 ```
 
-**Optional**: To install a specific version on Fedora:
-```bash
-# For Node.js 20.x LTS
-sudo dnf module install nodejs:20
+**Step 3: Work inside the toolbox**
 
-# For Node.js 18.x LTS
-sudo dnf module install nodejs:18
-```
+All subsequent commands (creating the project, installing packages, running the server) should be executed **inside the toolbox**. The toolbox persists across reboots and you can re-enter it anytime with `toolbox enter`.
+
+> [!TIP]  
+> To exit the toolbox, type `exit`. To re-enter later, use `toolbox enter`.
 
 ---
 
