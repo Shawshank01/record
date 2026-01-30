@@ -55,8 +55,6 @@ npm --version
 > Fedora's default repositories ship with **modern Node.js versions**. You can safely use the default repositories without NodeSource.
 
 ```bash
-sudo dnf update -y
-
 # Install Node.js from Fedora's default repositories
 sudo dnf install -y nodejs npm git
 
