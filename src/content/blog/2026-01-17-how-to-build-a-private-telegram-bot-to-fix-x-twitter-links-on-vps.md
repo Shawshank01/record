@@ -37,9 +37,32 @@ If you use Telegram and X a lot and often share X links in a Telegram group chat
 
 Login to your VPS and set up a dedicated directory with a Python virtual environment to keep things isolated.
 
+**For Debian/Ubuntu systems:**
+
 ```bash
-# Update package list and install requirements
-sudo apt update && sudo apt install python3-pip python3-venv -y
+# Update package list and install Python venv
+sudo apt update && sudo apt install python3-venv -y
+
+# Install pip using the official method (ensures latest version)
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -
+
+# Navigate to home directory and create project folder
+cd ~
+mkdir mybot && cd mybot
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install the required library
+pip install python-telegram-bot
+```
+
+**For Fedora/RHEL-based systems:**
+
+```bash
+# Update system and install Python venv
+sudo dnf update -y && sudo dnf install python3-pip -y
 
 # Navigate to home directory and create project folder
 cd ~
