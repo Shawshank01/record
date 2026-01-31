@@ -4,10 +4,14 @@ description: "Satisfying the compulsion for daily system updates with a custom b
 pubDate: 2026-01-07
 updatedDate: 2026-01-30
 tags:
+  - IT
   - Bash
   - Linux
   - Docker
   - macOS
+  - Debian
+  - Ubuntu
+  - Fedora CoreOS
 ---
 
 There are two types of people: those who never update their software and those who do it every day.
@@ -103,7 +107,7 @@ echo "Update complete!"
 
 ### Fedora CoreOS (Automatic Updates via Zincati)
 
-**Fedora CoreOS is different**, it uses **Zincati** for automatic updates. So there is no need to manually run update commands. What a relief!
+**Fedora CoreOS is different**, it uses **Zincati** for automatic updates. So there is no need to manually run update commands, only need to reboot periodically to apply staged updates. What a relief!
 
 **How it works:**
 - Zincati automatically downloads and stages updates in the background
@@ -155,32 +159,6 @@ else
 fi
 ```
 
-**Important**: Fedora CoreOS updates automatically via Zincati. You only need to reboot periodically to apply staged updates.
-
-### Fedora Silverblue / Kinoite (Manual Updates)
-
-For **desktop immutable Fedora systems**, you need to manually trigger updates:
-
-```bash
-#!/bin/bash
-set -e
-
-echo "--- Starting System Update ---"
-rpm-ostree upgrade
-
-echo "Update complete!"
-
-# Ask user if they want to reboot now
-read -p "System updates require a reboot. Reboot now? (y/N): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Rebooting now..."
-    sudo systemctl reboot
-else
-    echo "Reboot skipped. Remember to reboot later to apply updates."
-fi
-```
-
 **Note**: The Docker/Watchtower portion works identically across all distributions.
 
 ---
@@ -195,4 +173,4 @@ brew upgrade && brew autoremove && brew cleanup --prune=all
 
 - **brew upgrade**: Upgrades all packages.
 - **brew autoremove**: Removes orphan dependencies that are no longer needed.
-- **brew cleanup --prune=all**: Aggressively clears the cache to free up maximum disk space (I recommend using it with the 256 GB SSD MacBook Air).
+- **brew cleanup --prune=all**: Aggressively clears the cache to free up maximum disk space, I recommend using it with the 256 GB SSD MacBook Air (that is something only Apple can do).

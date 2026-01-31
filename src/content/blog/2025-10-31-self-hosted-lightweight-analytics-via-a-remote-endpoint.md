@@ -2,12 +2,15 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-01-30
+updateDate: 2026-01-31
 tags:
   - IT
   - Linux
   - Caddy
   - Cloudflare
+  - Fedora CoreOS
+  - Debian
+  - Ubuntu
 ---
 
 > Instead of using third‑party analytics like Cloudflare, I’m running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
@@ -249,7 +252,10 @@ Quick test:
 
 ```bash
 node server.js
-# In another shell:
+```
+
+In another shell:
+```bash
 curl -X POST http://localhost:8080/track \
   -H "Content-Type: text/plain" \
   -d '{"path":"/hello","referrer":""}'
@@ -278,7 +284,7 @@ Check status:
 pm2 ls
 ```
 
-### Fedora CoreOS Alternative: Podman + Systemd
+### Fedora CoreOS: Podman + Systemd
 
 **Step 1: Create a Dockerfile (inside toolbox)**
 
@@ -298,11 +304,11 @@ EOF
 **Step 2: Exit toolbox and build the container image on the host**
 
 ```bash
-exit  # Exit toolbox since podman is only available on the host
+exit
 ```
 
 On the Fedora CoreOS host, build the image
-```
+```bash
 cd ~/page-stats
 podman build -t localhost/page-stats:latest .
 ```
@@ -830,36 +836,31 @@ All analytics live in `stats.db`. To migrate to a new VM:
 
 ### Step 1: Download from old VPS to local machine
 
-On your **old VPS**:
+On your **old VPS**, stop the analytics service:
 
 ```bash
-# Stop the analytics service
 pm2 stop stats
 ```
 
-On your **local machine**:
+On your **local machine**, download the database:
 
 ```bash
-# Download the database
 scp user@OLD_VPS_IP:~/page-stats/stats.db ~/Downloads/stats.db
 ```
 
 ### Step 2: Upload to new VPS
 
-On your **local machine**:
+On your **local machine**, upload to new VPS:
 
 ```bash
-# Upload to new VPS
 scp ~/Downloads/stats.db user@NEW_VPS_IP:~/page-stats/stats.db
 ```
 
-On your **new VPS**:
+On your **new VPS**, start the analytics service:
 
 ```bash
-# Start the analytics service
 pm2 start ~/page-stats/server.js --name stats
 ```
-
 
 ---
 
