@@ -3,6 +3,7 @@ title: "Private Telegram X-Link Fixer: A Step-by-Step Guide to Enhancing Link Pr
 description: "How to build, secure and deploy a private Telegram bot to automatically replace x.com links with fixupx.com for native Instant View support."
 pubDate: 2026-01-17T18:00:00
 tags:
+  - GNU/Linux
   - Telegram
   - Bot
   - Python

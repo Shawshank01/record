@@ -4,7 +4,7 @@ description: "We move beyond complex passwords and harden SSH access using ed255
 pubDate: 2026-01-01
 tags:
   - IT
-  - Linux
+  - GNU/Linux
   - Ubuntu
   - VPS
   - RackNerd

@@ -4,7 +4,7 @@ description: "A step-by-step guide to securing a new Ubuntu VPS by creating a re
 pubDate: 2025-12-22
 tags:
   - IT
-  - Linux
+  - GNU/Linux
   - Ubuntu
   - VPS
 ---

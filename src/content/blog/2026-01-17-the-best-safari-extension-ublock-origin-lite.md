@@ -4,8 +4,9 @@ description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
 updatedDate: 2026-01-26
 tags:
+  - macOS
   - Safari
-  - uBlock Origin
+  - uBlock Origin Lite
   - YouTube
   - Browser Extensions
 ---

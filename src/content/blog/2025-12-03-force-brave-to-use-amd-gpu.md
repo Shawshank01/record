@@ -4,8 +4,8 @@ description: "Brave Browser (Chromium) kept sticking to Intel iGPU for WebGL/Web
 pubDate: 2025-12-03
 tags:
   - IT
-  - Mac
-  - Browser
+  - macOS
+  - Brave Browser
 ---
 
 [Go to solution directly](#the-real-fix)

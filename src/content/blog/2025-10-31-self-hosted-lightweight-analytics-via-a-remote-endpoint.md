@@ -5,7 +5,7 @@ pubDate: 2025-11-01
 updateDate: 2026-01-31
 tags:
   - IT
-  - Linux
+  - GNU/Linux
   - Caddy
   - Cloudflare
   - Fedora CoreOS

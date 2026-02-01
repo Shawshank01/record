@@ -6,7 +6,7 @@ updatedDate: 2026-01-30
 tags:
   - IT
   - Bash
-  - Linux
+  - GNU/Linux
   - Docker
   - macOS
   - Debian
