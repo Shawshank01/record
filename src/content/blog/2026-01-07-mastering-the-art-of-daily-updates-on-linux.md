@@ -123,29 +123,19 @@ set -e
 echo "--- Checking for staged system updates ---"
 rpm-ostree status
 
-echo ""
-echo "--- Updating Docker Containers via Watchtower ---"
-# Note: Ensure your Docker API version matches your installed Docker engine
-sudo docker run --rm \
-  -e DOCKER_API_VERSION=1.44 \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  containrrr/watchtower \
-  --run-once \
-  --cleanup \
-  your container names (separate by space)
-
-echo "--- Cleaning up unused Docker resources ---"
-sudo docker container prune -f
-sudo docker image prune -a -f
-sudo docker volume prune -f
-sudo docker network prune -f
-sudo docker builder prune -f
+# Update toolbox container (default)
+if toolbox list 2>/dev/null | grep -q "fedora-toolbox"; then
+    echo ""
+    echo "--- Updating Toolbox Container ---"
+    toolbox run sudo dnf upgrade -y
+    toolbox run sudo dnf autoremove -y
+fi
 
 echo ""
 echo "Update complete!"
 
 # Check if there's a pending update
-if rpm-ostree status | grep -q "pending"; then
+if rpm-ostree status --json | jq -e '.deployments[] | select(.pending == true)' > /dev/null 2>&1; then
     read -p "A system update is staged. Reboot now to apply? (y/N): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -159,7 +149,7 @@ else
 fi
 ```
 
-**Note**: The Docker/Watchtower portion works identically across all distributions.
+**Note**: Fedora CoreOS uses Podman by default. For automatic container updates, use [`podman auto-update`](https://docs.podman.io/en/stable/markdown/podman-auto-update.1.html) with containers running inside systemd units and the `io.containers.autoupdate` label. Podman also ships with a `podman-auto-update.timer` that triggers updates daily.
 
 ---
 

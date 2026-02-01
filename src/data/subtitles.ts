@@ -10,5 +10,9 @@ export const headerSubtitleOptions: string[] = [
   "In the end the Party would announce that two and two made five, and you would have to believe it.\n\u2014 1984 by George Orwell",
   "Three passions, simple but overwhelmingly strong, have governed my life: the longing for love, the search for knowledge, and unbearable pity for the suffering of mankind. These passions, like great winds, have blown me hither and thither, in a wayward course, over a deep ocean of anguish, reaching to the very verge of despair.\n\u2014 What I Have Lived For by Bertrand Russell",
   "The unexamined life is not worth living.\n\u2014 Socrates",
-  "Every man dies. Not every man really lives.\n— Braveheart (1995)",
+  "Every man dies. Not every man really lives.\n\u2014 Braveheart (1995)",
+  "People should not be afraid of their governments. Governments should be afraid of their people.\n\u2014 V for Vendetta (2005)",
+  "I disapprove of what you say, but I will defend to the death your right to say it.\n\u2014 Evelyn Beatrice Hall",
+  "Mature manhood: that means to have rediscovered the seriousness one had as a child at play.\n\u2014 Friedrich Wilhelm Nietzsche, Beyond Good and Evil",
+  "There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.\n\u2014 C.A.R. Hoare",
 ];
