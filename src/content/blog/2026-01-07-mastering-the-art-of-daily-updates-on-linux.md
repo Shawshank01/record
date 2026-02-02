@@ -2,7 +2,7 @@
 title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updatedDate: 2026-01-30
+updatedDate: 2026-02-02
 tags:
   - IT
   - Bash
@@ -164,3 +164,23 @@ brew upgrade && brew autoremove && brew cleanup --prune=all
 - **brew upgrade**: Upgrades all packages.
 - **brew autoremove**: Removes orphan dependencies that are no longer needed.
 - **brew cleanup --prune=all**: Aggressively clears the cache to free up maximum disk space, I recommend using it with the 256 GB SSD MacBook Air (that is something only Apple can do).
+
+To make this even easier, add an alias for the terminal `~/.zshrc`:
+
+```bash
+nano ~/.zshrc
+```
+
+Add the following line:
+
+```bash
+alias up='brew upgrade && brew autoremove && brew cleanup --prune=all'
+```
+
+Then reload your shell:
+
+```bash
+source ~/.zshrc
+```
+
+Now you can simply type `up` to update everything that installed from homebrew!
