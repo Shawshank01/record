@@ -8,8 +8,7 @@ tags:
   - Bot
   - Python
   - VPS
-  - X
-  - Twitter
+  - X/Twitter
 ---
 
 If you use Telegram and X a lot and often share X links in a Telegram group chat, you may have noticed that the X links cannot show as 'Instant View', a very convenient function natively supported by Telegram, unless you add a prefix such as 'fixup' before the X URL. If you hate yourself, you can manually add the prefix each time you share an X URL in the group chat. Alternatively, you can set up a Telegram bot with your VPS to add the prefix automatically. This blog contains a guide documenting the exact process followed to build, secure and deploy the private Telegram X-Link Fixer bot on a VPS.
