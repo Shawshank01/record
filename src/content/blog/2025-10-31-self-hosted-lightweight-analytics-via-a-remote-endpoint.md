@@ -13,6 +13,21 @@ tags:
   - Ubuntu
 ---
 
+## Table of Contents
+
+- [0) Prerequisites](#0-prerequisites)
+- [1) Create the analytics service](#1-create-the-analytics-service)
+- [2) Keep it running in the background](#2-keep-it-running-in-the-background)
+- [3) Obtain HTTPS with Caddy](#3-obtain-https-with-caddy-reverse-proxy)
+- [4) DNS (Cloudflare)](#4-dns-cloudflare)
+- [5) Add the tracking snippet to the blog](#5-add-the-tracking-snippet-to-the-blog-astro)
+- [6) Verify end-to-end](#6-verify-endtoend)
+- [7) Migration guide](#7-migration-guide-switching-vps)
+- [8) Backup and Data Safety](#8-backup-and-data-safety)
+- [9) Troubleshooting](#9-troubleshooting)
+
+---
+
 > Instead of using third‑party analytics like Cloudflare, I’m running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
 
 ## What I've built
@@ -266,9 +281,9 @@ You should see a JSON object with total views and breakdowns.
 
 ---
 
-## 2) Keep it running with pm2
+## 2) Keep it running in the background
 
-### Debian/Ubuntu
+### Debian/Ubuntu: pm2
 
 ```bash
 sudo npm install -g pm2
@@ -313,7 +328,18 @@ cd ~/page-stats
 podman build -t localhost/page-stats:latest .
 ```
 
-**Step 3: Create systemd service**
+**Step 3: Create a Podman volume for data persistence**
+
+> [!IMPORTANT]  
+> **Why use a volume instead of bind mount:** SQLite in WAL (Write-Ahead Logging) mode creates 3 files: `stats.db`, `stats.db-wal`, and `stats.db-shm`. When bind mounting a single file (`-v ~/stats.db:/app/stats.db`), only the main database file is properly synced to the host. The WAL file (containing recent changes) lives in the container's filesystem and can be lost on container restart, causing **data loss**. Using a Podman volume mounts the entire directory, ensuring all SQLite files persist correctly.
+
+Create the volume:
+
+```bash
+podman volume create page-stats-data
+```
+
+**Step 4: Create systemd service**
 
 Create systemd user service directory:
 
@@ -336,7 +362,7 @@ Restart=always
 RestartSec=10
 ExecStart=/usr/bin/podman run --rm --name page-stats \
   -p 8080:8080 \
-  -v %h/page-stats/stats.db:/app/stats.db:Z \
+  -v page-stats-data:/app:Z \
   localhost/page-stats:latest
 
 ExecStop=/usr/bin/podman stop -t 10 page-stats
@@ -346,7 +372,7 @@ WantedBy=default.target
 EOF
 ```
 
-**Step 4: Enable and start the service**
+**Step 5: Enable and start the service**
 
 Reload systemd:
 
@@ -372,7 +398,7 @@ Check status:
 systemctl --user status page-stats.service
 ```
 
-**Step 5: View logs**
+**Step 6: View logs**
 
 Follow logs in real-time:
 
@@ -864,7 +890,108 @@ pm2 start ~/page-stats/server.js --name stats
 
 ---
 
-## 8) Troubleshooting
+## 8) Backup and Data Safety
+
+> [!WARNING]  
+> **Always maintain regular backups!** While the Podman volume approach on Fedora CoreOS prevents WAL sync issues, you should still backup your data regularly. System updates, hardware failures, or accidental deletions can still cause data loss.
+
+### Automated CSV Export Backup
+
+Set up a daily backup using the `/export` endpoint. This works on **both Debian/Ubuntu and Fedora CoreOS**.
+
+**Create a backup script:**
+
+```bash
+mkdir -p ~/backups
+nano ~/backups/backup-stats.sh
+```
+
+Add the following content (replace `YOUR_PASSWORD` with your actual password):
+
+```bash
+#!/bin/bash
+BACKUP_DIR="$HOME/backups/analytics"
+mkdir -p "$BACKUP_DIR"
+
+# Export CSV from the analytics endpoint
+curl -s "https://stats.zaku.eu.org/export?token=YOUR_PASSWORD" \
+  -o "$BACKUP_DIR/stats-$(date +%Y-%m-%d).csv"
+
+# Keep only last 30 days of backups
+find "$BACKUP_DIR" -name "stats-*.csv" -mtime +30 -delete
+
+echo "Backup completed: $(date)"
+```
+
+Make it executable:
+
+```bash
+chmod +x ~/backups/backup-stats.sh
+```
+
+**Schedule with cron (daily at 2 AM):**
+
+```bash
+crontab -e
+```
+
+Add this line:
+
+```
+0 2 * * * /home/YOUR_USERNAME/backups/backup-stats.sh >> /home/YOUR_USERNAME/backups/backup.log 2>&1
+```
+
+### Fedora CoreOS: Backup the Podman Volume
+
+On Fedora CoreOS, you can also backup the entire Podman volume:
+
+```bash
+# Export the volume to a tar archive
+podman run --rm -v page-stats-data:/data -v ~/backups:/backup:Z \
+  alpine tar czf /backup/page-stats-volume-$(date +%Y-%m-%d).tar.gz -C /data .
+
+# Keep only last 7 days of volume backups (they're larger)
+find ~/backups -name "page-stats-volume-*.tar.gz" -mtime +7 -delete
+```
+
+**Restore from volume backup:**
+
+```bash
+# Stop the service
+systemctl --user stop page-stats.service
+
+# Restore from backup
+podman run --rm -v page-stats-data:/data -v ~/backups:/backup:Z \
+  alpine sh -c "rm -rf /data/* && tar xzf /backup/page-stats-volume-YYYY-MM-DD.tar.gz -C /data"
+
+# Start the service
+systemctl --user start page-stats.service
+```
+
+### Debian/Ubuntu: Direct Database Backup
+
+On Debian/Ubuntu with PM2, you can backup the database file directly:
+
+```bash
+# Stop the service temporarily
+pm2 stop stats
+
+# Backup the database
+cp ~/page-stats/stats.db ~/backups/stats-$(date +%Y-%m-%d).db
+
+# Restart the service
+pm2 start stats
+```
+
+Or use SQLite's built-in backup (safer, works while service is running):
+
+```bash
+sqlite3 ~/page-stats/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$(date +%Y-%m-%d).db'"
+```
+
+---
+
+## 9) Troubleshooting
 
 - **"Cannot GET /"** when visiting the VM IP: normal — the API only responds to `/track`, `/summary`, `/daily`, and `/export`.
 - **Mixed content blocked**: ensure the endpoint is **HTTPS** and CORS allows your blog origin.
