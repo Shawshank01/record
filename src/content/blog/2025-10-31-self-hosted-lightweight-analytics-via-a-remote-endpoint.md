@@ -299,6 +299,38 @@ Check status:
 pm2 ls
 ```
 
+Stop the service:
+
+```bash
+pm2 stop stats
+```
+
+Restart the service:
+
+```bash
+pm2 restart stats
+```
+
+Remove from PM2 (stops and removes from process list):
+
+```bash
+pm2 delete stats
+```
+
+Completely disable PM2 auto-start (removes systemd integration):
+
+```bash
+pm2 unstartup
+# Run the command it suggests with sudo
+```
+
+Or manually disable the systemd service:
+
+```bash
+sudo systemctl disable pm2-ubuntu
+sudo systemctl stop pm2-ubuntu
+```
+
 ### Fedora CoreOS: Podman + Systemd
 
 **Step 1: Create a Dockerfile (inside toolbox)**
@@ -396,6 +428,24 @@ Check status:
 
 ```bash
 systemctl --user status page-stats.service
+```
+
+Stop the service:
+
+```bash
+systemctl --user stop page-stats.service
+```
+
+Restart the service:
+
+```bash
+systemctl --user restart page-stats.service
+```
+
+Disable and stop (removes from startup):
+
+```bash
+systemctl --user disable --now page-stats.service
 ```
 
 **Step 6: View logs**
