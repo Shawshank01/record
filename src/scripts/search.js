@@ -47,9 +47,31 @@ const initSearch = () => {
   }
 
   const postCards = Array.from(document.querySelectorAll('.post-card'));
+
+  // On pages without post cards (e.g., individual blog posts), redirect to homepage on search
   if (postCards.length === 0) {
+    searchInput.placeholder = 'Search… ↵';
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `/?q=${encodeURIComponent(query)}`;
+        } else {
+          window.location.href = '/';
+        }
+      }
+    });
     searchInput.dataset.searchBound = 'true';
     return;
+  }
+
+  // On homepage: read query param and populate search input
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialQuery = urlParams.get('q');
+  if (initialQuery) {
+    searchInput.value = initialQuery;
+    // Clean up URL without reloading
+    window.history.replaceState({}, '', window.location.pathname);
   }
 
   const tagButtons = Array.from(document.querySelectorAll('.tag-filter'));
@@ -173,7 +195,7 @@ const initSearch = () => {
 
   setActiveTagButtons();
   updateIndicator();
-  render();
+  performSearch();
 
   searchInput.dataset.searchBound = 'true';
 };
