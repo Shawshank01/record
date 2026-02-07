@@ -2,7 +2,7 @@
 title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updatedDate: 2026-02-02
+updatedDate: 2026-02-07
 tags:
   - IT
   - Bash
@@ -11,6 +11,7 @@ tags:
   - macOS
   - Debian
   - Ubuntu
+  - Fedora
   - Fedora CoreOS
 ---
 
@@ -24,7 +25,31 @@ That's why I need to write an update script to satisfy my perverted desire to up
 
 ---
 
-## The Script
+## Installation and Usage
+
+1. Create the script file:
+
+```bash
+sudo nano /usr/local/bin/up.sh
+```
+
+2. Paste the content from your OS-specific script below into the file and save it.
+
+3. Make the script executable:
+
+```bash
+sudo chmod +x /usr/local/bin/up.sh
+```
+
+4. Run the script from anywhere in the terminal:
+
+```bash
+up.sh
+```
+
+---
+
+## Debian-based Linux
 
 Here is the `up.sh` script that handles system and Docker updates:
 
@@ -62,35 +87,7 @@ echo "Update complete!"
 
 ---
 
-## Installation and Usage
-
-1. Create the script file:
-
-```bash
-sudo nano /usr/local/bin/up.sh
-```
-
-2. Paste the content above into the file and save it.
-
-3. Make the script executable:
-
-```bash
-sudo chmod +x /usr/local/bin/up.sh
-```
-
-4. Run the script from anywhere in the terminal:
-
-```bash
-up.sh
-```
-
----
-
-## Other Linux Distributions
-
-The script above is designed for **Debian-based systems** (Debian, Ubuntu, Linux Mint, etc.) because it uses APT package manager commands. If you're using a different Linux distribution, here are the equivalent commands:
-
-### Fedora/RHEL/CentOS (Traditional DNF)
+## Fedora/RHEL/CentOS 8+
 
 ```bash
 #!/bin/bash
@@ -105,16 +102,40 @@ sudo dnf autoremove -y
 echo "Update complete!"
 ```
 
-### Fedora CoreOS (Automatic Updates via Zincati)
+---
 
-**Fedora CoreOS is different**, it uses **Zincati** for automatic updates. So there is no need to manually run update commands, only need to reboot periodically to apply staged updates. What a relief!
+## Fedora CoreOS (Automatic Updates via Zincati)
 
-**How it works:**
-- Zincati automatically downloads and stages updates in the background
-- Updates only apply after you reboot
-- You can check update status with `rpm-ostree status`
+**Fedora CoreOS is different**, it uses **Zincati** for fully automatic updates. Unlike traditional Linux distributions, Fedora CoreOS requires **no manual intervention** for system updates.
 
-For Fedora CoreOS, the update script should **check for staged updates** and optionally reboot:
+**How Zincati Works:**
+
+Zincati is the automatic update agent that:
+1. **Periodically checks** for new Fedora CoreOS releases from the Cincinnati update server
+2. **Automatically downloads and stages** updates in the background (no bandwidth concerns during work hours)
+3. **Handles reboots** based on your configured strategy
+
+**Update Strategies:**
+
+Zincati supports different reboot strategies (configured in `/etc/zincati/config.d/`):
+
+- **`immediate`**: Reboots immediately after staging an update (default on Google Cloud Platform)
+- **`fleet_lock`**: Coordinates with other nodes to prevent simultaneous reboots (cluster-friendly)
+- **`periodic`**: Reboots only during specified time windows (e.g., 2-4 AM on weekends)
+
+You can check your current strategy with:
+```bash
+systemctl status zincati | grep "update strategy"
+```
+
+**Important:** Fedora CoreOS uses `rpm-ostree`, which means updates are **atomic** and **always require a reboot**. The new version is staged as a separate deployment and only becomes active after reboot. This ensures:
+- Zero chance of broken updates (either fully applied or not at all)
+- Instant rollback capability (previous version remains available)
+- No "partially updated" system states
+
+**The Script:**
+
+Since Zincati handles system updates automatically, the script focuses on **checking status** and **updating containers**:
 
 ```bash
 #!/bin/bash
@@ -134,19 +155,7 @@ fi
 echo ""
 echo "Update complete!"
 
-# Check if there's a pending update
-if rpm-ostree status --json | jq -e '.deployments[] | select(.pending == true)' > /dev/null 2>&1; then
-    read -p "A system update is staged. Reboot now to apply? (y/N): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "Rebooting now..."
-        sudo systemctl reboot
-    else
-        echo "Reboot skipped. System will update on next reboot."
-    fi
-else
-    echo "No pending system updates. Zincati will download them automatically."
-fi
+echo "Note: System updates are managed automatically by Zincati."
 ```
 
 **Note**: Fedora CoreOS uses Podman by default. For automatic container updates, use [`podman auto-update`](https://docs.podman.io/en/stable/markdown/podman-auto-update.1.html) with containers running inside systemd units and the `io.containers.autoupdate` label. Podman also ships with a `podman-auto-update.timer` that triggers updates daily.
