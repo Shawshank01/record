@@ -15,4 +15,5 @@ export const headerSubtitleOptions: string[] = [
   "I disapprove of what you say, but I will defend to the death your right to say it.\n\u2014 Evelyn Beatrice Hall",
   "Mature manhood: that means to have rediscovered the seriousness one had as a child at play.\n\u2014 Friedrich Wilhelm Nietzsche, Beyond Good and Evil",
   "There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.\n\u2014 C.A.R. Hoare",
+  "Alle Bücher dieser Welt\nBringen dir kein Glück,\nDoch sie weisen dich geheim\nIn dich selbst zurück.\n\u2014 Hermann Hesse",
 ];

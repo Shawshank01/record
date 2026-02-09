@@ -1,0 +1,10 @@
+{
+    "css.validate": true,
+    "css.lint.unknownAtRules": "warning",
+    "css.customData": [
+        ".vscode/tailwind.json"
+    ],
+    "files.associations": {
+        "*.css": "tailwindcss"
+    }
+}
