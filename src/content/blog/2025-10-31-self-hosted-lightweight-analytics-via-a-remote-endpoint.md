@@ -562,6 +562,9 @@ sudo nano /etc/caddy/Caddyfile
 Add the following:
 
 ```text
+# Replace with your own domain and congratulations you have found my analytics domain ;-)
+# Feel free to block it by using uBlock Origin if you don’t want me to know you are stalking me
+
 stats.zaku.eu.org {
         reverse_proxy localhost:8080
 
@@ -791,7 +794,7 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
   (() => {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
 
-    const endpoint = 'https://stats.zaku.eu.org/track'; // You need to replace it with you own domain!
+    const endpoint = 'https://stats.zaku.eu.org/track';
     const payload = JSON.stringify({
       path: window.location.pathname,
       referrer: document.referrer || ''

@@ -50,4 +50,6 @@ This documentary, produced and directed by Mstyslav Chernov, was released on 23 
 
 Thank you for reading. Please watch the documentary when you are ready. It's worth experiencing the pain.
 
+If you're interested in learning more about Ukraine's history, I recommend another documentary: [Winter on Fire](https://www.imdb.com/title/tt4908644/), which chronicles the events of 2013-2014.
+
 Слава Україні! 🇺🇦
