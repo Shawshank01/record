@@ -50,6 +50,8 @@ This documentary, produced and directed by Mstyslav Chernov, was released on 23 
 
 Thank you for reading. Please watch the documentary when you are ready. It's worth experiencing the pain.
 
-If you're interested in learning more about Ukraine's history, I recommend another documentary: [Winter on Fire](https://www.imdb.com/title/tt4908644/), which chronicles the events of 2013-2014.
+If you're interested in learning more about Ukraine's history, I recommend another documentary: [Winter on Fire](https://www.imdb.com/title/tt4908644/), which chronicles the events of 2013-2014, and [20 Days in Mariupol](https://www.imdb.com/title/tt24082438/), which chronicles the events of 2022.
+
+---
 
 Слава Україні! 🇺🇦
