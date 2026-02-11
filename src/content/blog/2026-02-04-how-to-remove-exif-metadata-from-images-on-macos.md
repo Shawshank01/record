@@ -19,7 +19,7 @@ The worst situation is when you send an image to a forum, a comment section, or 
 
 That's why you need to make sure every piece of data inside a photo or image is wiped out before it reaches the internet. This blog will guide you on how to easily scrub all the EXIF metadata from an image on macOS, using [ExifTool by Phil Harvey](https://exiftool.org/) and Automator. By the end of this tutorial, you will be able to scrub an image with just one click.
 
-![exiftool quick action](/exiftool%20quick%20action.png)
+![exiftool quick action](/exiftool-quick-action.png)
 
 ---
 
@@ -97,7 +97,7 @@ Drag the Variable named `metadata_output` in the Message box.
 
 Now it should look like this:
 
-![exiftool automator](/exiftool%20automator.png)
+![exiftool automator](/exiftool-automator.png)
 
 **Cmd + S** to save the file.
 
@@ -111,7 +111,7 @@ Name it exactly what you want to see in your right-click menu, for example: `Cle
 
 A dialog box will appear showing you the "cleaned" metadata (which should now only show basic file system properties like file size and format like below).
 
-![exiftool quick action sample result](/exiftool%20quick%20action%20sample%20result.png)
+![exiftool quick action sample result](/exiftool-quick-action-sample-result.png)
 
 You can now upload this image to the internet without any concerns.
 

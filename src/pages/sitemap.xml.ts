@@ -12,13 +12,13 @@ export const GET: APIRoute = async ({ site }) => {
   const sortedPosts = posts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
-  const latestPostDate = sortedPosts[0]?.data.pubDate;
+  const latestPostDate = sortedPosts[0]?.data.updateDate ?? sortedPosts[0]?.data.pubDate;
 
   const urls = [
     { loc: new URL('/', site).href, lastmod: latestPostDate },
     ...sortedPosts.map((post) => ({
       loc: new URL(`/blog/${post.slug}/`, site).href,
-      lastmod: post.data.pubDate
+      lastmod: post.data.updateDate ?? post.data.pubDate
     }))
   ];
 

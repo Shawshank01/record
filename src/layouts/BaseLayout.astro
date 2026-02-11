@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import searchScript from '../scripts/search.js?url';
+import searchScript from '../scripts/search.ts?url';
 import { headerSubtitleOptions } from '../data/subtitles';
 
 const {
@@ -10,7 +10,8 @@ const {
   pageTitle = "Michifumi's Blog",
   description = "Dispatches from Michifumi's command chair.",
   searchPayload,
-  image = '/icon.svg'
+  image = '/icon.svg',
+  article
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -21,6 +22,28 @@ const searchPayloadString = searchPayload
       .replace(/</g, '\\u003c')
       .replace(/&/g, '\\u0026')
   : undefined;
+
+const jsonLd = article ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: article.title,
+  description: article.description,
+  datePublished: article.pubDate.toISOString(),
+  ...(article.updateDate ? { dateModified: article.updateDate.toISOString() } : {}),
+  url: canonicalURL.href,
+  image: socialImageURL.href,
+  author: {
+    '@type': 'Person',
+    name: 'Michifumi',
+    url: site
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Michifumi',
+    url: site
+  },
+  ...(article.tags?.length ? { keywords: article.tags.join(', ') } : {})
+}) : undefined;
 ---
 <!DOCTYPE html>
 <html lang="en" class="dark">
@@ -50,6 +73,9 @@ const searchPayloadString = searchPayload
     <meta property="twitter:image" content={socialImageURL} />
 
     <title>{pageTitle}</title>
+    {jsonLd && (
+      <script type="application/ld+json" set:html={jsonLd} />
+    )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -117,247 +143,11 @@ const searchPayloadString = searchPayload
       )
     }
     <slot name="scripts" />
-    <script is:inline>
-      const anchors = document.querySelectorAll('a[href^="http"]');
-      anchors.forEach((anchor) => {
-        const url = new URL(anchor.href, window.location.origin);
-        const isExternal = url.hostname !== window.location.hostname;
-        if (isExternal) {
-          anchor.setAttribute('target', '_blank');
-          anchor.setAttribute('rel', anchor.getAttribute('rel') ? anchor.getAttribute('rel') : 'noopener');
-        }
-      });
-    </script>
-    <script is:inline>
-      (() => {
-        const button = document.querySelector('[data-back-to-top]');
-        if (!button) return;
-
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        const update = () => {
-          const show = window.scrollY > 0;
-          button.classList.toggle('opacity-0', !show);
-          button.classList.toggle('pointer-events-none', !show);
-          button.classList.toggle('translate-y-2', !show);
-        };
-
-        button.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-        });
-
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-          if (!ticking) {
-            window.requestAnimationFrame(() => {
-              update();
-              ticking = false;
-            });
-            ticking = true;
-          }
-        }, { passive: true });
-
-        update();
-      })();
-    </script>
-    <script is:inline>
-      (() => {
-        if (typeof window === 'undefined') return;
-
-        const copyText = async (text) => {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-            return true;
-          }
-
-          const textarea = document.createElement('textarea');
-          textarea.value = text;
-          textarea.setAttribute('readonly', '');
-          textarea.style.position = 'absolute';
-          textarea.style.left = '-9999px';
-          textarea.style.top = '0';
-          document.body.appendChild(textarea);
-          textarea.select();
-
-          try {
-            return document.execCommand('copy');
-          } catch {
-            return false;
-          } finally {
-            document.body.removeChild(textarea);
-          }
-        };
-
-        const blocks = document.querySelectorAll('pre');
-        blocks.forEach((pre) => {
-          const code = pre.querySelector('code');
-          if (!code) return;
-
-          let wrapper = pre.parentElement;
-          if (!wrapper || !wrapper.classList.contains('code-block')) {
-            wrapper = document.createElement('div');
-            wrapper.className = 'code-block';
-            pre.parentNode?.insertBefore(wrapper, pre);
-            wrapper.appendChild(pre);
-          }
-
-          if (wrapper.querySelector('.code-copy-button')) return;
-
-          const copyIcon = `
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="9" y="9" width="10" height="10" rx="2"></rect>
-              <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
-            </svg>
-          `;
-          const checkIcon = `
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M5 13l4 4L19 7"></path>
-            </svg>
-          `;
-          const failIcon = `
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M6 6l12 12M18 6L6 18"></path>
-            </svg>
-          `;
-
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'code-copy-button';
-          button.innerHTML = copyIcon;
-          button.setAttribute('aria-label', 'Copy code to clipboard');
-          button.setAttribute('title', 'Copy');
-
-          const setState = (state) => {
-            if (state === 'copied') {
-              button.innerHTML = checkIcon;
-              button.dataset.copied = 'true';
-              button.setAttribute('aria-label', 'Copied');
-              button.setAttribute('title', 'Copied');
-              return;
-            }
-
-            if (state === 'failed') {
-              button.innerHTML = failIcon;
-              button.dataset.copied = 'false';
-              button.setAttribute('aria-label', 'Copy failed');
-              button.setAttribute('title', 'Copy failed');
-              return;
-            }
-
-            button.innerHTML = copyIcon;
-            button.dataset.copied = 'false';
-            button.setAttribute('aria-label', 'Copy code to clipboard');
-            button.setAttribute('title', 'Copy');
-          };
-
-          let resetTimer;
-          button.addEventListener('click', async () => {
-            const text = code.textContent || '';
-            const ok = await copyText(text);
-
-            setState(ok ? 'copied' : 'failed');
-
-            window.clearTimeout(resetTimer);
-            resetTimer = window.setTimeout(() => setState('idle'), 2000);
-          });
-
-          wrapper.appendChild(button);
-        });
-      })();
-    </script>
-    <script is:inline>
-  (() => {
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
-
-    const endpoint = 'https://stats.zaku.eu.org/track';
-    const payload = JSON.stringify({
-      path: window.location.pathname,
-      referrer: document.referrer || ''
-    });
-
-    try {
-      if (navigator.sendBeacon) {
-        const blob = new Blob([payload], { type: 'text/plain' });
-        const ok = navigator.sendBeacon(endpoint, blob);
-        if (ok) return;
-      }
-      fetch(endpoint, {
-        method: 'POST',
-        body: payload,
-        keepalive: true,
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' }
-      }).catch(err => console.warn('[analytics] fetch failed', err));
-    } catch (err) {
-      console.warn('[analytics] unexpected error', err);
-    }
-  })();
-</script>
-    <script is:inline>
-      (() => {
-        if (typeof window === 'undefined') return;
-
-        // Create lightbox overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'lightbox-overlay';
-        document.body.appendChild(overlay);
-
-        // Close lightbox on click
-        overlay.addEventListener('click', () => {
-          overlay.classList.remove('active');
-          overlay.innerHTML = '';
-        });
-
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && overlay.classList.contains('active')) {
-            overlay.classList.remove('active');
-            overlay.innerHTML = '';
-          }
-        });
-
-        // Add click handlers to prose images
-        const proseImages = document.querySelectorAll('.prose img');
-        proseImages.forEach((img) => {
-          img.addEventListener('click', () => {
-            const fullImg = document.createElement('img');
-            fullImg.src = img.src;
-            fullImg.alt = img.alt || '';
-            overlay.innerHTML = '';
-            overlay.appendChild(fullImg);
-            overlay.classList.add('active');
-          });
-        });
-      })();
-    </script>
-    <script is:inline>
-      (() => {
-        if (typeof window === 'undefined') return;
-
-        // Language switcher SVG icon
-        const langIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z"/><path d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31"/></svg>`;
-
-        // Language switcher - auto-initialize all .lang-container elements
-        document.querySelectorAll('.lang-container').forEach((container, index) => {
-          const btn = container.querySelector('.lang-btn');
-          const enContent = container.querySelector('.lang-content:first-of-type');
-          const zhContent = container.querySelector('.lang-content:last-of-type');
-          
-          if (!btn || !enContent || !zhContent) return;
-
-          // Inject the SVG icon if button is empty
-          if (!btn.innerHTML.trim()) {
-            btn.innerHTML = langIcon;
-          }
-
-          btn.addEventListener('click', () => {
-            const isActive = btn.classList.toggle('active');
-            enContent.classList.toggle('active', !isActive);
-            zhContent.classList.toggle('active', isActive);
-            btn.setAttribute('data-tooltip', isActive ? 'Switch to Original Version' : 'Switch to Native Language Version');
-          });
-        });
-      })();
-    </script>
+    <script src="../scripts/external-links.ts"></script>
+    <script src="../scripts/back-to-top.ts"></script>
+    <script src="../scripts/code-copy.ts"></script>
+    <script src="../scripts/analytics.ts"></script>
+    <script src="../scripts/lightbox.ts"></script>
+    <script src="../scripts/lang-switcher.ts"></script>
   </body>
 </html>

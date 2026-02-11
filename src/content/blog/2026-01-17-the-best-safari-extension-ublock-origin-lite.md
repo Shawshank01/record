@@ -19,7 +19,7 @@ Firstly, according to the official update logs, you need to wait a few seconds b
 
 Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
 
-![UBOL Settings](/UBOL%20Settings.png)
+![UBOL Settings](/ubol-settings.png)
 
 Then change it back to 'Optimal'. The webpage will refresh automatically and the ads and shorts will have disappeared!
 
@@ -42,11 +42,11 @@ Moreover, if you couldn't care less about short videos but find yourself constan
 
 First, download and install it from the [App Store](https://apps.apple.com/us/app/ublock-origin-lite/id6745342698).
 
-![uBlock Origin Lite App Store page](/uBlock%20Origin%20Lite.png)
+![uBlock Origin Lite App Store page](/ublock-origin-lite.png)
 
 Then enable it, open the dashboard and select the native filter lists. Don't forget to select your regions and languages using the filter at the bottom of the page.
 
-![uBlock Origin Lite Native Filter Lists](/UBOL%20Native%20Filter%20Lists.png)
+![uBlock Origin Lite Native Filter Lists](/ubol-native-filter-lists.png)
 
 ---
 
@@ -93,7 +93,7 @@ These rules may change from time to time, so it's a good idea to check the [offi
 
 Then, in the dashboard, go to **Custom filters > Import / Export** and import the `.txt` file that you just saved. It should look like this:
 
-![uBlock Origin Lite Custom Filter Lists](/UBOL%20Custom%20Filter%20Lists.png)
+![uBlock Origin Lite Custom Filter Lists](/ubol-custom-filter-lists.png)
 
 ---
 

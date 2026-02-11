@@ -32,6 +32,13 @@ const searchPayload = allPosts.map((entry) => ({
   pageTitle={`${post.data.title} · Michifumi's Blog`}
   description={post.data.description}
   searchPayload={searchPayload}
+  article={{
+    title: post.data.title,
+    description: post.data.description,
+    pubDate: post.data.pubDate,
+    updateDate: post.data.updateDate,
+    tags: post.data.tags
+  }}
 >
   <article class="prose prose-invert prose-headings:tracking-tight w-full max-w-3xl space-y-6 mx-auto lg:max-w-4xl xl:max-w-5xl">
     <header class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft">
