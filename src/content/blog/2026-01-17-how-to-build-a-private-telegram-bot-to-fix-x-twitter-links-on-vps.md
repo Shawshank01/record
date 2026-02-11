@@ -2,7 +2,9 @@
 title: "Private Telegram X-Link Fixer: A Step-by-Step Guide to Enhancing Link Previews"
 description: "How to build, secure and deploy a private Telegram bot to automatically replace x.com links with fixupx.com for native Instant View support."
 pubDate: 2026-01-17T18:00:00
+updateDate: 2026-02-11
 tags:
+  - Privacy
   - GNU/Linux
   - Telegram
   - Bot
@@ -17,7 +19,7 @@ If you use Telegram and X a lot and often share X links in a Telegram group chat
 
 ## 🛠 Private Telegram X-Link Fixer
 
-**Goal:** Automatically detect `x.com` or `twitter.com` links, replace them with `fixupx.com` for better previews, and delete the original message to keep the chat clean.
+**Goal:** Automatically detect `x.com` or `twitter.com` links, replace them with `fixupx.com` for better previews, remove tracking parameters, and delete the original message to keep the chat clean.
 
 ---
 
@@ -39,40 +41,54 @@ Login to your VPS and set up a dedicated directory with a Python virtual environ
 
 **For Debian/Ubuntu systems:**
 
+**Step 1: Update package list and install Python venv**
 ```bash
-# Update package list and install Python venv
 sudo apt update && sudo apt install python3-venv -y
+```
 
-# Install pip using the official method (ensures latest version)
+**Step 2: Install pip using the official method**
+```bash
 curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -
+```
 
-# Navigate to home directory and create project folder
+**Step 3: Navigate to home directory and create project folder**
+```bash
 cd ~
 mkdir mybot && cd mybot
+```
 
-# Create and activate virtual environment
+**Step 4: Create and activate virtual environment**
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-# Install the required library
+**Step 5: Install the required library**
+```bash
 pip install python-telegram-bot
 ```
 
 **For Fedora/RHEL-based systems:**
 
+**Step 1: Update system and install Python pip**
 ```bash
-# Update system and install Python venv
 sudo dnf update -y && sudo dnf install python3-pip -y
+```
 
-# Navigate to home directory and create project folder
+**Step 2: Navigate to home directory and create project folder**
+```bash
 cd ~
 mkdir mybot && cd mybot
+```
 
-# Create and activate virtual environment
+**Step 3: Create and activate virtual environment**
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-# Install the required library
+**Step 4: Install the required library**
+```bash
 pip install python-telegram-bot
 ```
 
@@ -95,7 +111,8 @@ TOKEN = "YOUR_BOT_TOKEN"
 # Group and channel IDs must include the -100 prefix if you get it from third-party Telegram clients
 AUTHORIZED_IDS = [1234567890, -1001234567890]
 
-X_PATTERN = r'(https?://(?:www\.)?)(x\.com|twitter\.com)(/\S*)'
+# Match X/Twitter links (including fixupx.com) and capture query parameters separately
+X_PATTERN = r'(https?://(?:www\.)?)(x\.com|twitter\.com|fixupx\.com)(/[^\s?]*)(\?[^\s]*)?'
 
 async def auto_fix_and_clean(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Security: Ignore unauthorized chats
@@ -106,9 +123,15 @@ async def auto_fix_and_clean(update: Update, context: ContextTypes.DEFAULT_TYPE)
     text = update.message.text or update.message.caption
     if not text: return
 
-    # If an X link is found
-    if re.search(X_PATTERN, text):
-        fixed_text = re.sub(X_PATTERN, r'\1fixupx.com\3', text)
+    # Check if text contains any X/Twitter-related link
+    match = re.search(X_PATTERN, text)
+    if match:
+        protocol, domain, path, query_params = match.groups()
+        
+        # Only process if URL has tracking parameters OR is not using fixupx.com
+        if query_params or domain != 'fixupx.com':
+            # Replace domain with fixupx.com and remove tracking parameters
+            fixed_text = re.sub(X_PATTERN, r'\1fixupx.com\3', text)
         user = update.message.from_user.first_name
         
         # 1. Send the fixed version
@@ -133,20 +156,29 @@ if __name__ == "__main__":
     main()
 ```
 
-
 #### Optional: Match Links Only at the Start of Messages
 
 By default, the bot will detect and fix X/Twitter links anywhere in a message. If you prefer the bot to **only** process links that appear at the very beginning of a message, modify the `X_PATTERN`:
 
 ```python
-# Default: matches links anywhere in the message
-X_PATTERN = r'(https?://(?:www\.)?)(x\.com|twitter\.com)(/\S*)'
+# Default: matches links anywhere in the message and removes tracking parameters
+X_PATTERN = r'(https?://(?:www\.)?)(x\.com|twitter\.com|fixupx\.com)(/[^\s?]*)(\?[^\s]*)?'
 
-# Alternative: matches links only at the start of the message
-X_PATTERN = r'^(https?://(?:www\.)?)(x\.com|twitter\.com)(/\S*)'
+# Alternative: matches links only at the start of the message and removes tracking parameters
+X_PATTERN = r'^(https?://(?:www\.)?)(x\.com|twitter\.com|fixupx\.com)(/[^\s?]*)(\?[^\s]*)?'
 ```
 
 The `^` anchor ensures the pattern only triggers when the link is at the start of the message. This is useful if you want to allow regular X links in conversation while only fixing "intentional" shares that start with the link.
+
+> [!UPDATE]  
+> The bot now intelligently handles all X-related URLs:
+> - Converts `x.com` and `twitter.com` to `fixupx.com`
+> - Removes tracking parameters (like `?s=46&t=xxx`) from **all** URLs, including those already using `fixupx.com`
+>
+> **Examples:**
+> - `https://x.com/user/status/123?s=46&t=abc` → `https://fixupx.com/user/status/123`
+> - `https://fixupx.com/user/status/123?s=46&t=abc` → `https://fixupx.com/user/status/123`
+> - `https://fixupx.com/user/status/123` → No action (already clean)
 
 ---
 
@@ -191,6 +223,17 @@ Now you can enjoy the convenient bot with your friends in group chats!
 
 ### Troubleshooting Commands
 
-- **Check status:** `sudo systemctl status tgbot`
-- **View live logs:** `sudo journalctl -u tgbot.service -f`
-- **Restart after code change:** `sudo systemctl restart tgbot`
+**Check status:**
+```bash
+sudo systemctl status tgbot
+```
+
+**View live logs:**
+```bash
+sudo journalctl -u tgbot.service -f
+```
+
+**Restart after code change:**
+```bash
+sudo systemctl restart tgbot
+```

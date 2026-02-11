@@ -41,9 +41,9 @@ const searchPayload = allPosts.map((entry) => ({
           month: 'short',
           day: 'numeric'
         })}
-        {post.data.updatedDate && (
+        {post.data.updateDate && (
           <span class="ml-2">
-            · Updated on {new Date(post.data.updatedDate).toLocaleDateString(undefined, {
+            · Updated on {new Date(post.data.updateDate).toLocaleDateString(undefined, {
               year: 'numeric',
               month: 'short',
               day: 'numeric'
