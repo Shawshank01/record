@@ -2,7 +2,7 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updateDate: 2026-01-26
+updateDate: 2026-02-13
 tags:
   - macOS
   - Safari
@@ -52,7 +52,7 @@ Then enable it, open the dashboard and select the native filter lists. Don't for
 
 ## Now for the important part
 
-Copy these rules and save them as a plain text file:
+Copy these rules by click the copy button below:
 
 ```
 ! YT - Homepage and Subscriptions (Grid View) - Hide the Shorts section
@@ -87,11 +87,20 @@ m.youtube.com##ytm-search ytm-video-with-context-renderer:has([data-style="SHORT
 m.youtube.com##[tab-title="Shorts"]
 ! YT Mobile - History - Hide Shorts
 m.youtube.com##[tab-identifier="FEhistory"] ytm-compact-video-renderer:has(>div>a[href^="/shorts/"])
+
+! YT Search - keep only videos (no shorts)
+youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
+
+! YT Search - keep only videos (no shorts) and channels
+youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,ytd-channel-renderer,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
+
+! YT Search - keep only videos (no shorts), channels and playlists
+youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,ytd-channel-renderer,ytd-playlist-renderer,yt-lockup-view-model,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
 ```
 
 These rules may change from time to time, so it's a good idea to check the [official wiki page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/#wiki_shorts) for the latest updates.
 
-Then, in the dashboard, go to **Custom filters > Import / Export** and import the `.txt` file that you just saved. It should look like this:
+Then, in the dashboard, go to **Custom filters > Import / Export**, paste what you just copied and click **✓Add** button. It should look similar to this:
 
 ![uBlock Origin Lite Custom Filter Lists](/ubol-custom-filter-lists.png)
 
@@ -99,8 +108,8 @@ Then, in the dashboard, go to **Custom filters > Import / Export** and import th
 
 Then you need to quit Safari completely by pressing **cmd + Q**. This is **essential**.
 
-Now reopen Safari, open YouTube, and savour your triumph! Those pesky adverts and short video pushes have vanished!
+Now reopen Safari, open YouTube, and savour your triumph! Those pesky adverts and short video pushes have vanished both in homepage and in search results!
 
 ---
 
-Keep it in mind, this is rather like a game of cat and mouse, so perhaps one day this extension may cease to function (but it is not this day!). Should you wish to contribute to the cause of a free internet, when encountering usage issues, you may visit [this GitHub issue](https://github.com/uBlockOrigin/uAssets/issues/30158) to help the developers identify the problem more quickly.
+Keep it in mind, this is rather like a game of cat and mouse, so perhaps one day this extension may cease to function (but it is not this day! This day we fight!). Should you wish to contribute, when encountering usage issues, you may visit [this GitHub issue](https://github.com/uBlockOrigin/uAssets/issues/30158) to help the developers identify the problem more quickly.
