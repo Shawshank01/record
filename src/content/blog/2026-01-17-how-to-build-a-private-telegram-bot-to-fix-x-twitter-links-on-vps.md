@@ -2,7 +2,7 @@
 title: "Private Telegram X-Link Fixer: A Step-by-Step Guide to Enhancing Link Previews"
 description: "How to build, secure and deploy a private Telegram bot to automatically replace x.com links with fixupx.com for native Instant View support."
 pubDate: 2026-01-17T18:00:00
-updateDate: 2026-02-11
+updateDate: 2026-02-14
 tags:
   - Privacy
   - GNU/Linux
@@ -132,19 +132,19 @@ async def auto_fix_and_clean(update: Update, context: ContextTypes.DEFAULT_TYPE)
         if query_params or domain != 'fixupx.com':
             # Replace domain with fixupx.com and remove tracking parameters
             fixed_text = re.sub(X_PATTERN, r'\1fixupx.com\3', text)
-        user = update.message.from_user.first_name
-        
-        # 1. Send the fixed version
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"🛠 From {user}:\n{fixed_text}"
-        )
+            user = update.message.from_user.first_name
+            
+            # 1. Send the fixed version
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=f"🛠 From {user}:\n{fixed_text}"
+            )
 
-        # 2. Delete original message
-        try:
-            await update.message.delete()
-        except Exception as e:
-            print(f"Delete failed (Check Admin permissions): {e}")
+            # 2. Delete original message
+            try:
+                await update.message.delete()
+            except Exception as e:
+                print(f"Delete failed (Check Admin permissions): {e}")
 
 def main():
     app = Application.builder().token(TOKEN).build()
