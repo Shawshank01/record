@@ -2,7 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-01-31
+updateDate: 2026-02-15
 tags:
   - IT
   - GNU/Linux
@@ -123,7 +123,7 @@ const cors = require("cors");
 const app = express();
 app.set("trust proxy", 1);
 app.set("json spaces", 2);
-const db = new Database("stats.db");
+const db = new Database("./data/stats.db");
 
 const EXPORT_PASSWORD = "[PASSWORD]";
 
@@ -211,10 +211,10 @@ app.get("/export", requireAuth, (req, res) => {
 app.get("/daily", requireAuth, (req, res) => {
   try {
     const rows = db.prepare(`
-      SELECT DATE(ts) AS day, path, COUNT(*) AS views
+      SELECT DATE(ts) AS day, path, ip, COUNT(*) AS views
       FROM visits
       WHERE ts >= DATE('now', '-30 days')
-      GROUP BY day, path
+      GROUP BY day, path, ip
       ORDER BY day DESC
     `).all();
     res.json(rows);
@@ -249,10 +249,18 @@ app.get("/summary", requireAuth, (req, res) => {
       ORDER BY day DESC
     `).all();
 
+    const ipRows = db.prepare(`
+      SELECT ip, COUNT(*) AS views
+      FROM visits
+      GROUP BY ip
+      ORDER BY views DESC
+    `).all();
+
     res.json({
       ...totalRow,
       by_path: pathRows,
-      by_day: dayRows
+      by_day: dayRows,
+      by_ip: ipRows
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -343,6 +351,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
 COPY server.js ./
+RUN mkdir -p /app/data
 EXPOSE 8080
 CMD ["node", "server.js"]
 EOF
@@ -363,7 +372,7 @@ podman build -t localhost/page-stats:latest .
 **Step 3: Create a Podman volume for data persistence**
 
 > [!IMPORTANT]  
-> **Why use a volume instead of bind mount:** SQLite in WAL (Write-Ahead Logging) mode creates 3 files: `stats.db`, `stats.db-wal`, and `stats.db-shm`. When bind mounting a single file (`-v ~/stats.db:/app/stats.db`), only the main database file is properly synced to the host. The WAL file (containing recent changes) lives in the container's filesystem and can be lost on container restart, causing **data loss**. Using a Podman volume mounts the entire directory, ensuring all SQLite files persist correctly.
+> **Why use a volume for the data directory:** SQLite in WAL (Write-Ahead Logging) mode creates 3 files: `stats.db`, `stats.db-wal`, and `stats.db-shm`. When bind mounting a single file (`-v ~/stats.db:/app/data/stats.db`), only the main database file is properly synced to the host. The WAL file (containing recent changes) lives in the container's filesystem and can be lost on container restart, causing **data loss**. Using a Podman volume for the `/app/data` directory ensures all SQLite files persist correctly, while keeping the application code (`server.js`, `node_modules`) from the image intact — so rebuilds with `podman build` always take effect.
 
 Create the volume:
 
@@ -394,7 +403,7 @@ Restart=always
 RestartSec=10
 ExecStart=/usr/bin/podman run --rm --name page-stats \
   -p 8080:8080 \
-  -v page-stats-data:/app:Z \
+  -v page-stats-data:/app/data:Z \
   localhost/page-stats:latest
 
 ExecStop=/usr/bin/podman stop -t 10 page-stats
@@ -847,16 +856,25 @@ Returns a JSON array with daily stats for each path:
   {
     "day": "2025-10-30",
     "path": "/",
-    "views": 12
+    "ip": "203.0.113.10",
+    "views": 8
   },
   {
     "day": "2025-10-30",
-    "path": "/about",
+    "path": "/blog1",
+    "ip": "198.51.100.5",
+    "views": 4
+  },
+  {
+    "day": "2025-10-30",
+    "path": "/blog2",
+    "ip": "203.0.113.10",
     "views": 3
   },
   {
     "day": "2025-10-31",
     "path": "/",
+    "ip": "203.0.113.10",
     "views": 15
   }
 ]
@@ -880,11 +898,15 @@ Returns top-level summary stats plus breakdowns:
   "last_visit": "2025-10-31 11:45:12",
   "by_path": [
     { "path": "/", "views": 800 },
-    { "path": "/about", "views": 120 }
+    { "path": "/blog1", "views": 120 }
   ],
   "by_day": [
     { "day": "2025-10-31", "views": 45 },
     { "day": "2025-10-30", "views": 38 }
+  ],
+  "by_ip": [
+    { "ip": "203.0.113.10", "views": 650 },
+    { "ip": "198.51.100.5", "views": 340 }
   ]
 }
 ```
@@ -909,36 +931,68 @@ curl -L -o stats.csv "https://stats.zaku.eu.org/export?token=password"
 
 ---
 
-## 7) Backup &amp; migrate (one‑file move)
+## 7) Backup & migrate
 
-All analytics live in `stats.db`. To migrate to a new VM:
+> [!CAUTION]  
+> **SQLite in WAL mode creates 3 files:** `stats.db`, `stats.db-wal`, and `stats.db-shm`. You must **always** back up or transfer all three files together as a set. Copying only `stats.db` will result in **data loss** — uncommitted writes live in the WAL file until a checkpoint occurs.
 
-### Step 1: Download from old VPS to local machine
+All analytics live in the `stats.db` file set. To migrate to a new VM:
 
-On your **old VPS**, stop the analytics service:
+### Debian/Ubuntu (PM2)
+
+**On the old VPS:**
 
 ```bash
 pm2 stop stats
+
+# Checkpoint WAL to merge all data into the main database file
+sqlite3 ~/page-stats/stats.db "PRAGMA wal_checkpoint(TRUNCATE);"
 ```
 
-On your **local machine**, download the database:
+**On your local machine:**
 
 ```bash
 scp user@OLD_VPS_IP:~/page-stats/stats.db ~/Downloads/stats.db
-```
-
-### Step 2: Upload to new VPS
-
-On your **local machine**, upload to new VPS:
-
-```bash
 scp ~/Downloads/stats.db user@NEW_VPS_IP:~/page-stats/stats.db
 ```
 
-On your **new VPS**, start the analytics service:
+**On the new VPS:**
 
 ```bash
 pm2 start ~/page-stats/server.js --name stats
+```
+
+### Fedora CoreOS (Podman)
+
+**On the old VPS:**
+
+```bash
+# Stop the service
+systemctl --user stop page-stats.service
+
+# Export the database from the volume (includes all SQLite files)
+mkdir -p ~/backups
+podman run --rm -v page-stats-data:/data:Z -v ~/backups:/backup:Z \
+  alpine sh -c "apk add --no-cache sqlite && sqlite3 /data/stats.db 'PRAGMA wal_checkpoint(TRUNCATE);' && cp /data/stats.db /backup/stats.db"
+```
+
+**On your local machine:**
+
+```bash
+scp user@OLD_VPS_IP:~/backups/stats.db ~/Downloads/stats.db
+scp ~/Downloads/stats.db user@NEW_VPS_IP:~/backups/stats.db
+```
+
+**On the new VPS:**
+
+```bash
+# Create the volume and import the database
+podman volume create page-stats-data
+podman run --rm -v page-stats-data:/data:Z -v ~/backups:/backup:Z \
+  alpine cp /backup/stats.db /data/stats.db
+
+# Start the service
+systemctl --user start page-stats.service
 ```
 
 ---
@@ -946,7 +1000,7 @@ pm2 start ~/page-stats/server.js --name stats
 ## 8) Backup and Data Safety
 
 > [!WARNING]  
-> **Always maintain regular backups!** While the Podman volume approach on Fedora CoreOS prevents WAL sync issues, you should still backup your data regularly. System updates, hardware failures, or accidental deletions can still cause data loss.
+> **Always maintain regular backups!** SQLite in WAL mode stores recent writes in a separate `stats.db-wal` file. If you only back up `stats.db` without the WAL file, **you will lose data**. The safest approach is to checkpoint the database before backing up (which merges the WAL into the main file), or back up the entire directory/volume. System updates, hardware failures, or accidental deletions can also cause data loss.
 
 ### Automated CSV Export Backup
 
@@ -1023,24 +1077,14 @@ systemctl --user start page-stats.service
 
 ### Debian/Ubuntu: Direct Database Backup
 
-On Debian/Ubuntu with PM2, you can backup the database file directly:
-
-```bash
-# Stop the service temporarily
-pm2 stop stats
-
-# Backup the database
-cp ~/page-stats/stats.db ~/backups/stats-$(date +%Y-%m-%d).db
-
-# Restart the service
-pm2 start stats
-```
-
-Or use SQLite's built-in backup (safer, works while service is running):
+On Debian/Ubuntu with PM2, use SQLite's built-in backup command (safe, works while the service is running, and automatically checkpoints the WAL):
 
 ```bash
 sqlite3 ~/page-stats/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$(date +%Y-%m-%d).db'"
 ```
+
+> [!CAUTION]  
+> Do **not** use `cp stats.db` to back up the database while the service is running — this misses the WAL file and can result in a corrupted or incomplete backup. Always use SQLite's `.backup` command or stop the service first and copy all three files (`stats.db`, `stats.db-wal`, `stats.db-shm`).
 
 ---
 
