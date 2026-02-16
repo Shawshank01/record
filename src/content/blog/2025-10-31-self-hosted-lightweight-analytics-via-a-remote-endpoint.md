@@ -2,15 +2,16 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-02-15
+updateDate: 2026-02-16
 tags:
   - IT
   - GNU/Linux
-  - Caddy
-  - Cloudflare
   - Fedora CoreOS
   - Debian
   - Ubuntu
+  - Caddy
+  - Cloudflare
+  - Database
 ---
 
 ## Table of Contents
@@ -22,7 +23,7 @@ tags:
 - [4) DNS (Cloudflare)](#4-dns-cloudflare)
 - [5) Add the tracking snippet to the blog](#5-add-the-tracking-snippet-to-the-blog-astro)
 - [6) Verify end-to-end](#6-verify-endtoend)
-- [7) Migration guide](#7-migration-guide-switching-vps)
+- [7) Backup & migrate](#7-backup--migrate)
 - [8) Backup and Data Safety](#8-backup-and-data-safety)
 - [9) Troubleshooting](#9-troubleshooting)
 
@@ -369,15 +370,15 @@ cd ~/page-stats
 podman build -t localhost/page-stats:latest .
 ```
 
-**Step 3: Create a Podman volume for data persistence**
+**Step 3: Create a data directory for persistence**
 
 > [!IMPORTANT]  
-> **Why use a volume for the data directory:** SQLite in WAL (Write-Ahead Logging) mode creates 3 files: `stats.db`, `stats.db-wal`, and `stats.db-shm`. When bind mounting a single file (`-v ~/stats.db:/app/data/stats.db`), only the main database file is properly synced to the host. The WAL file (containing recent changes) lives in the container's filesystem and can be lost on container restart, causing **data loss**. Using a Podman volume for the `/app/data` directory ensures all SQLite files persist correctly, while keeping the application code (`server.js`, `node_modules`) from the image intact — so rebuilds with `podman build` always take effect.
+> **Why use a separate data directory:** Storing the database in `~/page-stats/data/` keeps it outside the container image, so it persists across container restarts. The application code (`server.js`, `node_modules`) stays in the image, so rebuilds with `podman build` always take effect.
 
-Create the volume:
+Create the data directory:
 
 ```bash
-podman volume create page-stats-data
+mkdir -p ~/page-stats/data
 ```
 
 **Step 4: Create systemd service**
@@ -403,7 +404,7 @@ Restart=always
 RestartSec=10
 ExecStart=/usr/bin/podman run --rm --name page-stats \
   -p 8080:8080 \
-  -v page-stats-data:/app/data:Z \
+  -v ~/page-stats/data:/app/data:Z \
   localhost/page-stats:latest
 
 ExecStop=/usr/bin/podman stop -t 10 page-stats
@@ -933,10 +934,7 @@ curl -L -o stats.csv "https://stats.zaku.eu.org/export?token=password"
 
 ## 7) Backup & migrate
 
-> [!CAUTION]  
-> **SQLite in WAL mode creates 3 files:** `stats.db`, `stats.db-wal`, and `stats.db-shm`. You must **always** back up or transfer all three files together as a set. Copying only `stats.db` will result in **data loss** — uncommitted writes live in the WAL file until a checkpoint occurs.
-
-All analytics live in the `stats.db` file set. To migrate to a new VM:
+All analytics live in `stats.db`. To migrate to a new VM:
 
 ### Debian/Ubuntu (PM2)
 
@@ -970,10 +968,9 @@ pm2 start ~/page-stats/server.js --name stats
 # Stop the service
 systemctl --user stop page-stats.service
 
-# Export the database from the volume (includes all SQLite files)
+# Back up the database
 mkdir -p ~/backups
-podman run --rm -v page-stats-data:/data:Z -v ~/backups:/backup:Z \
-  alpine sh -c "apk add --no-cache sqlite && sqlite3 /data/stats.db 'PRAGMA wal_checkpoint(TRUNCATE);' && cp /data/stats.db /backup/stats.db"
+cp ~/page-stats/data/stats.db ~/backups/stats.db
 ```
 
 **On your local machine:**
@@ -986,10 +983,9 @@ scp ~/Downloads/stats.db user@NEW_VPS_IP:~/backups/stats.db
 **On the new VPS:**
 
 ```bash
-# Create the volume and import the database
-podman volume create page-stats-data
-podman run --rm -v page-stats-data:/data:Z -v ~/backups:/backup:Z \
-  alpine cp /backup/stats.db /data/stats.db
+# Create the data directory and import the database
+mkdir -p ~/page-stats/data
+cp ~/backups/stats.db ~/page-stats/data/stats.db
 
 # Start the service
 systemctl --user start page-stats.service
@@ -1000,7 +996,7 @@ systemctl --user start page-stats.service
 ## 8) Backup and Data Safety
 
 > [!WARNING]  
-> **Always maintain regular backups!** SQLite in WAL mode stores recent writes in a separate `stats.db-wal` file. If you only back up `stats.db` without the WAL file, **you will lose data**. The safest approach is to checkpoint the database before backing up (which merges the WAL into the main file), or back up the entire directory/volume. System updates, hardware failures, or accidental deletions can also cause data loss.
+> **Always maintain regular backups!** System updates, hardware failures, or accidental deletions can cause data loss.
 
 ### Automated CSV Export Backup
 
@@ -1036,7 +1032,7 @@ Make it executable:
 chmod +x ~/backups/backup-stats.sh
 ```
 
-**Schedule with cron (daily at 2 AM):**
+**Debian/Ubuntu: Schedule with cron (daily at 2 AM):**
 
 ```bash
 crontab -e
@@ -1048,28 +1044,60 @@ Add this line:
 0 2 * * * /home/YOUR_USERNAME/backups/backup-stats.sh >> /home/YOUR_USERNAME/backups/backup.log 2>&1
 ```
 
-### Fedora CoreOS: Backup the Podman Volume
+**Fedora CoreOS: Schedule with systemd timer (daily at 2 AM):**
 
-On Fedora CoreOS, you can also backup the entire Podman volume:
+Create the service unit:
 
 ```bash
-# Export the volume to a tar archive
-podman run --rm -v page-stats-data:/data -v ~/backups:/backup:Z \
-  alpine tar czf /backup/page-stats-volume-$(date +%Y-%m-%d).tar.gz -C /data .
+cat > ~/.config/systemd/user/backup-stats.service <<'EOF'
+[Unit]
+Description=Backup analytics CSV
 
-# Keep only last 7 days of volume backups (they're larger)
-find ~/backups -name "page-stats-volume-*.tar.gz" -mtime +7 -delete
+[Service]
+Type=oneshot
+ExecStart=%h/backups/backup-stats.sh
+EOF
 ```
 
-**Restore from volume backup:**
+Create the timer unit:
+
+```bash
+cat > ~/.config/systemd/user/backup-stats.timer <<'EOF'
+[Unit]
+Description=Daily analytics backup
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+```
+
+Enable and start the timer:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now backup-stats.timer
+```
+
+Verify the timer is active:
+
+```bash
+systemctl --user list-timers
+```
+
+### Fedora CoreOS: Backup the Database File
+
+On Fedora CoreOS, the database is stored directly at `~/page-stats/data/stats.db`. You can back it up with a simple copy:
 
 ```bash
 # Stop the service
 systemctl --user stop page-stats.service
 
-# Restore from backup
-podman run --rm -v page-stats-data:/data -v ~/backups:/backup:Z \
-  alpine sh -c "rm -rf /data/* && tar xzf /backup/page-stats-volume-YYYY-MM-DD.tar.gz -C /data"
+# Copy the database
+cp ~/page-stats/data/stats.db ~/backups/stats-$(date +%Y-%m-%d).db
 
 # Start the service
 systemctl --user start page-stats.service
@@ -1077,14 +1105,11 @@ systemctl --user start page-stats.service
 
 ### Debian/Ubuntu: Direct Database Backup
 
-On Debian/Ubuntu with PM2, use SQLite's built-in backup command (safe, works while the service is running, and automatically checkpoints the WAL):
+On Debian/Ubuntu with PM2, use SQLite's built-in backup command (safe, works while the service is running):
 
 ```bash
 sqlite3 ~/page-stats/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$(date +%Y-%m-%d).db'"
 ```
-
-> [!CAUTION]  
-> Do **not** use `cp stats.db` to back up the database while the service is running — this misses the WAL file and can result in a corrupted or incomplete backup. Always use SQLite's `.backup` command or stop the service first and copy all three files (`stats.db`, `stats.db-wal`, `stats.db-shm`).
 
 ---
 
