@@ -2,7 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-02-16
+updateDate: 2026-02-17
 tags:
   - IT
   - GNU/Linux
@@ -576,26 +576,6 @@ Add the following:
 # Feel free to block it by using uBlock Origin if you don’t want me to know you are stalking me
 
 stats.zaku.eu.org {
-        reverse_proxy localhost:8080
-
-        root * /usr/share/caddy
-        file_server
-
-        header {
-                Access-Control-Allow-Origin "https://zaku.eu.org"
-                Access-Control-Allow-Methods "GET, POST, OPTIONS"
-                Access-Control-Allow-Headers "Content-Type"
-                Access-Control-Allow-Credentials true
-                Access-Control-Max-Age "86400"
-                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-                X-Content-Type-Options "nosniff"
-                X-Frame-Options "DENY"
-                Referrer-Policy "no-referrer-when-downgrade"
-        }
-
-        @options method OPTIONS
-        respond @options 204
-
         log {
                 output file /var/log/caddy/stats-access.log {
                         roll_size 10MB
@@ -603,6 +583,24 @@ stats.zaku.eu.org {
                         roll_keep_for 720h
                 }
         }
+
+        header {
+                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Methods "GET, POST, OPTIONS, HEAD"
+                Access-Control-Allow-Headers "Content-Type, Authorization"
+                Access-Control-Max-Age "86400"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "strict-origin-when-cross-origin"
+        }
+
+        @options method OPTIONS
+        handle @options {
+                respond 204
+        }
+
+        reverse_proxy localhost:8080
 }
 ```
 
@@ -616,6 +614,7 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 
 Start the service and check status:
 ```bash
+sudo systemctl daemon-reload
 sudo systemctl enable --now caddy
 sudo systemctl status caddy -l --no-pager
 ```
@@ -632,17 +631,17 @@ If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. 
 1) Install Go (latest stable version):
 
 > [!TIP]  
-> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.25.6` below with the current version number.
+> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.25.7` below with the current version number.
 
 **Debian/Ubuntu:**
 
 ```bash
 sudo apt remove -y golang-go golang || true
 cd /tmp
-# Replace 1.25.6 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.25.6.linux-amd64.tar.gz
+# Replace 1.25.7 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.25.7.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.25.6.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.25.7.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev/null
 source /etc/profile.d/go.sh
 ```
@@ -651,10 +650,10 @@ source /etc/profile.d/go.sh
 
 ```bash
 cd /tmp
-# Replace 1.25.6 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.25.6.linux-amd64.tar.gz
+# Replace 1.25.7 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.25.7.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.25.6.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.25.7.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh > /dev/null
 source /etc/profile.d/go.sh
 ```
@@ -733,25 +732,6 @@ stats.zaku.eu.org {
         tls {
                 dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
-        reverse_proxy localhost:8080
-
-        root * /usr/share/caddy
-        file_server
-
-        header {
-                Access-Control-Allow-Origin "https://zaku.eu.org"
-                Access-Control-Allow-Methods "GET, POST, OPTIONS"
-                Access-Control-Allow-Headers "Content-Type"
-                Access-Control-Allow-Credentials true
-                Access-Control-Max-Age "86400"
-                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-                X-Content-Type-Options "nosniff"
-                X-Frame-Options "DENY"
-                Referrer-Policy "no-referrer-when-downgrade"
-        }
-
-        @options method OPTIONS
-        respond @options 204
 
         log {
                 output file /var/log/caddy/stats-access.log {
@@ -760,6 +740,24 @@ stats.zaku.eu.org {
                         roll_keep_for 720h
                 }
         }
+
+        header {
+                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Methods "GET, POST, OPTIONS, HEAD"
+                Access-Control-Allow-Headers "Content-Type, Authorization"
+                Access-Control-Max-Age "86400"
+                Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "strict-origin-when-cross-origin"
+        }
+
+        @options method OPTIONS
+        handle @options {
+                respond 204
+        }
+
+        reverse_proxy localhost:8080
 }
 ```
 
