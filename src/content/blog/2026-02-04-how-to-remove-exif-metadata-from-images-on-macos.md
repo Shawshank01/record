@@ -115,6 +115,8 @@ A dialog box will appear showing you the "cleaned" metadata (which should now on
 
 You can now upload this image to the internet without any concerns.
 
+> **Note for HEIC files:** HEIC images retain some structural metadata (such as color profile and codec parameters) that ExifTool cannot remove without corrupting the file. As a result, the popup window may extend beyond your screen borders due to the volume of remaining (non-sensitive) information. If that happens, simply press **Enter** or **Esc** to dismiss it instead of clicking the OK button.
+
 ---
 
 ## A Little Bit More
