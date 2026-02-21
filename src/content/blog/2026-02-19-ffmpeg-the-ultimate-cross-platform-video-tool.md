@@ -2,6 +2,7 @@
 title: "FFmpeg: The Ultimate Cross-Platform Video Tool"
 description: "Why FFmpeg is my daily driver for video/audio processing and a collection of useful commands."
 pubDate: 2026-02-19
+updateDate: 2026-02-21
 tags:
   - FFmpeg
   - macOS
@@ -67,6 +68,18 @@ ffmpeg -i input.mp4 -c:v libx264 -crf 18 -preset veryslow -c:a copy -tag:v avc1 
 
 ### 4. Burning Subtitles (Hardsubs)
 Burning subtitles directly into the video stream ensures they show up on any player.
+
+**Basic subtitle burn-in:**
+```bash
+ffmpeg -i input.mp4 -vf "subtitles=subtitle.srt" output.mp4
+```
+*Tip: When declaring filters, it is better to quote the entire filter string, i.e., `-vf "subtitles=subtitle.srt"` rather than `-vf subtitles="subtitle.srt"`. This ensures the shell correctly passes the entire string as a single argument to the `-vf` option.*
+
+**Burn subtitles with spaces in the filename (Best Practice):**
+```bash
+ffmpeg -i input.mkv -vf "subtitles='my subtitles.srt'" output.mkv
+```
+*Tip: If your subtitle filename has spaces or special characters, nest single quotes inside the double quotes holding the filter.*
 
 **Burn VTT subtitles with a specific font (Songti SC):**
 ```bash
