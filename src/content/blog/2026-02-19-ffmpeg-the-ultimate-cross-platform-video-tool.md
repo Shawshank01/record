@@ -39,6 +39,8 @@ ffmpeg -ss 10:00 -t 10:00 -i input.mp4 -c copy output.mp4
 ffmpeg -ss 20:00 -i input.mp4 -c copy output.mp4
 ```
 
+*Tip: If you want to change the minutes or seconds, simply adjust the numbers in the command. However, if the time exceeds 1 hour, use the format `HH:MM:SS` (e.g., `1:10:00` instead of `70:00`).*
+
 ---
 
 ### 2. Merging and Concatenation
@@ -48,22 +50,18 @@ If you have multiple clips with the same parameters (resolution, codec, etc.), y
 ```bash
 ffmpeg -f concat -safe 0 -i merge.txt -c copy output.mp4
 ```
-*(Note: `merge.txt` should contain lines like **file 'input.mp4'**. You can download a template by clicking <a href="/merge.txt" download>Here</a>.)*
+*Tip: `merge.txt` should contain lines like **file 'input.mp4'**. You can download a template by clicking <a href="/merge.txt" download>Here</a>.*
 
 ---
 
 ### 3. Encoding for Compatibility
 Sometimes you need to ensure a video plays everywhere by using standard H.264 settings.
 
-**Convert to 720p H.264 with original audio:**
-```bash
-ffmpeg -i input.mp4 -c:v h264 -c:a copy -s 1280x720 -tag:v avc1 output.mp4
-```
-
-**High-quality H.264 encode (CRF 18) for storage:**
+**High-quality H.264 re-encode for storage:**
 ```bash
 ffmpeg -i input.mp4 -c:v libx264 -crf 18 -preset veryslow -c:a copy -tag:v avc1 output.mp4
 ```
+*Tip: Use this one carefully, cause this only use the CPU to do the heavy encoder work since the `-crf 18` and `-preset veryslow` is consider as the high quality video close to lossless. You can lower the video quality by using `-crf 23` with `-preset medium` and have an output significantly faster.*
 
 ---
 
@@ -72,23 +70,25 @@ Burning subtitles directly into the video stream ensures they show up on any pla
 
 **Burn VTT subtitles with a specific font (Songti SC):**
 ```bash
-ffmpeg -i input.mp4 -vf "subtitles=0.vtt:force_style='FontName=Songti SC'" -c:v libx264 -crf 18 -preset veryslow -c:a libfdk_aac -tag:v avc1 output.mp4
+ffmpeg -i input.mp4 -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v libx264 -crf 18 -preset veryslow -c:a libfdk_aac -tag:v avc1 output.mp4
 ```
+*Tip: FFmpeg's `subtitles` filter also fully supports `.srt` and `.ass` formats. While `.vtt` and `.srt` may require `force_style` to look good, `.ass` files (Advanced SubStation Alpha) can contain their own rich styling, colors, and positioning data which FFmpeg will render perfectly out of the box.*
 
 ---
 
 ### 5. Format Conversion and Optimization
 Converting between formats like WebM to MP4 or using modern codecs like HEVC (H.265).
 
-**WebM to 720p MP4 (H.264):**
+**Compress a video to 720p MP4 (H.264) with audio re-encoding:**
 ```bash
-ffmpeg -i input.webm -vf scale=1280:720 -c:v h264 -crf 28 -preset slow -c:a libfdk_aac -tag:v avc1 output.mp4
+ffmpeg -i input.mp4 -vf scale=1280:720 -c:v h264 -crf 23 -preset slow -c:a libfdk_aac -tag:v avc1 output.mp4
 ```
 
-**10-bit HEVC (H.265) encoding for best efficiency:**
+**Compress a video to 10-bit 1080p MP4 (H.265) with original audio codec:**
 ```bash
-ffmpeg -i input.mp4 -c:v hevc -crf 20 -preset slow -pix_fmt yuv420p10le -c:a copy -tag:v hev1 output.mp4
+ffmpeg -i input.mp4 -vf scale=1920:1080 -c:v hevc -crf 28 -preset slow -pix_fmt yuv420p10le -c:a copy -tag:v hev1 output.mp4
 ```
+*Tip: If you use `-vf scale=1280:-1`, FFmpeg will fix the width at 1280 and automatically calculate the height to ensure the video isn't stretched. Above cmds will force the dimensions even if it makes everyone look thin or fat.*
 
 ---
 
@@ -106,27 +106,22 @@ ffmpeg -hwaccel videotoolbox -i input.webm -c:v h264_videotoolbox -b:v 5000k -c:
 
 **Fast 10-bit HEVC (H.265) and libfdk_aac re-encoding:**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.webm -c:v hevc_videotoolbox -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hev1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -c:v hevc_videotoolbox -b:v 3000k -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hev1 output.mp4
 ```
 
-**Convert video to HEVC with specific bitrate (4000k) and audio codec:**
+**HEVC and aac_at (Apple's AAC encoder audio codec) with Burned Subtitles:**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.mkv -c:v hevc_videotoolbox -b:v 4000k -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hev1 output.mp4
-```
-
-**HEVC and aac_at (Apple's AAC encoder) with Burned Subtitles:**
-```bash
-ffmpeg -hwaccel videotoolbox -i input.mkv -vf subtitles=0.vtt -c:v hevc_videotoolbox -b:v 4000k -pix_fmt p010le -c:a aac_at -q:a 5 -tag:v hev1 output.mp4
-```
-
-**HEVC with Burned Subtitles (Custom Font for Chinese):**
-```bash
-ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=0.vtt:force_style='FontName=Songti SC'" -c:v hevc_videotoolbox -pix_fmt p010le -b:v 2500k -c:a libfdk_aac -vbr 5 -tag:v hev1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -vf subtitles=subtitle.vtt -c:v hevc_videotoolbox -b:v 2500k -pix_fmt p010le -c:a aac_at -q:a 5 -tag:v hev1 output.mp4
 ```
 
 **H.264 with Burned Subtitles (Custom Font for Chinese):**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.mp4 -vf "subtitles=0.vtt:force_style='FontName=Songti SC'" -c:v h264_videotoolbox -b:v 4000k -c:a libfdk_aac -vbr 5 -tag:v avc1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v h264_videotoolbox -b:v 4000k -c:a aac_at -q:a 5 -tag:v avc1 output.mp4
+```
+
+**HEVC with Burned Subtitles (Custom Font for Chinese):**
+```bash
+ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v hevc_videotoolbox -pix_fmt p010le -b:v 2500k -c:a aac_at -q:a 5 -tag:v hev1 output.mp4
 ```
 
 ---
@@ -151,6 +146,7 @@ ffmpeg -i input.mp4 -vn -c:a aac_at -q:a 5 output.m4a
 
 ---
 
+### Ignore this Part if You are NOT a macOS User
 If you find that some of these commands fit your requirements, or if you're interested in exploring more of the fun that FFmpeg has to offer and are ready to install it on your device, I also have some advice for you if you’re a macOS user.
 
 The first and most important thing to note is that if you use Homebrew to install it, you might want to change a little bit of your initial process. According to the [official document](https://trac.ffmpeg.org/wiki/CompilationGuide/macOS#Additionaloptions), which I quote:
@@ -164,9 +160,7 @@ brew tap homebrew-ffmpeg/ffmpeg
 brew install homebrew-ffmpeg/ffmpeg/ffmpeg --with-<option1> --with-<option2> ...
 ```
 
----
-
-## Troubleshooting
+### Troubleshooting
 
 While this increases flexibility, it also comes with a price. After using it for a while, you may notice that the FFmpeg command breaks from time to time, especially after running the `brew upgrade`. That is because when use the homebrew-ffmpeg tap, Homebrew usually compiles the program from source code specifically for the Mac. During this process, a tool called a linker runs. If the Homebrew only updates the specific library and changes its path that FFmpeg relies on, it will break FFmpeg. However, it's easy to fix. You can simply reinstall FFmpeg by running the command below:
 
