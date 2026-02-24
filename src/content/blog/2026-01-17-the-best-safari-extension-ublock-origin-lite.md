@@ -13,9 +13,9 @@ tags:
 
 ### Update
 
-If you use this every day (damn I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following steps.
+If you use this every day (god I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following steps.
 
-Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready. The more rules you set, the longer you will need to wait for them to take effect. I usually wait for 10 seconds after opening a new YouTube page.
+Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready. The more rules you set, the longer you will need to wait for them to take effect. I usually wait for around 10 seconds to 1 minute after opening a new YouTube page, depending which device I'm using.
 
 Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
 
