@@ -60,7 +60,13 @@ const initTagMenus = (): void => {
 
     const setOpenState = (isOpen: boolean): void => {
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      menu.classList.toggle('hidden', !isOpen);
+      if (isOpen) {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+      } else {
+        menu.classList.remove('flex');
+        menu.classList.add('hidden');
+      }
     };
 
     toggle.addEventListener('click', () => {
