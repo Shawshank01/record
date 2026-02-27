@@ -132,6 +132,7 @@ The included GitHub Actions workflow automatically builds and deploys to GitHub 
 2. Set the source to **GitHub Actions**.
 3. Push to the default branch — the workflow handles the rest.
 
-## License
+## Licenses
 
-[MIT](LICENSE)
+[MIT](https://opensource.org/license/mit)
+[BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
