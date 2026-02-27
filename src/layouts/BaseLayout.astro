@@ -2,7 +2,6 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import searchScript from '../scripts/search.ts?url';
 import { headerSubtitleOptions } from '../data/subtitles';
 
 const {
@@ -112,37 +111,29 @@ const jsonLd = article ? JSON.stringify({
     </button>
     {
       searchPayloadString && (
-        <Fragment>
-          <script type="application/json" id="search-data" set:html={searchPayloadString}></script>
-          <script is:inline type="module">
-            const dataTag = document.getElementById('search-data');
-            const searchInput = document.getElementById('blog-search');
-            if (dataTag && searchInput) {
-              window.__MICHIFUMI_POSTS__ = JSON.parse(dataTag.textContent || '[]');
-            }
-
-            const headerEl = document.querySelector('[data-site-header]');
-            const applyOffset = () => {
-              if (!headerEl) return;
-              const height = headerEl.getBoundingClientRect().height;
-              document.documentElement.style.setProperty('--header-offset', `${height}px`);
-            };
-
-            if (headerEl) {
-              applyOffset();
-              if (typeof ResizeObserver !== 'undefined') {
-                const observer = new ResizeObserver(() => applyOffset());
-                observer.observe(headerEl);
-              }
-            }
-
-            window.addEventListener('resize', applyOffset, { passive: true });
-          </script>
-          <script type="module" src={searchScript}></script>
-        </Fragment>
+        <script type="application/json" id="search-data" set:html={searchPayloadString}></script>
       )
     }
+    <script is:inline>
+      (function() {
+        var headerEl = document.querySelector('[data-site-header]');
+        var applyOffset = function() {
+          if (!headerEl) return;
+          var height = headerEl.getBoundingClientRect().height;
+          document.documentElement.style.setProperty('--header-offset', height + 'px');
+        };
+        if (headerEl) {
+          applyOffset();
+          if (typeof ResizeObserver !== 'undefined') {
+            var observer = new ResizeObserver(function() { applyOffset(); });
+            observer.observe(headerEl);
+          }
+        }
+        window.addEventListener('resize', applyOffset, { passive: true });
+      })();
+    </script>
     <slot name="scripts" />
+    <script src="../scripts/search.ts"></script>
     <script src="../scripts/external-links.ts"></script>
     <script src="../scripts/back-to-top.ts"></script>
     <script src="../scripts/code-copy.ts"></script>
