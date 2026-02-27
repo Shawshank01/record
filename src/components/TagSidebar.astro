@@ -11,7 +11,7 @@ const sortedTags = [{ label: 'All', normalized: 'all', count: allCount }, ...tag
       <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-300">Tags</h2>
       <span class="rounded-full bg-white/5 px-2 py-0.5 text-xs text-gray-400">{sortedTags.length - 1}</span>
     </div>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex max-h-[calc(100vh-18rem)] flex-wrap gap-2 overflow-y-auto">
       {sortedTags.map((tag) => (
         <button
           type="button"
