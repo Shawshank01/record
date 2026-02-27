@@ -134,5 +134,5 @@ The included GitHub Actions workflow automatically builds and deploys to GitHub 
 
 ## Licenses
 
-[MIT](https://opensource.org/license/mit)
+[MIT](https://opensource.org/license/mit)  
 [BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
