@@ -2,7 +2,7 @@
 title: "FFmpeg: The Ultimate Cross-Platform Video Tool"
 description: "Why FFmpeg is my daily driver for video/audio processing and a collection of useful commands."
 pubDate: 2026-02-19
-updateDate: 2026-02-21
+updateDate: 2026-02-28
 tags:
   - FFmpeg
   - macOS
@@ -99,7 +99,7 @@ ffmpeg -i input.mp4 -vf scale=1280:720 -c:v h264 -crf 23 -preset slow -c:a libfd
 
 **Compress a video to 10-bit 1080p MP4 (H.265) with original audio codec:**
 ```bash
-ffmpeg -i input.mp4 -vf scale=1920:1080 -c:v hevc -crf 28 -preset slow -pix_fmt yuv420p10le -c:a copy -tag:v hev1 output.mp4
+ffmpeg -i input.mp4 -vf scale=1920:1080 -c:v hevc -crf 28 -preset slow -pix_fmt yuv420p10le -c:a copy -tag:v hvc1 output.mp4
 ```
 *Tip: If you use `-vf scale=1280:-1`, FFmpeg will fix the width at 1280 and automatically calculate the height to ensure the video isn't stretched. Above cmds will force the dimensions even if it makes everyone look thin or fat.*
 
@@ -119,12 +119,12 @@ ffmpeg -hwaccel videotoolbox -i input.webm -c:v h264_videotoolbox -b:v 5000k -c:
 
 **Fast 10-bit HEVC (H.265) and libfdk_aac re-encoding:**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.webm -c:v hevc_videotoolbox -b:v 3000k -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hev1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -c:v hevc_videotoolbox -b:v 3000k -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hvc1 output.mp4
 ```
 
 **HEVC and aac_at (Apple's AAC encoder audio codec) with Burned Subtitles:**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.webm -vf subtitles=subtitle.vtt -c:v hevc_videotoolbox -b:v 2500k -pix_fmt p010le -c:a aac_at -q:a 5 -tag:v hev1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -vf subtitles=subtitle.vtt -c:v hevc_videotoolbox -b:v 2500k -pix_fmt p010le -c:a aac_at -q:a 5 -tag:v hvc1 output.mp4
 ```
 
 **H.264 with Burned Subtitles (Custom Font for Chinese):**
@@ -134,7 +134,7 @@ ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_sty
 
 **HEVC with Burned Subtitles (Custom Font for Chinese):**
 ```bash
-ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v hevc_videotoolbox -pix_fmt p010le -b:v 2500k -c:a aac_at -q:a 5 -tag:v hev1 output.mp4
+ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v hevc_videotoolbox -pix_fmt p010le -b:v 2500k -c:a aac_at -q:a 5 -tag:v hvc1 output.mp4
 ```
 
 ---
