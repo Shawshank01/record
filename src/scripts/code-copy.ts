@@ -1,25 +1,25 @@
 const copyText = async (text: string): Promise<boolean> => {
-    if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        return true;
-    }
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
 
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'absolute';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'absolute';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
 
-    try {
-        return document.execCommand('copy');
-    } catch {
-        return false;
-    } finally {
-        document.body.removeChild(textarea);
-    }
+  try {
+    return document.execCommand('copy');
+  } catch {
+    return false;
+  } finally {
+    document.body.removeChild(textarea);
+  }
 };
 
 const copyIcon = `
@@ -41,59 +41,59 @@ const failIcon = `
 
 const blocks = document.querySelectorAll('pre');
 blocks.forEach((pre) => {
-    const code = pre.querySelector('code');
-    if (!code) return;
+  const code = pre.querySelector('code');
+  if (!code) return;
 
-    let wrapper = pre.parentElement;
-    if (!wrapper || !wrapper.classList.contains('code-block')) {
-        wrapper = document.createElement('div');
-        wrapper.className = 'code-block';
-        pre.parentNode?.insertBefore(wrapper, pre);
-        wrapper.appendChild(pre);
+  let wrapper = pre.parentElement;
+  if (!wrapper || !wrapper.classList.contains('code-block')) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+  }
+
+  if (wrapper.querySelector('.code-copy-button')) return;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'code-copy-button';
+  button.innerHTML = copyIcon;
+  button.setAttribute('aria-label', 'Copy code to clipboard');
+  button.setAttribute('title', 'Copy');
+
+  const setState = (state: 'copied' | 'failed' | 'idle') => {
+    if (state === 'copied') {
+      button.innerHTML = checkIcon;
+      button.dataset.copied = 'true';
+      button.setAttribute('aria-label', 'Copied');
+      button.setAttribute('title', 'Copied');
+      return;
     }
 
-    if (wrapper.querySelector('.code-copy-button')) return;
+    if (state === 'failed') {
+      button.innerHTML = failIcon;
+      button.dataset.copied = 'false';
+      button.setAttribute('aria-label', 'Copy failed');
+      button.setAttribute('title', 'Copy failed');
+      return;
+    }
 
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'code-copy-button';
     button.innerHTML = copyIcon;
+    button.dataset.copied = 'false';
     button.setAttribute('aria-label', 'Copy code to clipboard');
     button.setAttribute('title', 'Copy');
+  };
 
-    const setState = (state: 'copied' | 'failed' | 'idle') => {
-        if (state === 'copied') {
-            button.innerHTML = checkIcon;
-            button.dataset.copied = 'true';
-            button.setAttribute('aria-label', 'Copied');
-            button.setAttribute('title', 'Copied');
-            return;
-        }
+  let resetTimer: ReturnType<typeof setTimeout>;
+  button.addEventListener('click', async () => {
+    const text = code.textContent || '';
+    const ok = await copyText(text);
 
-        if (state === 'failed') {
-            button.innerHTML = failIcon;
-            button.dataset.copied = 'false';
-            button.setAttribute('aria-label', 'Copy failed');
-            button.setAttribute('title', 'Copy failed');
-            return;
-        }
+    setState(ok ? 'copied' : 'failed');
 
-        button.innerHTML = copyIcon;
-        button.dataset.copied = 'false';
-        button.setAttribute('aria-label', 'Copy code to clipboard');
-        button.setAttribute('title', 'Copy');
-    };
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => setState('idle'), 2000);
+  });
 
-    let resetTimer: ReturnType<typeof setTimeout>;
-    button.addEventListener('click', async () => {
-        const text = code.textContent || '';
-        const ok = await copyText(text);
-
-        setState(ok ? 'copied' : 'failed');
-
-        clearTimeout(resetTimer);
-        resetTimer = setTimeout(() => setState('idle'), 2000);
-    });
-
-    wrapper.appendChild(button);
+  wrapper.appendChild(button);
 });

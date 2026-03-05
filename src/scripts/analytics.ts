@@ -9,13 +9,13 @@ try {
         const blob = new Blob([payload], { type: 'text/plain' });
         const ok = navigator.sendBeacon(endpoint, blob);
         if (ok) {
-            // Beacon sent successfully
         } else {
             throw new Error('sendBeacon returned false');
         }
     } else {
         throw new Error('sendBeacon not available');
     }
+
 } catch {
     fetch(endpoint, {
         method: 'POST',

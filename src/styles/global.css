@@ -87,6 +87,16 @@ pre {
   padding-right: 3.5rem; /* Space for the button when scrolling */
 }
 
+/* Inline code styling */
+.prose :not(pre) > code {
+  @apply bg-soft text-accent px-1.5 py-0.5 rounded-md border border-white/10 font-mono text-sm font-normal;
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none !important;
+}
+
 .code-copy-button {
   position: absolute;
   top: 0.75rem;

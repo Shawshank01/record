@@ -2,13 +2,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["./src/*"]
+      "*": [
+        "./src/*"
+      ]
     },
     "strict": true,
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",
-    "types": ["astro/client"],
+    "types": [
+      "astro/client"
+    ],
     "jsx": "preserve",
     "jsxImportSource": "react"
   }
