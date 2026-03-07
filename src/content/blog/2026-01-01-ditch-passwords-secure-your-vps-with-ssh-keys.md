@@ -12,7 +12,7 @@ tags:
 
 Last time we covered how to enhance VPS security by creating regular users and changing passwords to more complex ones. Here's an image for reference:
 
-![How safe is your password](/how-safe-is-your-password.jpeg)
+![How safe is your password](/2026-01-01/how-safe-is-your-password.jpeg)
 
 But is a password the most secure option? Not necessarily. Because even if your password is long and complex, password-based SSH logins still suffer from a few fundamental problems:
 

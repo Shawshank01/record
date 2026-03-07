@@ -191,7 +191,7 @@ done
 
 1. Name it something like **"Convert to JXL"**, it should look like this:
 
-![If you cannot see this image, either your browser does not support the JXL format, or it has been disabled by default.](/convert-to-jxl-shortcuts.jxl)
+![If you cannot see this image, either your browser does not support the JXL format, or it has been disabled by default.](/2026-03-05/convert-to-jxl-shortcuts.jxl)
 
 2. Close the Shortcuts app.
 3. Go to your **Finder** and select any image (PNG, JPG, etc.).
