@@ -12,7 +12,8 @@ module.exports = {
         accent: '#b2996e'
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        title: ['"Uncial Antiqua"', 'serif']
       },
       boxShadow: {
         soft: '0 12px 40px rgba(0, 0, 0, 0.2)'
