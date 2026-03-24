@@ -103,7 +103,12 @@ At last, the **Add HarSub** Action, is the very reason I developed this GUI. It 
 
 ![If you cannot see this image, either your browser does not support the JXL format, or it has been disabled by default.](/2026-03-23/yt-dlp-downloader-add-hardsub.jxl)
 
-Unfortunately, because I’m using VideoToolbox for hardware acceleration, this action currently only works on macOS.
+Unfortunately, because I’m using VideoToolbox for hardware acceleration, this Action currently only works on macOS.
+
+The “Check for Dependencies” button in the lower-right corner automatically checks whether `Homebrew`, `yt-dlp`, and `FFmpeg` are installed on your macOS. If they are not installed, it also provides a one-click installation feature. If this is your first time using this GUI, or if you're using it on a brand-new system, you'll want to click on it to test it out before you start.
+
+The “Check for Updates” button in the bottom-left corner lets you see if I've released a new version on GitHub (Yes, I still occasionally optimise or add new features so I can enjoy life with even less effort.) If there is a new version, you’ll be asked if you want to open the latest releases page in your default browser (of course, you can also click [here](https://github.com/Shawshank01/yt-downloader-electron/releases) to download it).
 
 ---
-(To be continued...)
+
+BTW, this blog is not affiliated with Apple. It’s just that I happen to like using their products.
