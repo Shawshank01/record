@@ -14,8 +14,6 @@ My interest in JPEG XL began when I wrote a research paper on image compression 
 
 ---
 
-# The Rise, Fall, and Resurrection of JPEG XL
-
 ## Act I: The Contender Arrives
 
 The year is 2020. The world of image formats is a battlefield. WebP, Google's scrappy challenger, has been fighting for years to dethrone the ancient JPEG. PNG holds the lossless throne. And then — from the halls of the Joint Photographic Experts Group and the ashes of two competing proposals (Google's PIK and Cloudinary's FLIF) — a new format is born.
