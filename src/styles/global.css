@@ -19,6 +19,12 @@ a:hover {
   @apply text-accent/80;
 }
 
+/* Allow long URLs / words to break instead of overflowing on mobile */
+.prose {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 /* Centre images in blog content */
 .prose img {
   display: block;
