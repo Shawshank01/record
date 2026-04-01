@@ -38,7 +38,7 @@ export const GET: APIRoute = async (context) => {
     customData: `
       <language>en-us</language>
       <image>
-        <url>${new URL('icon.png', context.site!)}</url>
+        <url>${new URL('icon-rss.png', context.site!)}</url>
         <title>Michifumi's Blog</title>
         <link>${context.site!}</link>
       </image>
