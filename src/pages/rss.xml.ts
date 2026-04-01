@@ -35,5 +35,13 @@ export const GET: APIRoute = async (context) => {
     description: "Dispatches from Michifumi's command chair.",
     site: context.site!,
     items,
+    customData: `
+      <language>en-us</language>
+      <image>
+        <url>${new URL('icon.png', context.site!)}</url>
+        <title>Michifumi's Blog</title>
+        <link>${context.site!}</link>
+      </image>
+    `,
   });
 };
