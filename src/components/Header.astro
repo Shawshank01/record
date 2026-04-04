@@ -2,23 +2,33 @@
 const {
   title,
   subtitle,
-  subtitleOptions = []
+  subtitleOptions = [],
 } = Astro.props as {
   title: string;
   subtitle?: string;
   subtitleOptions?: string[];
 };
 
-const options = subtitleOptions && subtitleOptions.length > 0 ? subtitleOptions : [subtitle ?? ''];
-const initialSubtitle = options[0] ?? '';
+const options =
+  subtitleOptions && subtitleOptions.length > 0
+    ? subtitleOptions
+    : [subtitle ?? ""];
+const initialSubtitle = options[0] ?? "";
 ---
+
 <header
   class="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-soft/80 backdrop-blur transition-transform duration-300"
   data-site-header
 >
-  <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-6 md:px-6">
+  <div
+    class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-6 md:px-6"
+  >
     <div class="flex flex-col gap-1 md:max-w-[60%]">
-      <a href="/" class="font-title text-3xl text-accent drop-shadow-sm md:text-5xl">{title}</a>
+      <a
+        href="/"
+        class="font-title text-3xl text-accent drop-shadow-sm md:text-5xl"
+        >{title}</a
+      >
       <p
         class="text-sm text-gray-400 md:text-base"
         data-subtitle
@@ -27,14 +37,22 @@ const initialSubtitle = options[0] ?? '';
         {initialSubtitle}
       </p>
     </div>
-    <div class="relative flex w-full flex-col gap-3 md:ml-auto md:w-auto md:max-w-none md:flex-row md:items-center md:gap-0">
+    <div
+      class="relative flex w-full flex-col gap-3 md:ml-auto md:w-auto md:max-w-none md:flex-row md:items-center md:gap-0"
+    >
       <button
         type="button"
         class="search-toggle inline-flex h-10 w-10 items-center justify-center self-end rounded-full border border-white/10 bg-white/5 text-gray-200 shadow-soft transition md:hidden"
         aria-label="Open search"
       >
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="11" cy="11" r="6" />
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <circle cx="11" cy="11" r="6"></circle>
           <path d="M20 20L17 17" stroke-linecap="round"></path>
         </svg>
       </button>
@@ -50,35 +68,38 @@ const initialSubtitle = options[0] ?? '';
   </div>
 </header>
 <script is:inline>
-  const headerEl = document.querySelector('[data-site-header]');
-  const toggle = document.querySelector('.search-toggle');
-  const input = document.querySelector('#blog-search');
-  const subtitleEl = document.querySelector('[data-subtitle]');
+  const headerEl = document.querySelector("[data-site-header]");
+  const toggle = document.querySelector(".search-toggle");
+  const input = document.querySelector("#blog-search");
+  const subtitleEl = document.querySelector("[data-subtitle]");
 
   const collapse = () => {
-    input.classList.add('hidden');
-    toggle?.setAttribute('aria-expanded', 'false');
+    input.classList.add("hidden");
+    toggle?.setAttribute("aria-expanded", "false");
   };
 
   const expand = () => {
-    input.classList.remove('hidden');
+    input.classList.remove("hidden");
     input.focus();
-    toggle?.setAttribute('aria-expanded', 'true');
+    toggle?.setAttribute("aria-expanded", "true");
   };
 
-  toggle?.addEventListener('click', () => {
-    if (input.classList.contains('hidden')) {
+  toggle?.addEventListener("click", () => {
+    if (input.classList.contains("hidden")) {
       expand();
     } else {
       collapse();
     }
   });
 
-  window?.addEventListener('resize', () => {
+  window?.addEventListener("resize", () => {
     if (window.innerWidth >= 768) {
-      input.classList.remove('hidden');
-    } else if (!toggle?.getAttribute('aria-expanded') || toggle?.getAttribute('aria-expanded') === 'false') {
-      input.classList.add('hidden');
+      input.classList.remove("hidden");
+    } else if (
+      !toggle?.getAttribute("aria-expanded") ||
+      toggle?.getAttribute("aria-expanded") === "false"
+    ) {
+      input.classList.add("hidden");
     }
   });
 
@@ -87,22 +108,26 @@ const initialSubtitle = options[0] ?? '';
   const handleScroll = () => {
     if (!headerEl) return;
     const atTop = window.scrollY <= 0;
-    headerEl.style.transform = atTop ? 'translateY(0)' : 'translateY(-100%)';
+    headerEl.style.transform = atTop ? "translateY(0)" : "translateY(-100%)";
     ticking = false;
   };
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(handleScroll);
-      ticking = true;
-    }
-  }, { passive: true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
 
   handleScroll();
 
   if (subtitleEl instanceof HTMLElement) {
     try {
-      const choices = JSON.parse(subtitleEl.dataset.subtitleOptions || '[]');
+      const choices = JSON.parse(subtitleEl.dataset.subtitleOptions || "[]");
       if (Array.isArray(choices) && choices.length > 1) {
         const index = Math.floor(Math.random() * choices.length);
         subtitleEl.textContent = choices[index];

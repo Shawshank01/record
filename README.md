@@ -13,6 +13,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 - **Tag system** — Every post requires at least one tag. Tags are aggregated automatically and shown in a filterable sidebar.
 - **Language switcher** — Embed bilingual content blocks within a post; readers toggle between languages with a single click.
 - **Randomised header subtitle** — A curated list of quotes is randomly displayed beneath the site title on each page load.
+- **Giscus comments** — GitHub Discussions-powered comment system on every blog post, with reactions, lazy loading, and strict discussion matching.
 
 ### Discovery & Navigation
 
@@ -30,12 +31,13 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ### SEO & Feeds
 
-- **RSS feed** — Auto-generated at `/rss.xml` from all published posts.
+- **RSS feed** — Auto-generated at `/rss.xml` from all published posts. The footer RSS button copies the feed URL to clipboard.
 - **XML sitemap** — Auto-generated at `/sitemap.xml` with `<lastmod>` using each post's update date (or publish date).
 - **robots.txt** — Dynamically generated, pointing crawlers to the sitemap.
 - **JSON-LD structured data** — `BlogPosting` schema markup is injected into every post page for rich search results.
 - **Open Graph & Twitter cards** — Full social-media meta tags on every page.
 - **Canonical URLs** — Every page includes a `<link rel="canonical">` tag.
+- **Comprehensive favicons** — PNG, SVG, Apple Touch Icon, and `favicon.ico` for maximum compatibility across browsers and RSS clients.
 
 ### Analytics & Infrastructure
 
@@ -49,7 +51,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 | ----------- | -------------------------------------------------------------------------- |
 | Framework   | [Astro 5](https://astro.build) (static-site generation)                   |
 | Styling     | [Tailwind CSS 3](https://tailwindcss.com) + `@tailwindcss/typography`     |
-| Typography  | [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts         |
+| Typography  | [Inter](https://fonts.google.com/specimen/Inter) + [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts |
 | Language    | TypeScript                                                                |
 | Deployment  | GitHub Pages via GitHub Actions                                           |
 
@@ -82,6 +84,8 @@ Update the following to make the blog your own:
 | Accent colour           | `tailwind.config.cjs` → `theme.extend.colors.accent`              |
 | Background colours      | `tailwind.config.cjs` → `theme.extend.colors.surface` and `soft`  |
 | Social / OG image       | `public/icon.svg` (replace with your own)                          |
+| Giscus comments         | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs        |
+| Giscus config           | `giscus.json` → origins, comment order                             |
 
 ### 3. Write a Post
 

@@ -1,16 +1,16 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { headerSubtitleOptions } from '../data/subtitles';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+import { headerSubtitleOptions } from "../data/subtitles";
 
 const {
-  site = 'https://zaku.eu.org',
+  site = "https://zaku.eu.org",
   pageTitle = "Michifumi's Blog",
   description = "Dispatches from Michifumi's command chair.",
   searchPayload,
-  image = '/icon.svg',
-  article
+  image = "/icon.svg",
+  article,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -18,44 +18,51 @@ const socialImageURL = new URL(image, Astro.url);
 
 const searchPayloadString = searchPayload
   ? JSON.stringify(searchPayload)
-      .replace(/</g, '\\u003c')
-      .replace(/&/g, '\\u0026')
+      .replace(/</g, "\\u003c")
+      .replace(/&/g, "\\u0026")
   : undefined;
 
-const jsonLd = article ? JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: article.title,
-  description: article.description,
-  datePublished: article.pubDate.toISOString(),
-  ...(article.updateDate ? { dateModified: article.updateDate.toISOString() } : {}),
-  url: canonicalURL.href,
-  image: socialImageURL.href,
-  author: {
-    '@type': 'Person',
-    name: 'Michifumi',
-    url: site
-  },
-  publisher: {
-    '@type': 'Person',
-    name: 'Michifumi',
-    url: site
-  },
-  ...(article.tags?.length ? { keywords: article.tags.join(', ') } : {})
-}) : undefined;
+const jsonLd = article
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: article.title,
+      description: article.description,
+      datePublished: article.pubDate.toISOString(),
+      ...(article.updateDate
+        ? { dateModified: article.updateDate.toISOString() }
+        : {}),
+      url: canonicalURL.href,
+      image: socialImageURL.href,
+      author: {
+        "@type": "Person",
+        name: "Michifumi",
+        url: site,
+      },
+      publisher: {
+        "@type": "Person",
+        name: "Michifumi",
+        url: site,
+      },
+      ...(article.tags?.length ? { keywords: article.tags.join(", ") } : {}),
+    })
+  : undefined;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
-    
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://mirrors.creativecommons.org; connect-src 'self' https://stats.zaku.eu.org; base-uri 'self'; form-action 'self';" />
+    <meta name="giscus:backlink" content={canonicalURL.href} />
 
-    <!-- Canonical URL -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://mirrors.creativecommons.org; connect-src 'self' https://stats.zaku.eu.org; frame-src https://giscus.app; base-uri 'self'; form-action 'self';"
+    />
+
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / Facebook -->
@@ -73,9 +80,7 @@ const jsonLd = article ? JSON.stringify({
     <meta property="twitter:image" content={socialImageURL} />
 
     <title>{pageTitle}</title>
-    {jsonLd && (
-      <script type="application/ld+json" set:html={jsonLd} />
-    )}
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -83,17 +88,19 @@ const jsonLd = article ? JSON.stringify({
       rel="stylesheet"
     />
     <link rel="sitemap" href="/sitemap.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Michifumi's Blog" href={`${Astro.site}rss.xml`} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Michifumi's Blog"
+      href={`${Astro.site}rss.xml`}
+    />
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
   </head>
   <body class="bg-surface text-gray-100">
-    <Header
-      title="Michifumi's Blog"
-      subtitleOptions={headerSubtitleOptions}
-    />
+    <Header title="Michifumi's Blog" subtitleOptions={headerSubtitleOptions} />
     <main
       class="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-4 pb-16 md:flex-row md:px-6"
       style="padding-top: calc(var(--header-offset, 8rem) + 2rem);"
@@ -108,31 +115,48 @@ const jsonLd = article ? JSON.stringify({
       aria-label="Back to top"
       title="Back to top"
     >
-      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 5l-6 6m6-6l6 6M12 5v14" />
+      <svg
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 5l-6 6m6-6l6 6M12 5v14"></path>
       </svg>
     </button>
     {
       searchPayloadString && (
-        <script type="application/json" id="search-data" set:html={searchPayloadString}></script>
+        <script
+          type="application/json"
+          id="search-data"
+          set:html={searchPayloadString}
+        />
       )
     }
     <script is:inline>
-      (function() {
-        var headerEl = document.querySelector('[data-site-header]');
-        var applyOffset = function() {
+      (function () {
+        var headerEl = document.querySelector("[data-site-header]");
+        var applyOffset = function () {
           if (!headerEl) return;
           var height = headerEl.getBoundingClientRect().height;
-          document.documentElement.style.setProperty('--header-offset', height + 'px');
+          document.documentElement.style.setProperty(
+            "--header-offset",
+            height + "px",
+          );
         };
         if (headerEl) {
           applyOffset();
-          if (typeof ResizeObserver !== 'undefined') {
-            var observer = new ResizeObserver(function() { applyOffset(); });
+          if (typeof ResizeObserver !== "undefined") {
+            var observer = new ResizeObserver(function () {
+              applyOffset();
+            });
             observer.observe(headerEl);
           }
         }
-        window.addEventListener('resize', applyOffset, { passive: true });
+        window.addEventListener("resize", applyOffset, { passive: true });
       })();
     </script>
     <slot name="scripts" />

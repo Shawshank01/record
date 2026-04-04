@@ -1,0 +1,9 @@
+{
+  "origins": [
+    "https://zaku.eu.org"
+  ],
+  "originsRegex": [
+    "http://localhost:[0-9]+"
+  ],
+  "defaultCommentOrder": "newest"
+}
