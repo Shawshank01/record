@@ -1,6 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-surface: #111316;
+  --color-soft: #1c1f24;
+  --color-accent: #b2996e;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-title: 'Uncial Antiqua', serif;
+  --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
 
 :root {
   color-scheme: dark;
@@ -90,16 +98,17 @@ pre {
 .prose pre code {
   display: inline-block;
   min-width: 100%;
-  padding-right: 3.5rem; /* Space for the button when scrolling */
+  padding-right: 3.5rem;
+  /* Space for the button when scrolling */
 }
 
 /* Inline code styling */
-.prose :not(pre) > code {
+.prose :not(pre)>code {
   @apply bg-soft text-accent px-1.5 py-0.5 rounded-md border border-white/10 font-mono text-sm font-normal;
 }
 
-.prose :not(pre) > code::before,
-.prose :not(pre) > code::after {
+.prose :not(pre)>code::before,
+.prose :not(pre)>code::after {
   content: none !important;
 }
 

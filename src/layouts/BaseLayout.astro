@@ -80,7 +80,11 @@ const jsonLd = article
     <meta property="twitter:image" content={socialImageURL} />
 
     <title>{pageTitle}</title>
-    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+    {
+      jsonLd && (
+        <script is:inline type="application/ld+json" set:html={jsonLd} />
+      )
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -130,6 +134,7 @@ const jsonLd = article
     {
       searchPayloadString && (
         <script
+          is:inline
           type="application/json"
           id="search-data"
           set:html={searchPayloadString}

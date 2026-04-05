@@ -29,7 +29,7 @@ const totalPosts = posts.length;
 
 const searchPayload = posts.map((post) => ({
   id: post.id,
-  slug: post.slug,
+  slug: post.id.replace(/\.md$/, ""),
   title: post.data.title,
   description: post.data.description,
   pubDate: post.data.pubDate,

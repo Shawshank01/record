@@ -132,8 +132,6 @@ const initialSubtitle = options[0] ?? "";
         const index = Math.floor(Math.random() * choices.length);
         subtitleEl.textContent = choices[index];
       }
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }
 </script>

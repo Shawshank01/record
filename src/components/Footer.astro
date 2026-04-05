@@ -112,18 +112,13 @@
     rssBtn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(rssUrl);
-      } catch {
-        const ta = document.createElement("textarea");
-        ta.value = rssUrl;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
+        rssLabel.textContent = "Copied!";
+        (rssBtn as HTMLElement).classList.add("text-accent");
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+        rssLabel.textContent = "Error";
       }
-      rssLabel.textContent = "Copied!";
-      (rssBtn as HTMLElement).classList.add("text-accent");
+
       clearTimeout(timer);
       timer = setTimeout(() => {
         rssLabel.textContent = "RSS";

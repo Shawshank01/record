@@ -24,7 +24,7 @@ export const GET: APIRoute = async (context) => {
         title: post.data.title,
         pubDate: post.data.pubDate,
         description: post.data.description,
-        link: `/blog/${post.slug}/`,
+        link: `/blog/${post.id.replace(/\.md$/, '')}/`,
         content: `<p><em>${post.data.description}</em></p><hr />${content}`,
       };
     })

@@ -49,17 +49,17 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 | Layer       | Technology                                                                 |
 | ----------- | -------------------------------------------------------------------------- |
-| Framework   | [Astro 5](https://astro.build) (static-site generation)                   |
-| Styling     | [Tailwind CSS 3](https://tailwindcss.com) + `@tailwindcss/typography`     |
-| Typography  | [Inter](https://fonts.google.com/specimen/Inter) + [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts |
-| Language    | TypeScript                                                                |
-| Deployment  | GitHub Pages via GitHub Actions                                           |
+| Framework   | [Astro 6](https://astro.build) (static-site generation)                    |
+| Styling     | [Tailwind CSS 4](https://tailwindcss.com) + `@tailwindcss/typography`      |
+| Typography  | [Inter](https://fonts.google.com/specimen/Inter) + [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts                                              |
+| Language    | TypeScript                                                                 |
+| Deployment  | GitHub Pages via GitHub Actions                                            |
 
 ## Using This Repository as a Template
 
 ### Prerequisites
 
-- **Node.js** ≥ 18
+- **Node.js** ≥ 22+
 - **npm** (included with Node.js)
 
 ### 1. Clone & Install
@@ -76,15 +76,15 @@ Update the following to make the blog your own:
 
 | What                    | Where                                                              |
 | ----------------------- | ------------------------------------------------------------------ |
-| Site URL                | `astro.config.mjs` → `site`                                       |
-| Blog title & meta       | `src/layouts/BaseLayout.astro` → default props                    |
+| Site URL                | `astro.config.mjs` → `site`                                        |
+| Blog title & meta       | `src/layouts/BaseLayout.astro` → default props                     |
 | Header subtitles        | `src/data/subtitles.ts`                                            |
 | Custom domain (CNAME)   | `CNAME` (delete if not using a custom domain)                      |
-| Analytics endpoint      | `src/scripts/analytics.ts` → `endpoint` (or remove the script)    |
-| Accent colour           | `tailwind.config.cjs` → `theme.extend.colors.accent`              |
-| Background colours      | `tailwind.config.cjs` → `theme.extend.colors.surface` and `soft`  |
+| Analytics endpoint      | `src/scripts/analytics.ts` → `endpoint` (or remove the script)     |
+| Accent colour           | `src/styles/global.css` → `@theme` block                           |
+| Background colours      | `src/styles/global.css` → `@theme` block                           |
 | Social / OG image       | `public/icon.svg` (replace with your own)                          |
-| Giscus comments         | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs        |
+| Giscus comments         | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs         |
 | Giscus config           | `giscus.json` → origins, comment order                             |
 
 ### 3. Write a Post

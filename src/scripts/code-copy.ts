@@ -1,24 +1,13 @@
 const copyText = async (text: string): Promise<boolean> => {
-  if (navigator.clipboard && window.isSecureContext) {
-    await navigator.clipboard.writeText(text);
-    return true;
-  }
-
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.setAttribute('readonly', '');
-  textarea.style.position = 'absolute';
-  textarea.style.left = '-9999px';
-  textarea.style.top = '0';
-  document.body.appendChild(textarea);
-  textarea.select();
-
   try {
-    return document.execCommand('copy');
-  } catch {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
     return false;
-  } finally {
-    document.body.removeChild(textarea);
+  } catch (err) {
+    console.error('Clipboard copy failed:', err);
+    return false;
   }
 };
 

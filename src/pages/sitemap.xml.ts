@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
   const urls = [
     { loc: new URL('/', site).href, lastmod: latestPostDate },
     ...sortedPosts.map((post) => ({
-      loc: new URL(`/blog/${post.slug}/`, site).href,
+      loc: new URL(`/blog/${post.id.replace(/\.md$/, '')}/`, site).href,
       lastmod: post.data.updateDate ?? post.data.pubDate
     }))
   ];
