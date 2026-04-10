@@ -112,6 +112,12 @@ pre {
   content: none !important;
 }
 
+/* Remove auto-generated " " quotation marks around blockquotes */
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none !important;
+}
+
 .code-copy-button {
   position: absolute;
   top: 0.75rem;

@@ -2,7 +2,7 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updateDate: 2026-02-13
+updateDate: 2026-04-10
 tags:
   - macOS
   - Safari
@@ -11,24 +11,9 @@ tags:
   - Browser Extensions
 ---
 
-### Update
-
-If you use this every day (god I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following steps.
-
-Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready. The more rules you set, the longer you will need to wait for them to take effect. I usually wait for around 10 seconds to 1 minute after opening a new YouTube page, depending which device I'm using.
-
-Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
-
-![UBOL Settings](/2026-01-17/ubol-settings.png)
-
-Then change it back to 'Optimal'. The webpage will refresh automatically and the ads and shorts will have disappeared!
-
----
-
-
 The [uBlock Origin Lite](https://ublockorigin.com/) was released on the App Store in August last year. Although it's the 'Lite' version, which is not as powerful as the original, it's still one of the best things to happen in the last year, especially for users who sometimes have to use Safari as their browser, like me.
 
-The best options are still to use Firefox with the [user.js file](https://github.com/arkenfox/user.js/) for hardening or the more user-friendly [Brave browser](https://brave.com/). However, Safari sometimes has its own advantages, such as the battery saver. To be honest, "thanks" to its system-native status, it conserves battery power far more effectively than other third-party browsers. However, this remains its sole redeeming feature. In terms of web compatibility, privacy, and extensibility, Safari undoubtedly ranks at the bottom.
+The best options are still to use Firefox with the [user.js file](https://github.com/arkenfox/user.js/) for hardening or the more user-friendly [Brave browser](https://brave.com/). However, Safari sometimes has its own advantages, such as the battery saver. To be honest, "thanks" to its system-native status, it conserves battery power far more effectively than other third-party browsers. But this remains its sole redeeming feature. In terms of web compatibility, privacy, and extensibility, Safari undoubtedly ranks at the bottom.
 
 Until the arrival of uBlock Origin Lite.
 
@@ -44,7 +29,7 @@ First, download and install it from the [App Store](https://apps.apple.com/us/ap
 
 ![uBlock Origin Lite App Store page](/2026-01-17/ublock-origin-lite.png)
 
-Then enable it, open the dashboard and select the native filter lists. Don't forget to select your regions and languages using the filter at the bottom of the page.
+Then enable it, open the dashboard and select the native filter lists. If you want, you can also select your regions and languages using the filter at the bottom of the page, but the default setting is good enough for most users.
 
 ![uBlock Origin Lite Native Filter Lists](/2026-01-17/ubol-native-filter-lists.png)
 
@@ -52,7 +37,9 @@ Then enable it, open the dashboard and select the native filter lists. Don't for
 
 ## Now for the important part
 
-Copy these rules by click the copy button below:
+By following the steps above, we’ve managed to get rid of ads and most of the annoying pop-ups. But if you absolutely hate short videos like me, we’ll need to take a few extra steps.
+
+First, copy these rules by click the copy button below:
 
 ```
 ! YT - Homepage and Subscriptions (Grid View) - Hide the Shorts section
@@ -98,9 +85,9 @@ youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-r
 youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,ytd-channel-renderer,ytd-playlist-renderer,yt-lockup-view-model,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
 ```
 
-These rules may change from time to time, so it's a good idea to check the [official wiki page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/#wiki_shorts) for the latest updates.
+> These rules may change from time to time, so it's a good idea to check the [official wiki page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/#wiki_shorts) for the latest updates.
 
-Then, in the dashboard, go to **Custom filters > Import / Export**, paste what you just copied and click **✓Add** button. It should look similar to this:
+Then, in the dashboard, go to **Custom filters > Import / Export**, paste what you just copied and click **✓Add** button. It should look similar to this after clicking:
 
 ![uBlock Origin Lite Custom Filter Lists](/2026-01-17/ubol-custom-filter-lists.png)
 
@@ -113,3 +100,17 @@ Now reopen Safari, open YouTube, and savour your triumph! Those pesky adverts an
 ---
 
 Keep it in mind, this is rather like a game of cat and mouse, so perhaps one day this extension may cease to function (but it is not this day! This day we fight!). Should you wish to contribute, when encountering usage issues, you may visit [this GitHub issue](https://github.com/uBlockOrigin/uAssets/issues/30158) to help the developers identify the problem more quickly.
+
+---
+
+### Update
+
+If you use Safari every day (god I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following steps.
+
+Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready. The more rules you set, the longer you will need to wait for them to take effect. I usually wait for around **10** seconds to **30** seconds after opening a new YouTube page, depending which device I'm using.
+
+Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
+
+![UBOL Settings](/2026-01-17/ubol-settings.png)
+
+Then change it back to 'Optimal'. The webpage will refresh automatically and the ads and shorts will have disappeared!
