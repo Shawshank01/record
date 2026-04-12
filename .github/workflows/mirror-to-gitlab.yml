@@ -16,4 +16,4 @@ jobs:
       - name: Push to GitLab
         run: |
           git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/michifumi/record.git
-          git push gitlab --force --prune 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+          git push gitlab --force --prune 'refs/remotes/origin/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
