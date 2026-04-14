@@ -15,13 +15,13 @@ A passionate software engineer with a strong academic foundation in advanced sof
 
 ## Education
 
-### Master of Science - Technological University Dublin
+### <img src="/tu-dublin-logo.svg" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="TU Dublin Logo" /> Master of Science - Technological University Dublin
 <div style="display: flex; justify-content: space-between;"><strong>Computer Science (Advanced Software Development)</strong><span><em>2024 - 2026</em></span></div>
 
 > Second Class Honours, First Division
 >> **Module:** Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
 
-### Higher Diploma - National College of Ireland
+### <img src="/nci-logo.png" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="NCI Logo" /> Higher Diploma - National College of Ireland
 <div style="display: flex; justify-content: space-between;"><strong>Science in Computing</strong><span><em>2023 - 2024</em></span></div>
 
 > 2nd Class Honours Grade 1
