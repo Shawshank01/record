@@ -2,7 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-02-17
+updateDate: 2026-04-15
 tags:
   - IT
   - GNU/Linux
@@ -22,8 +22,8 @@ tags:
 - [3) Obtain HTTPS with Caddy](#3-obtain-https-with-caddy-reverse-proxy)
 - [4) DNS (Cloudflare)](#4-dns-cloudflare)
 - [5) Add the tracking snippet to the blog](#5-add-the-tracking-snippet-to-the-blog-astro)
-- [6) Verify end-to-end](#6-verify-endtoend)
-- [7) Backup & migrate](#7-backup--migrate)
+- [6) Verify end-to-end](#6-verify-end-to-end)
+- [7) Data Migration](#7-data-migration)
 - [8) Backup and Data Safety](#8-backup-and-data-safety)
 - [9) Troubleshooting](#9-troubleshooting)
 
@@ -126,13 +126,9 @@ app.set("trust proxy", 1);
 app.set("json spaces", 2);
 const db = new Database("./data/stats.db");
 
-const EXPORT_PASSWORD = "[PASSWORD]";
-
 app.use(express.json({ limit: "2kb" }));
-// Accept plain text for no-cors fetch (simple request)
 app.use(express.text({ type: "text/plain", limit: "2kb" }));
 
-// Initialise database (synchronous with better-sqlite3)
 db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA synchronous = NORMAL;
@@ -151,14 +147,48 @@ db.exec(`CREATE TABLE IF NOT EXISTS visits (
 db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_path ON visits(path)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)`);
 
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-  const token = req.query.token;
-  if (token !== EXPORT_PASSWORD) {
-    return res.status(403).json({ error: "Forbidden: Invalid or missing token" });
-  }
-  next();
-};
+// Pre-compile all statements once at startup
+// better-sqlite3 returns a reusable Statement object — calling db.prepare()
+// inside a route handler would recompile the SQL on every single request
+const stmtInsert = db.prepare(
+  `INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`
+);
+const stmtExport = db.prepare(
+  `SELECT * FROM visits ORDER BY ts DESC`
+);
+const stmtDaily = db.prepare(`
+  SELECT DATE(ts) AS day, path, ip, COUNT(*) AS views
+  FROM visits
+  WHERE ts >= DATE('now', '-30 days')
+  GROUP BY day, path, ip
+  ORDER BY day DESC
+`);
+const stmtSummaryTotal = db.prepare(`
+  SELECT
+    COUNT(*) AS total_views,
+    COUNT(DISTINCT path) AS unique_paths,
+    MIN(ts) AS first_visit,
+    MAX(ts) AS last_visit
+  FROM visits
+`);
+const stmtSummaryByPath = db.prepare(`
+  SELECT path, COUNT(*) AS views
+  FROM visits
+  GROUP BY path
+  ORDER BY views DESC
+`);
+const stmtSummaryByDay = db.prepare(`
+  SELECT DATE(ts) AS day, COUNT(*) AS views
+  FROM visits
+  GROUP BY day
+  ORDER BY day DESC
+`);
+const stmtSummaryByIp = db.prepare(`
+  SELECT ip, COUNT(*) AS views
+  FROM visits
+  GROUP BY ip
+  ORDER BY views DESC
+`);
 
 app.post("/track", (req, res) => {
   let body = req.body;
@@ -172,10 +202,11 @@ app.post("/track", (req, res) => {
     }
   }
 
-  const { path: rawPath, referrer: rawReferrer, ua } = body || {};
+  const { path: rawPath, referrer: rawReferrer } = body || {};
   const path = typeof rawPath === "string" ? rawPath : "";
   const referrer = typeof rawReferrer === "string" ? rawReferrer : "";
-  const userAgent = ua || req.headers["user-agent"] || "";
+  // Always read user-agent from the real HTTP header — never trust the client body
+  const userAgent = req.headers["user-agent"] || "";
   const ip = req.ip || "";
 
   if (!path) {
@@ -184,8 +215,7 @@ app.post("/track", (req, res) => {
   }
 
   try {
-    const stmt = db.prepare(`INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`);
-    stmt.run(path, referrer, userAgent, ip);
+    stmtInsert.run(path, referrer, userAgent, ip);
     res.sendStatus(204);
   } catch (err) {
     console.error("DB insert error:", err);
@@ -193,13 +223,27 @@ app.post("/track", (req, res) => {
   }
 });
 
+// Escape a value for safe CSV output
+// Doubles any internal quotes ("  →  "")
+// Prefixes values starting with =, +, -, @, tab, or CR with a tab to
+// neutralise spreadsheet formula injection (CVE-class: CSV injection)
+function csvEscape(val) {
+  const str = String(val ?? "");
+  const safe = /^[=+\-@\t\r]/.test(str) ? `\t${str}` : str;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
 // CSV export
-app.get("/export", requireAuth, (req, res) => {
+app.get("/export", (req, res) => {
   try {
-    const rows = db.prepare(`SELECT * FROM visits ORDER BY ts DESC`).all();
+    const rows = stmtExport.all();
     const csv = [
       "id,path,referrer,ua,ip,ts",
-      ...rows.map(r => `${r.id},"${r.path}","${r.referrer}","${r.ua}","${r.ip}","${r.ts}"`)
+      ...rows.map(r =>
+        [r.id, r.path, r.referrer, r.ua, r.ip, r.ts]
+          .map((v, i) => i === 0 ? r.id : csvEscape(v))
+          .join(",")
+      )
     ].join("\n");
     res.setHeader("Content-Disposition", "attachment; filename=stats.csv");
     res.type("text/csv").send(csv);
@@ -209,59 +253,22 @@ app.get("/export", requireAuth, (req, res) => {
 });
 
 // --- Daily summary (views per day and path, last 30 days) ---
-app.get("/daily", requireAuth, (req, res) => {
+app.get("/daily", (req, res) => {
   try {
-    const rows = db.prepare(`
-      SELECT DATE(ts) AS day, path, ip, COUNT(*) AS views
-      FROM visits
-      WHERE ts >= DATE('now', '-30 days')
-      GROUP BY day, path, ip
-      ORDER BY day DESC
-    `).all();
-    res.json(rows);
+    res.json(stmtDaily.all());
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // --- Totals summary (overall + by path + by day, all-time) ---
-app.get("/summary", requireAuth, (req, res) => {
+app.get("/summary", (req, res) => {
   try {
-    const totalRow = db.prepare(`
-      SELECT
-        COUNT(*) AS total_views,
-        COUNT(DISTINCT path) AS unique_paths,
-        MIN(ts) AS first_visit,
-        MAX(ts) AS last_visit
-      FROM visits
-    `).get();
-
-    const pathRows = db.prepare(`
-      SELECT path, COUNT(*) AS views
-      FROM visits
-      GROUP BY path
-      ORDER BY views DESC
-    `).all();
-
-    const dayRows = db.prepare(`
-      SELECT DATE(ts) AS day, COUNT(*) AS views
-      FROM visits
-      GROUP BY day
-      ORDER BY day DESC
-    `).all();
-
-    const ipRows = db.prepare(`
-      SELECT ip, COUNT(*) AS views
-      FROM visits
-      GROUP BY ip
-      ORDER BY views DESC
-    `).all();
-
     res.json({
-      ...totalRow,
-      by_path: pathRows,
-      by_day: dayRows,
-      by_ip: ipRows
+      ...stmtSummaryTotal.get(),
+      by_path: stmtSummaryByPath.all(),
+      by_day:  stmtSummaryByDay.all(),
+      by_ip:   stmtSummaryByIp.all(),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -270,7 +277,6 @@ app.get("/summary", requireAuth, (req, res) => {
 
 app.listen(8080, () => console.log("Analytics server running on port 8080"));
 ```
-
 
 Quick test:
 
@@ -283,7 +289,7 @@ In another shell:
 curl -X POST http://localhost:8080/track \
   -H "Content-Type: text/plain" \
   -d '{"path":"/hello","referrer":""}'
-curl "http://localhost:8080/summary?token=password"
+curl "http://localhost:8080/summary"
 ```
 
 You should see a JSON object with total views and breakdowns.
@@ -561,6 +567,19 @@ sudo chown -R caddy:caddy /var/log/caddy
 sudo chmod 755 /var/log/caddy
 ```
 
+### Generate a bcrypt password hash
+
+Before writing the Caddyfile, generate the hashed password Caddy requires for `basic_auth`:
+
+```bash
+caddy hash-password
+# Enter your password at the prompt.
+# Copy the $2a$14$... string it outputs — you'll paste it into the Caddyfile.
+```
+
+> [!IMPORTANT]  
+> Never paste a plain-text password into the Caddyfile. Caddy only accepts bcrypt hashes here.
+
 ### Configure Caddyfile
 
 Then configure `/etc/caddy/Caddyfile`:
@@ -573,7 +592,7 @@ Add the following:
 
 ```text
 # Replace with your own domain and congratulations you have found my analytics domain ;-)
-# Feel free to block it by using uBlock Origin if you don’t want me to know you are stalking me
+# Feel free to block it by using uBlock Origin if you don't want me to know you are stalking me
 
 stats.zaku.eu.org {
         log {
@@ -600,7 +619,20 @@ stats.zaku.eu.org {
                 respond 204
         }
 
-        reverse_proxy localhost:8080
+        # /track is public — the blog sends beacons here without credentials
+        handle /track {
+                reverse_proxy localhost:8080
+        }
+
+        # All other endpoints (/summary, /daily, /export) require login
+        @protected not path /track
+        handle @protected {
+                basic_auth {
+                        # Replace with your own username and the hash from caddy hash-password
+                        admin $2a$14$REPLACE_WITH_YOUR_HASH
+                }
+                reverse_proxy localhost:8080
+        }
 }
 ```
 
@@ -631,17 +663,17 @@ If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. 
 1) Install Go (latest stable version):
 
 > [!TIP]  
-> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.25.7` below with the current version number.
+> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.26.2` below with the current version number.
 
 **Debian/Ubuntu:**
 
 ```bash
 sudo apt remove -y golang-go golang || true
 cd /tmp
-# Replace 1.25.7 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.25.7.linux-amd64.tar.gz
+# Replace 1.26.2 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.26.2.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.25.7.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev/null
 source /etc/profile.d/go.sh
 ```
@@ -650,10 +682,10 @@ source /etc/profile.d/go.sh
 
 ```bash
 cd /tmp
-# Replace 1.25.7 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.25.7.linux-amd64.tar.gz
+# Replace 1.26.2 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.26.2.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.25.7.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh > /dev/null
 source /etc/profile.d/go.sh
 ```
@@ -757,7 +789,19 @@ stats.zaku.eu.org {
                 respond 204
         }
 
-        reverse_proxy localhost:8080
+        # /track is public — the blog sends beacons here without credentials
+        handle /track {
+                reverse_proxy localhost:8080
+        }
+
+        # All other endpoints (/summary, /daily, /export) require login
+        @protected not path /track
+        handle @protected {
+                basic_auth {
+                        admin $2a$14$REPLACE_WITH_YOUR_HASH
+                }
+                reverse_proxy localhost:8080
+        }
 }
 ```
 
@@ -828,12 +872,12 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
 </script>
 ```
 
-> [!HINT]  
+> [!NOTE]  
 > Privacy-focused browsers like **Mullvad Browser** and **Tor Browser** will block this tracking script by default. Users with ad blockers or privacy extensions will also not be tracked.
 
 ---
 
-## 6) Verify end‑to‑end
+## 6) Verify end-to-end
 
 From the browser:
 - Visit the blog.
@@ -882,7 +926,7 @@ Returns a JSON array with daily stats for each path:
 Query it with:
 
 ```bash
-curl "https://stats.zaku.eu.org/daily?token=password"
+curl -u admin "https://stats.zaku.eu.org/daily"
 ```
 
 ### `/summary` endpoint
@@ -913,24 +957,24 @@ Returns top-level summary stats plus breakdowns:
 Query it with:
 
 ```bash
-curl "https://stats.zaku.eu.org/summary?token=password"
+curl -u admin "https://stats.zaku.eu.org/summary"
 ```
 
 CSV export:
 
 ```bash
-curl -L -o stats.csv "https://stats.zaku.eu.org/export?token=password"
+curl -u admin -L -o stats.csv "https://stats.zaku.eu.org/export"
 ```
 
 > [!TIP]  
-> All analytics endpoints can be accessed directly from your browser. Simply visit the URL with the token parameter:
-> - `https://stats.zaku.eu.org/daily?token=password`
-> - `https://stats.zaku.eu.org/summary?token=password`
-> - `https://stats.zaku.eu.org/export?token=password` (downloads CSV)
+> All analytics endpoints can be accessed directly from your browser. Caddy will show a native login prompt — enter your `admin` username and password.
+> - `https://stats.zaku.eu.org/daily`
+> - `https://stats.zaku.eu.org/summary`
+> - `https://stats.zaku.eu.org/export` (downloads CSV)
 
 ---
 
-## 7) Backup & migrate
+## 7) Data Migration
 
 All analytics live in `stats.db`. To migrate to a new VM:
 
@@ -1007,15 +1051,16 @@ mkdir -p ~/backups
 nano ~/backups/backup-stats.sh
 ```
 
-Add the following content (replace `YOUR_PASSWORD` with your actual password):
+Add the following content (replace `YOUR_PASSWORD` with your actual password — it will be read from the environment variable `STATS_PASSWORD` so it never appears in the log file):
 
 ```bash
 #!/bin/bash
 BACKUP_DIR="$HOME/backups/analytics"
 mkdir -p "$BACKUP_DIR"
 
-# Export CSV from the analytics endpoint
-curl -s "https://stats.zaku.eu.org/export?token=YOUR_PASSWORD" \
+# Export CSV from the analytics endpoint using basic_auth
+# Set STATS_PASSWORD in your environment (e.g. via ~/.profile or a secrets manager)
+curl -s -u "admin:${STATS_PASSWORD}" "https://stats.zaku.eu.org/export" \
   -o "$BACKUP_DIR/stats-$(date +%Y-%m-%d).csv"
 
 # Keep only last 30 days of backups
@@ -1126,11 +1171,11 @@ You can manually test your tracking endpoint with:
 curl -X POST http://localhost:8080/track \
   -H "Content-Type: text/plain" \
   -d '{"path":"/hello","referrer":""}'
-curl "http://localhost:8080/summary?token=password"
+curl "http://localhost:8080/summary"
 ```
 
 A new entry appearing in `/summary` confirms your endpoint is working correctly.
 
 ---
 
-Hooray! This blog now uses a **self‑hosted, portable, privacy‑friendly analytics** system. If you build your own, feel free to fork these snippets and adapt the endpoints to your domain.
+This blog uses this as a **self‑hosted, portable, privacy‑friendly analytics** system. If you don’t want me to know you’ve visited my blog (I’d be really sad 😢), you can simply use uBlock Origin to block the domain above. If you want to build your own, feel free to fork these snippets and adapt the endpoints to your domain.
