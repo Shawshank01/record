@@ -5,7 +5,7 @@ description: "My study experiences and projects."
 
 ### Contact
 
-✉️ lelouch@outlook.ie | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/) | 🧑‍💻 [GitHub](https://github.com/Shawshank01)
+✉️ lelouch@outlook.ie | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
 
 ---
 
@@ -77,3 +77,6 @@ This is an automated shell script that effortlessly installs and manages Docker 
 [xAI-native](https://github.com/Shawshank01/xAI-native)
 
 This is a local, user-friendly web application that provides a graphical interface for chatting with xAI's latest models via their official API. This UI provides full Markdown-rendered streaming responses with context, and image generation capabilities.
+
+---
+Thank you for visiting 😄
