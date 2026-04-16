@@ -1,5 +1,5 @@
 ---
-title: "Diwen's Resume"
+title: "Diwen's CV"
 description: "My study experiences and projects."
 ---
 
@@ -79,4 +79,5 @@ This is an automated shell script that effortlessly installs and manages Docker 
 This is a local, user-friendly web application that provides a graphical interface for chatting with xAI's latest models via their official API. This UI provides full Markdown-rendered streaming responses with context, and image generation capabilities.
 
 ---
-Thank you for visiting 😄
+Thank you for visiting 😃
+You are welcome to explore my [blog homepage](https://zaku.eu.org/) to find more things that might interest you.
