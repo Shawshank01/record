@@ -4,6 +4,7 @@ description: "A review of a Norwegian film released in 2025."
 pubDate: 2026-02-26
 tags:
   - Review
+  - Opinion
   - Film
 ---
 
