@@ -2,24 +2,32 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updateDate: 2026-04-10
+updateDate: 2026-04-17
 tags:
   - macOS
+  - iOS
+  - iPadOS
   - Safari
   - uBlock Origin Lite
   - YouTube
   - Browser Extensions
 ---
 
-The [uBlock Origin Lite](https://ublockorigin.com/) was released on the App Store in August last year. Although it's the 'Lite' version, which is not as powerful as the original, it's still one of the best things to happen in the last year, especially for users who sometimes have to use Safari as their browser, like me.
+> [I don’t care the bullshit, just go to the solution.](#here-is-how-this-magic-is-achieved)
 
-The best options are still to use Firefox with the [user.js file](https://github.com/arkenfox/user.js/) for hardening or the more user-friendly [Brave browser](https://brave.com/). However, Safari sometimes has its own advantages, such as the battery saver. To be honest, "thanks" to its system-native status, it conserves battery power far more effectively than other third-party browsers. But this remains its sole redeeming feature. In terms of web compatibility, privacy, and extensibility, Safari undoubtedly ranks at the bottom.
+---
+
+The [uBlock Origin Lite](https://ublockorigin.com/) was released on the App Store in August 2025. Although it's the "Lite" version, which is not as powerful as the original, it's still one of the best things to happen in the last year, especially for users who sometimes have to use Safari as their browser, like me.
+
+The best options for normal users who want to protect their privacy are still to use Firefox with the [user.js file](https://github.com/arkenfox/user.js/) for hardening or the more user-friendly [Brave browser](https://brave.com/). However, Safari sometimes has its own advantages, such as the battery saver. To be honest, "thanks" to its system-native status, it conserves battery power far more effectively than other third-party browsers. But this remains its sole redeeming feature. In terms of web compatibility, privacy, and extensibility, Safari undoubtedly ranks at the bottom.
 
 Until the arrival of uBlock Origin Lite.
 
-Those familiar with it will have long heard its reputation, while if you're encountering it for the first time, all you need to know for now is that it can magically eliminate all manner of irritating adverts and pop-ups, including but not limited to YouTube, X (yes, you won't need to pay a penny for a subscription!), and numerous other websites.
+Those familiar with it will have long heard its reputation, while if you're encountering it for the first time, all you need to know for now is that it can magically eliminate almost all manner of irritating adverts and pop-ups, including but not limited to YouTube, X, Instagram, Facebook (yes, you won't need to pay a penny for a subscription!), and numerous other websites.
 
 Moreover, if you couldn't care less about short videos but find yourself constantly bombarded by sites like YouTube, which seem determined to use every trick in the book to push short-form content on you, then uBlock Origin Lite is absolutely the solution for you.
+
+It works on all Apple ecosystems, but this blog focuses on how you can set it up step by step on macOS. The process is similar for other systems, and I'm sure you can learn by analogy.
 
 ---
 
@@ -29,7 +37,11 @@ First, download and install it from the [App Store](https://apps.apple.com/us/ap
 
 ![uBlock Origin Lite App Store page](/2026-01-17/ublock-origin-lite.png)
 
-Then enable it, open the dashboard and select the native filter lists. If you want, you can also select your regions and languages using the filter at the bottom of the page, but the default setting is good enough for most users.
+Then enable it in Safari's extension settings.
+
+![uBlock Origin Lite Safari Extension Settings](/2026-01-17/ubol-safari-extension-settings.png)
+
+Open the uBlock Origin Lite dashboard by clicking the icon in the toolbar and select the native rules from the **Filter lists**. If you want, you can also select your regions and languages using the filter at the bottom of the lists, but the below setting is good enough for most senarios.
 
 ![uBlock Origin Lite Native Filter Lists](/2026-01-17/ubol-native-filter-lists.png)
 
@@ -109,8 +121,8 @@ If you use Safari every day (god I hate to say that), you may have noticed that,
 
 Firstly, according to the official update logs, you need to wait a few seconds before it is fully ready. The more rules you set, the longer you will need to wait for them to take effect. I usually wait for around **10** seconds to **30** seconds after opening a new YouTube page, depending which device I'm using.
 
-Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default 'Optimal' to 'Complete' (or any other option).
+Secondly, if you feel you have waited long enough after opening a YouTube page, find the extension icon in the Safari Toolbar. Click it and change the filtering mode from the default `Optimal` to `Complete` (or any other option).
 
 ![UBOL Settings](/2026-01-17/ubol-settings.png)
 
-Then change it back to 'Optimal'. The webpage will refresh automatically and the ads and shorts will have disappeared!
+Then change it back to `Optimal`. The webpage will refresh automatically and the ads and shorts will have disappeared!
