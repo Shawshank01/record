@@ -153,11 +153,11 @@ const stmtExport = db.prepare(
   `SELECT * FROM visits ORDER BY ts DESC`
 );
 const stmtDaily = db.prepare(`
-  SELECT DATE(ts) AS day, path, ip, COUNT(*) AS views
+  SELECT path, ip, COUNT(*) AS views, MAX(ts) AS last_seen
   FROM visits
   WHERE ts >= DATE('now', '-30 days')
-  GROUP BY day, path, ip
-  ORDER BY day DESC, views DESC, path ASC
+  GROUP BY DATE(ts), path, ip
+  ORDER BY last_seen DESC
 `);
 const stmtSummaryTotal = db.prepare(`
   SELECT
@@ -889,33 +889,33 @@ These endpoints make it easy to visualise daily activity or build a simple dashb
 
 ### `/daily` endpoint
 
-Returns a JSON array with daily stats for each path:
+Returns a JSON array with daily stats for each path, sorted by the most recent activity first:
 
 ```json
 [
   {
-    "day": "2025-10-30",
     "path": "/",
     "ip": "203.0.113.10",
-    "views": 8
+    "views": 15,
+    "last_seen": "2025-10-31 23:42:07"
   },
   {
-    "day": "2025-10-30",
     "path": "/blog1",
     "ip": "198.51.100.5",
-    "views": 4
+    "views": 4,
+    "last_seen": "2025-10-30 21:15:33"
   },
   {
-    "day": "2025-10-30",
-    "path": "/blog2",
-    "ip": "203.0.113.10",
-    "views": 3
-  },
-  {
-    "day": "2025-10-31",
     "path": "/",
     "ip": "203.0.113.10",
-    "views": 15
+    "views": 8,
+    "last_seen": "2025-10-30 18:30:12"
+  },
+  {
+    "path": "/blog2",
+    "ip": "203.0.113.10",
+    "views": 3,
+    "last_seen": "2025-10-30 14:05:44"
   }
 ]
 ```

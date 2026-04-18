@@ -46,8 +46,6 @@ sudo chmod +x /usr/local/bin/up.sh
 up.sh
 ```
 
----
-
 ## Debian-based Linux
 
 Here is the `up.sh` script that handles system and Docker updates:
@@ -83,8 +81,6 @@ sudo docker builder prune -f
 
 echo "Update complete!"
 ```
-
----
 
 ## Fedora/RHEL/CentOS 8+
 
@@ -150,6 +146,13 @@ if toolbox list 2>/dev/null | grep -q "fedora-toolbox"; then
     toolbox run sudo dnf upgrade -y
     toolbox run sudo dnf autoremove -y
 fi
+
+# Clean up unused Podman resources
+echo ""
+echo "--- Cleaning up unused Podman resources ---"
+podman image prune -f
+podman container prune -f
+podman volume prune -f
 
 echo ""
 echo "Update complete!"
