@@ -17,4 +17,5 @@ export const headerSubtitleOptions: string[] = [
   "There are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. The first method is far more difficult.\n\u2014 C.A.R. Hoare",
   "Alle Bücher dieser Welt\nBringen dir kein Glück,\nDoch sie weisen dich geheim\nIn dich selbst zurück.\n\u2014 Hermann Hesse",
   "Be honest about what you don't know. You only have to do a very few things right in your life so long as you don't do too many things wrong.\n\u2014 Warren Buffett",
+  "Those who would give up essential Liberty, to purchase a little temporary Safety, deserve neither Liberty nor Safety.\n\u2014 Benjamin Franklin",
 ];

@@ -2,7 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-04-15
+updateDate: 2026-04-18
 tags:
   - GNU/Linux
   - Fedora CoreOS
@@ -163,6 +163,7 @@ const stmtSummaryTotal = db.prepare(`
   SELECT
     COUNT(*) AS total_views,
     COUNT(DISTINCT path) AS unique_paths,
+    COUNT(DISTINCT ip) AS unique_visitors,
     MIN(ts) AS first_visit,
     MAX(ts) AS last_visit
   FROM visits
@@ -932,7 +933,8 @@ Returns top-level summary stats plus breakdowns:
 ```json
 {
   "total_views": 1234,
-  "unique_paths": 8,
+  "unique_paths": 21,
+  "unique_visitors": 34,
   "first_visit": "2025-10-01 09:00:00",
   "last_visit": "2025-10-31 11:45:12",
   "by_path": [
