@@ -4,7 +4,6 @@ description: "How I added privacy‑friendly visitor statistics to a static Astr
 pubDate: 2025-11-01
 updateDate: 2026-04-15
 tags:
-  - IT
   - GNU/Linux
   - Fedora CoreOS
   - Debian
@@ -147,9 +146,6 @@ db.exec(`CREATE TABLE IF NOT EXISTS visits (
 db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_path ON visits(path)`);
 db.exec(`CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)`);
 
-// Pre-compile all statements once at startup
-// better-sqlite3 returns a reusable Statement object — calling db.prepare()
-// inside a route handler would recompile the SQL on every single request
 const stmtInsert = db.prepare(
   `INSERT INTO visits (path, referrer, ua, ip) VALUES (?, ?, ?, ?)`
 );
@@ -161,7 +157,7 @@ const stmtDaily = db.prepare(`
   FROM visits
   WHERE ts >= DATE('now', '-30 days')
   GROUP BY day, path, ip
-  ORDER BY day DESC
+  ORDER BY day DESC, views DESC, path ASC
 `);
 const stmtSummaryTotal = db.prepare(`
   SELECT

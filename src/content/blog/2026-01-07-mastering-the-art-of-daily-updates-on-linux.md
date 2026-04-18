@@ -4,7 +4,6 @@ description: "Satisfying the compulsion for daily system updates with a custom b
 pubDate: 2026-01-07
 updateDate: 2026-02-07
 tags:
-  - IT
   - Bash
   - GNU/Linux
   - Docker

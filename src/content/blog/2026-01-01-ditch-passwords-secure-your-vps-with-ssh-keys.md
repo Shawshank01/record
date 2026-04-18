@@ -3,7 +3,6 @@ title: "Ditch Passwords: Secure Your VPS with SSH Keys (RackNerd Ubuntu)"
 description: "We move beyond complex passwords and harden SSH access using ed25519 keys, proper permissions, and cloud-init overrides."
 pubDate: 2026-01-01
 tags:
-  - IT
   - GNU/Linux
   - Ubuntu
   - VPS

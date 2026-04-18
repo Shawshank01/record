@@ -3,7 +3,6 @@ title: "Hardening a Fresh Ubuntu VPS: From Root Login to Secure SSH"
 description: "A step-by-step guide to securing a new Ubuntu VPS by creating a regular user, configuring sudo, and disabling root SSH access."
 pubDate: 2025-12-22
 tags:
-  - IT
   - GNU/Linux
   - Ubuntu
   - VPS
