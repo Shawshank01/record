@@ -5,7 +5,7 @@ description: "My study experiences and projects."
 
 ### Contact
 
-✉️ lelouch@outlook.ie | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
+✉️ [EMAIL](mailto:lelouch@outlook.ie) | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
 
 ---
 
