@@ -1,12 +1,29 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@font-face {
+  font-family: 'Google Sans Code';
+  src: url('/fonts/GoogleSansCode-v7.000/GoogleSansCode[MONO,wght].ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans Code';
+  src: url('/fonts/GoogleSansCode-v7.000/GoogleSansCode-Italic[MONO,wght].ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
   --color-surface: #111316;
   --color-soft: #1c1f24;
   --color-accent: #b2996e;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-title: 'Uncial Antiqua', serif;
+  --font-mono: 'Google Sans Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -93,12 +110,14 @@ a:hover {
 pre {
   padding-top: 2.75rem;
   padding-right: 3rem;
+  font-family: var(--font-mono) !important;
 }
 
 .prose pre code {
   display: inline-block;
   min-width: 100%;
   padding-right: 3.5rem;
+  font-family: var(--font-mono) !important;
   /* Space for the button when scrolling */
 }
 

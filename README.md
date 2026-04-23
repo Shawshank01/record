@@ -26,6 +26,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 - **Image lightbox** — Click any image inside a blog post to view it full-screen in a lightbox overlay. Press `Escape` or click to dismiss.
 - **Code block copy button** — Every `<pre>` code block gets a one-click copy button with visual feedback (copied ✓ / failed ✗).
+- **Beautiful code typography** — Code snippets and `<pre>` blocks are styling using a self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) variable font.
 - **External link handling** — Links to external domains automatically open in a new tab with `rel="noopener"`.
 - **Responsive layout** — Sidebar + content grid on desktop, single-column on mobile, with a dedicated mobile tag toggle.
 
@@ -51,7 +52,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 | ----------- | -------------------------------------------------------------------------- |
 | Framework   | [Astro 6](https://astro.build) (static-site generation)                    |
 | Styling     | [Tailwind CSS 4](https://tailwindcss.com) + `@tailwindcss/typography`      |
-| Typography  | [Inter](https://fonts.google.com/specimen/Inter) + [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts                                              |
+| Typography  | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
 | Language    | TypeScript                                                                 |
 | Deployment  | GitHub Pages via GitHub Actions                                            |
 
