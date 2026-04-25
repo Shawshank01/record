@@ -327,27 +327,23 @@ Less attack surface.
 
 ---
 
-## Summary: What We Achieved
+## Mission Accomplished
 
-By the end of this journey, our VPS is significantly more secure:
+The VPS is now significantly more secure:
 
 ✅ Root SSH login disabled  
 ✅ Root password locked  
 ✅ SSH keys enabled  
 ✅ Password authentication disabled  
 ✅ cloud-init overrides handled properly  
-✅ permissions correctly locked down  
-
-In short: attackers can no longer brute-force their way into your VPS via passwords.
+✅ permissions correctly locked down
 
 ---
 
-## Next Time
+## For Further Hardening
 
-Now that SSH access is hardened, we can move on to:
-
-- firewall setup (ufw)
+- firewall setup
 - automatic security upgrades
 - monitoring login attempts
 - restricting SSH access by IP or using VPN
-- adding 2FA or using tools like **Proton Authenticator** for sudo
+- adding 2FA
