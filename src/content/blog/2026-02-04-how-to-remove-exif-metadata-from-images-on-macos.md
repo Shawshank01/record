@@ -130,6 +130,11 @@ Name it something clear like **"Image Scrub"**. Shortcuts auto-saves, so you can
 
 > **First-time only:** A permission dialog will appear asking *"Finder.app" would like to access files in your Downloads folder* (or whichever folder you're in). Click **Allow**. The script will wait for you and then proceed automatically. This only happens once per folder.
 
+> **Troubleshooting: Quick Action not showing up?** 
+> Sometimes on newer Macs, the Quick Actions won't appear in the right-click menu immediately. To fix this:
+> 1. Check your settings: Click the **Customize...** button in the Quick Actions menu, and make sure the new Shortcut is checked.
+> 2. **Relaunch Finder:** Hold the **Option (⌥)** key, right-click the **Finder** icon in your Dock, and click **Relaunch**. Your new action should now appear!
+
 A dialog box will appear showing you the "cleaned" metadata (which should now only show basic file system properties like file size and format, like below).
 
 ![exiftool Shortcuts sample result](/2026-02-04/exiftool-shortcuts-sample-result.png)

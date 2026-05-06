@@ -199,6 +199,11 @@ done
     > Just choose **Allow** this time and you will never see it again.
 5. A small gear will spin in your menu bar, and seconds later, a highly-compressed `.jxl` file will magically appear in the same folder as your original image.
 
+> **Troubleshooting: Quick Action not showing up?** 
+> Sometimes on newer Macs, the Quick Actions won't appear in the right-click menu immediately. To fix this:
+> 1. Check your settings: Click the **Customize...** button in the Quick Actions menu, and make sure the new Shortcut is checked.
+> 2. **Relaunch Finder:** Hold the **Option (⌥)** key, right-click the **Finder** icon in your Dock, and click **Relaunch**. Your new action should now appear!
+
 ---
 
 ## How to Enable JPEG XL in Your Browser
@@ -226,8 +231,8 @@ Right now, Safari supports JPEG XL natively out-of-the-box on recent Apple devic
 
 ## References
 
-Jebaraj, S. D., & N, S. (2023). JPEG-XL based Compression of DICOM Images for Reduced Storage and Transmission Costs. *2023 3rd International Conference on Intelligent Technologies (CONIT)*, 1–6.  
+- Jebaraj, S. D., & N, S. (2023). JPEG-XL based Compression of DICOM Images for Reduced Storage and Transmission Costs. *2023 3rd International Conference on Intelligent Technologies (CONIT)*, 1–6.  
 https://doi.org/10.1109/conit59222.2023.10205928
 
-Öztürk, E., & Mesut, A. (2021, September 1). Performance Evaluation of JPEG Standards, WebP and PNG in Terms of Compression Ratio and Time for Lossless Encoding. *IEEE Xplore*.  
+- Öztürk, E., & Mesut, A. (2021, September 1). Performance Evaluation of JPEG Standards, WebP and PNG in Terms of Compression Ratio and Time for Lossless Encoding. *IEEE Xplore*.  
 https://doi.org/10.1109/UBMK52708.2021.9558922
