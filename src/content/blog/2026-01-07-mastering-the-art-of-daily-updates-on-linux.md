@@ -73,7 +73,7 @@ sudo docker run --rm \
 
 echo "--- Cleaning up unused Docker resources ---"
 sudo docker container prune -f
-# Removed -a to keep cached images or keep it for deep clean
+# Remove -a to keep cached images or keep it for deep clean
 sudo docker image prune -a -f
 sudo docker volume prune -f
 sudo docker network prune -f
