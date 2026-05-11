@@ -32,7 +32,7 @@ That's why I need to write an update script to satisfy my perverted desire to up
 sudo nano /usr/local/bin/up.sh
 ```
 
-2. Paste the content from your OS-specific script below into the file and save it.
+2. Paste the content from your OS-specific script ([Debian-based Linux](#debian-based-linux), [Fedora/RHEL/CentOS 8+](#fedorarhelcentos-8), or [Fedora CoreOS](#fedora-coreos-automatic-updates-via-zincati)) into the file and save it.
 
 3. Make the script executable:
 
@@ -45,6 +45,8 @@ sudo chmod +x /usr/local/bin/up.sh
 ```bash
 up.sh
 ```
+
+---
 
 ## Debian-based Linux
 
@@ -82,6 +84,10 @@ sudo docker builder prune -f
 echo "Update complete!"
 ```
 
+[Go back Step 3 to continue](#installation-and-usage)
+
+---
+
 ## Fedora/RHEL/CentOS 8+
 
 ```bash
@@ -96,6 +102,8 @@ sudo dnf autoremove -y
 
 echo "Update complete!"
 ```
+
+[Go back Step 3 to continue](#installation-and-usage)
 
 ---
 
@@ -161,6 +169,8 @@ echo "Note: System updates are managed automatically by Zincati."
 ```
 
 **Note**: Fedora CoreOS uses Podman by default. For automatic container updates, use [`podman auto-update`](https://docs.podman.io/en/stable/markdown/podman-auto-update.1.html) with containers running inside systemd units and the `io.containers.autoupdate` label. Podman also ships with a `podman-auto-update.timer` that triggers updates daily.
+
+[Go back Step 3 to continue](#installation-and-usage)
 
 ---
 
