@@ -2,7 +2,7 @@
 title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updateDate: 2026-02-07
+updateDate: 2026-05-13
 tags:
   - Bash
   - GNU/Linux
@@ -64,8 +64,8 @@ sudo apt-get full-upgrade -y
 sudo apt-get autoremove -y
 
 echo "--- Updating Docker Containers via Watchtower ---"
+# Note: Docker API version is essential for Watchtower to function correctly
 sudo docker run --rm \
-    # Note: Docker API version is essential for Watchtower to function correctly
     -e DOCKER_API_VERSION=1.44 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     containrrr/watchtower \
@@ -142,18 +142,22 @@ Since Zincati handles system updates automatically, the script focuses on **chec
 
 ```bash
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "--- Checking for staged system updates ---"
 rpm-ostree status
 
-# Update toolbox container (default)
-if toolbox list 2>/dev/null | grep -q "fedora-toolbox"; then
-    echo ""
-    echo "--- Updating Toolbox Container ---"
-    toolbox run sudo dnf upgrade -y
-    toolbox run sudo dnf autoremove -y
+# Update toolbox container
+# After a major version upgrade, the default toolbox
+# container won't exist yet. Create it automatically if missing.
+echo ""
+echo "--- Updating Toolbox Container ---"
+if ! toolbox run true 2>/dev/null; then
+    echo "Default toolbox container not found. Creating..."
+    toolbox create -y
 fi
+toolbox run sudo dnf upgrade -y
+toolbox run sudo dnf autoremove -y
 
 # Clean up unused Podman resources
 echo ""
@@ -169,6 +173,36 @@ echo "Note: System updates are managed automatically by Zincati."
 ```
 
 **Note**: Fedora CoreOS uses Podman by default. For automatic container updates, use [`podman auto-update`](https://docs.podman.io/en/stable/markdown/podman-auto-update.1.html) with containers running inside systemd units and the `io.containers.autoupdate` label. Podman also ships with a `podman-auto-update.timer` that triggers updates daily.
+
+**Cleaning up old toolbox containers after a major version upgrade:**
+
+After Zincati upgrades Fedora CoreOS to a new major version, the script above creates a new toolbox container. The old toolbox container will remain on disk. To check and clean it up:
+
+```bash
+# List all toolbox containers
+toolbox list
+```
+
+You'll see something like:
+
+```
+CONTAINER ID  CONTAINER NAME      CREATED      STATUS   IMAGE NAME
+a1b2c3d4e5f6  fedora-toolbox-43   3 months ago  running  registry.fedoraproject.org/fedora-toolbox:43
+f6e5d4c3b2a1  fedora-toolbox-44   2 minutes ago running  registry.fedoraproject.org/fedora-toolbox:44
+```
+
+Your files in `~/` (e.g. `~/backups`, `~/page-stats`) are **not** stored inside the toolbox — toolbox bind-mounts your home directory into the container. Removing an old toolbox only deletes the **packages** installed via `dnf` inside it (Node.js, npm, etc.), not your files.
+
+If you no longer need the old toolbox:
+
+```bash
+# Stop and remove the old container
+podman stop fedora-toolbox-43
+toolbox rm fedora-toolbox-43
+
+# Optionally, remove the old base image to free disk space
+podman rmi registry.fedoraproject.org/fedora-toolbox:43
+```
 
 [Go back Step 3 to continue](#installation-and-usage)
 
