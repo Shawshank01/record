@@ -5,10 +5,8 @@
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",
-    "types": [
-      "astro/client"
-    ],
+    "types": ["astro/client"],
     "jsx": "preserve",
-    "jsxImportSource": "react"
-  }
+    "jsxImportSource": "react",
+  },
 }
