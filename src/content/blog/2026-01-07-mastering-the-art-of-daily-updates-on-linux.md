@@ -2,7 +2,7 @@
 title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updateDate: 2026-05-13
+updateDate: 2026-05-23
 tags:
   - Bash
   - GNU/Linux
@@ -16,7 +16,7 @@ tags:
 
 There are two types of people: those who never update their software and those who do it every day.
 
-Clearly, I'm the latter. I even perform various update operations daily across different devices: from system-level to application-level. And whenever I'm unsure what to do, “updating” is absolutely my default unconscious choice. I'm so addicted to updating that I wonder if it's some kind of disease such as compulsive disorder. Perhaps medical or psychological experts have already conducted similar research on this?
+Clearly, I'm the latter. I even perform various update operations daily across different devices: from system-level to application-level. And whenever I’m feeling bored, “update” is absolutely my default unconscious choice. I'm so addicted to updating that I wonder if it's some kind of disease such as compulsive disorder. Perhaps medical or psychological experts have already conducted similar research on this?
 
 Anyway, while updating functions on popular operating systems like iOS, macOS, Android, and Windows has become remarkably straightforward and user-friendly, the process remains less intuitive for Linux systems, particularly when using the command-line interface (CLI). Although users can leverage unattended-upgrades for automated updates, this solution doesn't address all challenges for heavy Docker users.
 
@@ -98,7 +98,23 @@ echo "--- Starting System Update ---"
 sudo dnf upgrade -y
 sudo dnf autoremove -y
 
-# Docker section remains the same as above
+echo "--- Updating Docker Containers via Watchtower ---"
+# Note: Docker API version is essential for Watchtower to function correctly
+sudo docker run --rm \
+    -e DOCKER_API_VERSION=1.44 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower \
+    --run-once \
+    --cleanup \
+    your container names (separate by space)
+
+echo "--- Cleaning up unused Docker resources ---"
+sudo docker container prune -f
+# Remove -a to keep cached images or keep it for deep clean
+sudo docker image prune -a -f
+sudo docker volume prune -f
+sudo docker network prune -f
+sudo docker builder prune -f
 
 echo "Update complete!"
 ```
@@ -156,15 +172,23 @@ if ! toolbox run true 2>/dev/null; then
     echo "Default toolbox container not found. Creating..."
     toolbox create -y
 fi
+
+# Upgrade, autoremove dependencies, AND purge the massive DNF download cache
 toolbox run sudo dnf upgrade -y
 toolbox run sudo dnf autoremove -y
+toolbox run sudo dnf clean all
 
 # Clean up unused Podman resources
 echo ""
 echo "--- Cleaning up unused Podman resources ---"
-podman image prune -f
-podman container prune -f
+# Deletes stopped containers, unused networks, and dangling images
+podman system prune -f 
+
+# Removes unused volumes specifically (since system prune doesn't include volumes by default)
 podman volume prune -f
+
+# Optional deep clean: Removes all unused images, not just dangling ones
+# podman image prune -a -f
 
 echo ""
 echo "Update complete!"
