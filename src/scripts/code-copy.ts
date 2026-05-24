@@ -6,7 +6,7 @@ const copyText = async (text: string): Promise<boolean> => {
     }
     return false;
   } catch (err) {
-    console.error('Clipboard copy failed:', err);
+    console.error("Clipboard copy failed:", err);
     return false;
   }
 };
@@ -28,60 +28,60 @@ const failIcon = `
   </svg>
 `;
 
-const blocks = document.querySelectorAll('pre');
+const blocks = document.querySelectorAll("pre");
 blocks.forEach((pre) => {
-  const code = pre.querySelector('code');
+  const code = pre.querySelector("code");
   if (!code) return;
 
   let wrapper = pre.parentElement;
-  if (!wrapper || !wrapper.classList.contains('code-block')) {
-    wrapper = document.createElement('div');
-    wrapper.className = 'code-block';
+  if (!wrapper || !wrapper.classList.contains("code-block")) {
+    wrapper = document.createElement("div");
+    wrapper.className = "code-block";
     pre.parentNode?.insertBefore(wrapper, pre);
     wrapper.appendChild(pre);
   }
 
-  if (wrapper.querySelector('.code-copy-button')) return;
+  if (wrapper.querySelector(".code-copy-button")) return;
 
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'code-copy-button';
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "code-copy-button";
   button.innerHTML = copyIcon;
-  button.setAttribute('aria-label', 'Copy code to clipboard');
-  button.setAttribute('title', 'Copy');
+  button.setAttribute("aria-label", "Copy code to clipboard");
+  button.setAttribute("title", "Copy");
 
-  const setState = (state: 'copied' | 'failed' | 'idle') => {
-    if (state === 'copied') {
+  const setState = (state: "copied" | "failed" | "idle") => {
+    if (state === "copied") {
       button.innerHTML = checkIcon;
-      button.dataset.copied = 'true';
-      button.setAttribute('aria-label', 'Copied');
-      button.setAttribute('title', 'Copied');
+      button.dataset.copied = "true";
+      button.setAttribute("aria-label", "Copied");
+      button.setAttribute("title", "Copied");
       return;
     }
 
-    if (state === 'failed') {
+    if (state === "failed") {
       button.innerHTML = failIcon;
-      button.dataset.copied = 'false';
-      button.setAttribute('aria-label', 'Copy failed');
-      button.setAttribute('title', 'Copy failed');
+      button.dataset.copied = "false";
+      button.setAttribute("aria-label", "Copy failed");
+      button.setAttribute("title", "Copy failed");
       return;
     }
 
     button.innerHTML = copyIcon;
-    button.dataset.copied = 'false';
-    button.setAttribute('aria-label', 'Copy code to clipboard');
-    button.setAttribute('title', 'Copy');
+    button.dataset.copied = "false";
+    button.setAttribute("aria-label", "Copy code to clipboard");
+    button.setAttribute("title", "Copy");
   };
 
   let resetTimer: ReturnType<typeof setTimeout>;
-  button.addEventListener('click', async () => {
-    const text = code.textContent || '';
+  button.addEventListener("click", async () => {
+    const text = code.textContent || "";
     const ok = await copyText(text);
 
-    setState(ok ? 'copied' : 'failed');
+    setState(ok ? "copied" : "failed");
 
     clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => setState('idle'), 2000);
+    resetTimer = setTimeout(() => setState("idle"), 2000);
   });
 
   wrapper.appendChild(button);

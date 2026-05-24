@@ -1,6 +1,6 @@
 export const headerSubtitleOptions: string[] = [
   "This blog is entirely produced by silicon-based slaves. I only issue commands and wield the whip.",
-  "Thanks to the AI era, I too have the opportunity to become a \"slave\" driver, whipping others to work for me. Or perhaps I've merely discovered an intensely addictive method of whipping myself?",
+  'Thanks to the AI era, I too have the opportunity to become a "slave" driver, whipping others to work for me. Or perhaps I\'ve merely discovered an intensely addictive method of whipping myself?',
   "I know nothing except the fact of my ignorance.\n\u2014 Socrates",
   "Si vous ne vivez pas comme vous pensez, vous finirez par penser comme vous vivez.\n\u2014 Paul Bourget",
   "Unlimited tolerance must lead to the disappearance of tolerance.\n\u2014 Karl Popper",
@@ -18,4 +18,5 @@ export const headerSubtitleOptions: string[] = [
   "Alle Bücher dieser Welt\nBringen dir kein Glück,\nDoch sie weisen dich geheim\nIn dich selbst zurück.\n\u2014 Hermann Hesse",
   "Be honest about what you don't know. You only have to do a very few things right in your life so long as you don't do too many things wrong.\n\u2014 Warren Buffett",
   "Those who would give up essential Liberty, to purchase a little temporary Safety, deserve neither Liberty nor Safety.\n\u2014 Benjamin Franklin",
+  "The free man will ask neither what his country can do for him nor what he can do for his country.\nHe will ask rather “What can I and my compatriots do through government” to help us discharge our individual responsibilities, to achieve our several goals and purposes, and above all, to protect our freedom?\n\u2014 Milton Friedman, Capitalism and Freedom (1962)",
 ];

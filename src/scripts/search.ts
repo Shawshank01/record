@@ -1,4 +1,4 @@
-export { };
+export {};
 
 declare global {
   interface Window {
@@ -14,7 +14,7 @@ interface PostItem {
   tags?: string[];
 }
 
-const normalise = (text = ''): string => text.toString().toLowerCase();
+const normalise = (text = ""): string => text.toString().toLowerCase();
 
 const getPayload = (): PostItem[] => {
   const globalPayload = window.__MICHIFUMI_POSTS__;
@@ -22,18 +22,21 @@ const getPayload = (): PostItem[] => {
     return globalPayload;
   }
 
-  const dataTag = document.getElementById('search-data');
+  const dataTag = document.getElementById("search-data");
   if (!dataTag) return [];
 
   try {
-    const parsed = JSON.parse(dataTag.textContent || '[]');
+    const parsed = JSON.parse(dataTag.textContent || "[]");
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 };
 
-const searchDocuments = (payload: PostItem[], query: string): { id: string }[] | undefined => {
+const searchDocuments = (
+  payload: PostItem[],
+  query: string,
+): { id: string }[] | undefined => {
   const needle = normalise(query);
   if (!needle) return undefined;
 
@@ -42,8 +45,8 @@ const searchDocuments = (payload: PostItem[], query: string): { id: string }[] |
       const tags = Array.isArray(item.tags) ? item.tags : [];
       const tagMatches = tags.some((tag) => normalise(tag).includes(needle));
       return (
-        [item.title, item.description, item.body].some(
-          (field) => normalise(field ?? '').includes(needle)
+        [item.title, item.description, item.body].some((field) =>
+          normalise(field ?? "").includes(needle),
         ) || tagMatches
       );
     })
@@ -51,71 +54,73 @@ const searchDocuments = (payload: PostItem[], query: string): { id: string }[] |
 };
 
 const initTagMenus = (): void => {
-  const sidebars = document.querySelectorAll<HTMLElement>('[data-tag-sidebar]');
+  const sidebars = document.querySelectorAll<HTMLElement>("[data-tag-sidebar]");
   sidebars.forEach((sidebar) => {
-    const toggle = sidebar.querySelector<HTMLElement>('[data-tag-toggle]');
-    const menu = sidebar.querySelector<HTMLElement>('[data-tag-menu]');
+    const toggle = sidebar.querySelector<HTMLElement>("[data-tag-toggle]");
+    const menu = sidebar.querySelector<HTMLElement>("[data-tag-menu]");
 
-    if (!toggle || !menu || toggle.dataset.bound === 'true') return;
+    if (!toggle || !menu || toggle.dataset.bound === "true") return;
 
     const setOpenState = (isOpen: boolean): void => {
-      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
       if (isOpen) {
-        menu.classList.remove('hidden');
-        menu.classList.add('flex');
+        menu.classList.remove("hidden");
+        menu.classList.add("flex");
       } else {
-        menu.classList.remove('flex');
-        menu.classList.add('hidden');
+        menu.classList.remove("flex");
+        menu.classList.add("hidden");
       }
     };
 
-    toggle.addEventListener('click', () => {
-      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.addEventListener("click", () => {
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
       setOpenState(!isOpen);
     });
 
     setOpenState(false);
-    toggle.dataset.bound = 'true';
+    toggle.dataset.bound = "true";
   });
 };
 
 const initSearchRedirect = (searchInput: HTMLInputElement): void => {
-  searchInput.placeholder = 'Search… ↵';
-  searchInput.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
+  searchInput.placeholder = "Search… ↵";
+  searchInput.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
       const query = searchInput.value.trim();
-      window.location.href = query ? `/?q=${encodeURIComponent(query)}` : '/';
+      window.location.href = query ? `/?q=${encodeURIComponent(query)}` : "/";
     }
   });
-  searchInput.dataset.searchBound = 'true';
+  searchInput.dataset.searchBound = "true";
 };
 
 const initSearchFull = (
   searchInput: HTMLInputElement,
-  postCards: HTMLElement[]
+  postCards: HTMLElement[],
 ): void => {
   // Read and consume query param
-  const initialQuery = new URLSearchParams(window.location.search).get('q');
+  const initialQuery = new URLSearchParams(window.location.search).get("q");
   if (initialQuery) {
     searchInput.value = initialQuery;
-    window.history.replaceState({}, '', window.location.pathname);
+    window.history.replaceState({}, "", window.location.pathname);
   }
 
-  const tagButtons = Array.from(document.querySelectorAll<HTMLElement>('.tag-filter'));
-  const indicator = document.getElementById('active-tag-indicator');
-  const emptyState = document.getElementById('no-results');
+  const tagButtons = Array.from(
+    document.querySelectorAll<HTMLElement>(".tag-filter"),
+  );
+  const indicator = document.getElementById("active-tag-indicator");
+  const emptyState = document.getElementById("no-results");
 
   // Build label lookup from tag buttons
   const labelLookup = new Map<string, string>();
   tagButtons.forEach((btn) => {
-    const key = btn.dataset.filterTag ?? '';
+    const key = btn.dataset.filterTag ?? "";
     if (key) labelLookup.set(key, btn.dataset.filterLabel ?? key);
   });
-  labelLookup.set('all', 'All');
+  labelLookup.set("all", "All");
 
   const payload = getPayload();
   if (payload.length === 0) {
-    searchInput.dataset.searchBound = 'true';
+    searchInput.dataset.searchBound = "true";
     return;
   }
 
@@ -123,7 +128,7 @@ const initSearchFull = (
   const cardTagsCache = new Map<HTMLElement, string[]>();
   postCards.forEach((card) => {
     try {
-      const tags = JSON.parse(card.dataset.tags || '[]');
+      const tags = JSON.parse(card.dataset.tags || "[]");
       cardTagsCache.set(card, Array.isArray(tags) ? tags : []);
     } catch {
       cardTagsCache.set(card, []);
@@ -143,32 +148,38 @@ const initSearchFull = (
     let visibleCount = 0;
 
     postCards.forEach((card) => {
-      const shouldShow = (!matches || matchIds.has(card.dataset.postId || '')) && passesTag(card);
-      card.classList.toggle('hidden', !shouldShow);
+      const shouldShow =
+        (!matches || matchIds.has(card.dataset.postId || "")) &&
+        passesTag(card);
+      card.classList.toggle("hidden", !shouldShow);
       if (shouldShow) visibleCount += 1;
     });
 
-    emptyState?.classList.toggle('hidden', visibleCount !== 0);
+    emptyState?.classList.toggle("hidden", visibleCount !== 0);
   };
 
   const updateIndicator = (): void => {
     if (!indicator) return;
     if (selectedTags.size === 0) {
-      indicator.classList.add('hidden');
-      indicator.textContent = '';
+      indicator.classList.add("hidden");
+      indicator.textContent = "";
     } else {
-      indicator.classList.remove('hidden');
-      const tagLabels = Array.from(selectedTags).map((t) => `#${labelLookup.get(t) ?? t}`);
-      const prefix = selectedTags.size === 1 ? 'Filtering by tag:' : 'Filtering by tags:';
-      indicator.textContent = `${prefix} ${tagLabels.join(', ')}`;
+      indicator.classList.remove("hidden");
+      const tagLabels = Array.from(selectedTags).map(
+        (t) => `#${labelLookup.get(t) ?? t}`,
+      );
+      const prefix =
+        selectedTags.size === 1 ? "Filtering by tag:" : "Filtering by tags:";
+      indicator.textContent = `${prefix} ${tagLabels.join(", ")}`;
     }
   };
 
   const setActiveTagButtons = (): void => {
     tagButtons.forEach((btn) => {
-      const tag = btn.dataset.filterTag ?? '';
-      const isSelected = tag === 'all' ? selectedTags.size === 0 : selectedTags.has(tag);
-      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      const tag = btn.dataset.filterTag ?? "";
+      const isSelected =
+        tag === "all" ? selectedTags.size === 0 : selectedTags.has(tag);
+      btn.setAttribute("aria-pressed", isSelected ? "true" : "false");
     });
   };
 
@@ -178,13 +189,13 @@ const initSearchFull = (
   };
 
   // Wire up events
-  searchInput.addEventListener('input', performSearch);
+  searchInput.addEventListener("input", performSearch);
 
   tagButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const tag = btn.dataset.filterTag ?? 'all';
+    btn.addEventListener("click", () => {
+      const tag = btn.dataset.filterTag ?? "all";
 
-      if (tag === 'all') {
+      if (tag === "all") {
         selectedTags.clear();
       } else if (selectedTags.has(tag)) {
         selectedTags.delete(tag);
@@ -203,14 +214,18 @@ const initSearchFull = (
   updateIndicator();
   performSearch();
 
-  searchInput.dataset.searchBound = 'true';
+  searchInput.dataset.searchBound = "true";
 };
 
 const initSearch = (): void => {
-  const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
-  if (!searchInput || searchInput.dataset.searchBound === 'true') return;
+  const searchInput = document.getElementById(
+    "blog-search",
+  ) as HTMLInputElement | null;
+  if (!searchInput || searchInput.dataset.searchBound === "true") return;
 
-  const postCards = Array.from(document.querySelectorAll<HTMLElement>('.post-card'));
+  const postCards = Array.from(
+    document.querySelectorAll<HTMLElement>(".post-card"),
+  );
 
   if (postCards.length === 0) {
     initSearchRedirect(searchInput);

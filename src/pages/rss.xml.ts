@@ -1,13 +1,15 @@
-import rss from '@astrojs/rss';
-import { getCollection, render } from 'astro:content';
-import type { APIRoute } from 'astro';
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { loadRenderers } from 'astro:container';
-import sanitizeHtml from 'sanitize-html';
+import rss from "@astrojs/rss";
+import { getCollection, render } from "astro:content";
+import type { APIRoute } from "astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import { loadRenderers } from "astro:container";
+import sanitizeHtml from "sanitize-html";
 
 export const GET: APIRoute = async (context) => {
-  const blog = await getCollection('blog', ({ data }) => !data.draft);
-  const sortedBlog = blog.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const blog = await getCollection("blog", ({ data }) => !data.draft);
+  const sortedBlog = blog.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
 
   const renderers = await loadRenderers([]);
   const container = await AstroContainer.create({ renderers });
@@ -17,17 +19,17 @@ export const GET: APIRoute = async (context) => {
       const { Content } = await render(post);
       const rawHtml = await container.renderToString(Content);
       const content = sanitizeHtml(rawHtml, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
       });
 
       return {
         title: post.data.title,
         pubDate: post.data.pubDate,
         description: post.data.description,
-        link: `/blog/${post.id.replace(/\.md$/, '')}/`,
+        link: `/blog/${post.id.replace(/\.md$/, "")}/`,
         content: `<p><em>${post.data.description}</em></p><hr />${content}`,
       };
-    })
+    }),
   );
 
   return rss({
@@ -38,7 +40,7 @@ export const GET: APIRoute = async (context) => {
     customData: `
       <language>en-us</language>
       <image>
-        <url>${new URL('icon-rss.png', context.site!)}</url>
+        <url>${new URL("icon-rss.png", context.site!)}</url>
         <title>Michifumi's Blog</title>
         <link>${context.site!}</link>
       </image>
