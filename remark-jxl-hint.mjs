@@ -14,6 +14,20 @@ export default function remarkJxlHint() {
           "/blog/2026-03-05-the-rise-fall-and-resurrection-of-jpeg-xl/";
         node.title = null;
         node.children = [imgNode];
+        node.data = {
+          ...(node.data || {}),
+          hProperties: {
+            ...(node.data?.hProperties || {}),
+            className: [
+              ...new Set([
+                ...(Array.isArray(node.data?.hProperties?.className)
+                  ? node.data.hProperties.className
+                  : []),
+                "jxl-fallback-link",
+              ]),
+            ],
+          },
+        };
 
         // Clean up properties that belong to image but not link
         delete node.alt;

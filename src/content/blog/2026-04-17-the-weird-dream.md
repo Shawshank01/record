@@ -4,6 +4,7 @@ description: "Or should I be happy about it?"
 pubDate: 2026-04-17
 tags:
   - Opinion
+  - Ireland
 ---
 
 ![jxl hint](/2026-04-17/Gemini_Generated_Image_of_My_English_Dream.jxl)

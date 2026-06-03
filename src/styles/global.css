@@ -79,6 +79,21 @@ a:hover {
     opacity: 0.9;
 }
 
+/* Shrink-wrap JXL fallback links so only the visible image/prompt is clickable. */
+.prose a.jxl-fallback-link {
+    display: block;
+    width: fit-content;
+    max-width: min(100%, 500px);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.prose a.jxl-fallback-link > img {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 /* Lightbox overlay */
 .lightbox-overlay {
     position: fixed;
