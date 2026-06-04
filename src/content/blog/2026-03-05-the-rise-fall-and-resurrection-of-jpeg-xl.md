@@ -2,6 +2,7 @@
 title: "The Rise, Fall, and Resurrection of JPEG XL"
 description: "The story of JPEG XL's rollercoaster journey, and how you can embrace it on macOS."
 pubDate: 2026-03-05
+updateDate: 2026-06-04
 tags:
   - JPEG XL
   - macOS
@@ -10,6 +11,9 @@ tags:
 ---
 
 If you've read my [previous blog post](https://zaku.eu.org/blog/2026-02-26-blucher-procedural-justice-or-bureaucracy/), you may have noticed something odd — yes, because I used `.jxl` format images, which might prevent you from seeing them in most browsers.
+
+[Go directly to the section on how to display JXL images in your browser](#how-to-enable-jpeg-xl-in-your-browser)
+
 My interest in JPEG XL began when I wrote a research paper on image compression during my graduate studies. While I admire the excellence of JPEG XL, I am astonished that at the time, there were almost no mainstream browsers supporting this format. Today, I finally have the chance to share with you the story of JPEG XL in a dramatic way.
 
 ---
