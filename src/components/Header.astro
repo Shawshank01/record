@@ -132,6 +132,8 @@ const initialSubtitle = options[0] ?? "";
         });
     }
 
+    let scrollDelta = 0;
+
     const handleScroll = () => {
         if (!headerEl) return;
         const currentScrollY = window.scrollY;
@@ -144,15 +146,31 @@ const initialSubtitle = options[0] ?? "";
             return;
         }
 
+        const diff = currentScrollY - lastScrollY;
+
         if (currentScrollY <= 50) {
             headerEl.style.transform = "translateY(0)";
             document.documentElement.classList.remove("header-hidden");
-        } else if (currentScrollY > lastScrollY) {
-            headerEl.style.transform = "translateY(-100%)";
-            document.documentElement.classList.add("header-hidden");
-        } else if (currentScrollY < lastScrollY) {
-            headerEl.style.transform = "translateY(0)";
-            document.documentElement.classList.remove("header-hidden");
+            scrollDelta = 0;
+        } else {
+            // Reset the accumulated delta if direction shifts
+            if (diff > 0 && scrollDelta < 0) {
+                scrollDelta = 0;
+            } else if (diff < 0 && scrollDelta > 0) {
+                scrollDelta = 0;
+            }
+
+            scrollDelta += diff;
+
+            if (scrollDelta > 10) {
+                // Scroll down: hide header
+                headerEl.style.transform = "translateY(-100%)";
+                document.documentElement.classList.add("header-hidden");
+            } else if (scrollDelta < -300) {
+                // Scroll up past 300px: reveal header
+                headerEl.style.transform = "translateY(0)";
+                document.documentElement.classList.remove("header-hidden");
+            }
         }
 
         lastScrollY = currentScrollY;
