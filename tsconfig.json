@@ -1,11 +1,6 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": ".",
-    "strict": true,
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "types": ["astro/client"],
     "jsx": "preserve",
     "jsxImportSource": "react",
   },
