@@ -50,8 +50,8 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 | Layer       | Technology                                                                 |
 | ----------- | -------------------------------------------------------------------------- |
-| Framework   | [Astro 6](https://astro.build) (static-site generation)                    |
-| Styling     | [Tailwind CSS 4](https://tailwindcss.com) + `@tailwindcss/typography`      |
+| Framework   | [Astro 7](https://astro.build) (static-site generation)                    |
+| Styling     | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography` |
 | Typography  | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
 | Language    | TypeScript                                                                 |
 | Deployment  | GitHub Pages via GitHub Actions                                            |
