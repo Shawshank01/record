@@ -2,6 +2,7 @@
 title: "Everyone should start using a VPN or Proxy"
 description: "Protect your digital privacy by using VPNs and obfuscated proxies to stop ISPs and governments from tracking your internet traffic."
 pubDate: 2026-04-25
+updateDate: 2026-07-24
 tags:
   - Privacy
   - Security
@@ -40,6 +41,24 @@ It’s a lightweight, rock-solid, and fast proxy for general privacy or bypassin
 But, if you live in China, Iran or Russia, or if your ISP restricts unknown traffic and only allows HTTPS/TLS connections (as is common when using Wi-Fi provided by a library or college), then you will need to choose Xray, which is a slightly more complicated but more powerful proxy tool. Don’t worry, I've made it as easy as possible to reduce the number of steps in the setup process in my script.
 
 Xray provides several ways to bypass detection and restrictions using obfuscation. I specifically opted for the VLESS-XHTTP-REALITY method. The best part about it is that the only thing you need to prepare is a VPS or a remote Linux service that runs 24/7 with no network restrictions. No domain or certificates are needed, and you can "steal" another website's domain to make it look like your traffic is connecting to that domain via HTTPS! In reality, however, your traffic is encrypted from your local machine to the VPS and then on to the target website or internet service that you want to visit. The only tricky part is that you have to find a website that can be visited directly from the local network without a proxy. That website also needs to meet some requirements. I have listed the [details in my GitHub repository](https://github.com/Shawshank01/proxy_sh#configuration-details).
+
+> *Little Hint*
+
+If you want to pursue ultimate proxy speed and camouflage, there is a technique revered in the Xray community as the "perfect answer"—borrowing a neighbor's domain. Instead of using famous public domain names, you can follow these steps to tailor a domain specifically for your VPS:
+
+1. Open the website: [bgp.tools](https://bgp.tools)
+2. Enter your VPS's public IP in the search box and press Enter.
+3. Click the DNS tab, then check "Remove auto generated reverse DNS entries".
+4. You will now see a large list of other domain names located in the same data center and subnet as your VPS.
+5. Select a few websites and run test scripts on your VPS directly.
+
+**Why bother?**
+
+Because these websites reside in the same data center—or even on the same rack cabling—as your VPS. When Xray's core "borrows" its TLS certificate and handshake characteristics, latency is under 1 ms (blazing fast). Furthermore, from the perspective of the Network Administrator, the physical network routing of your VPS traffic matches that of the legitimate neighbor site, maximising camouflage.
+
+Before entering the domain name into your *proxy.sh* script, make sure to avoid redirects: If you enter `example.com` and it automatically redirects to `www.example.com` or `example.com/en/`, make sure to put the final redirected full domain into your script.
+
+---
 
 Remember that the risks of hosting your own proxy server are the same as using a VPN from a commercial company — you are putting your trust in the VPS provider instead of your local ISP. This means that you have to trust the VPS provider not to sell your data to others, either intentionally or unintentionally.
 
