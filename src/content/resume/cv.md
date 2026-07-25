@@ -6,10 +6,20 @@ description: "My study experiences and projects."
 ### Contact
 
 ✉️ [EMAIL](mailto:lelouch@outlook.ie) | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
+🪪 **Stamp 1G Visa Holder** — Full Right to Work in Ireland
 
 ---
 
-A passionate software engineer with a strong academic foundation in advanced software development and practical experience architecting modern, highly scalable full-stack applications.
+A passionate **Software Engineer / Full-Stack Developer** with a strong academic foundation in advanced software development and practical experience architecting modern, highly scalable full-stack applications.
+
+---
+
+## Tech Stack
+
+- **Languages:** TypeScript, JavaScript, Java, Python, Shell Script, HTML, CSS
+- **Frameworks & Libraries:** React, Astro, Tailwind CSS, Vite, Express/Node.js
+- **Databases:** Oracle 23ai, PostgreSQL, MongoDB
+- **DevOps & Cloud:** Git, CI/CD, Docker, GNU/Linux, GCP, AWS, Azure
 
 ---
 
@@ -26,15 +36,6 @@ A passionate software engineer with a strong academic foundation in advanced sof
 
 > 2nd Class Honours Grade 1
 >> **Module:** Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
-
----
-
-## Tech Stack
-
-- **Languages:** TypeScript, JavaScript, Java, Python, Shell Script, HTML, CSS
-- **Frameworks & Libraries:** React, Astro, Tailwind CSS, Vite, Express/Node.js
-- **Databases:** Oracle 23ai, PostgreSQL, MongoDB
-- **DevOps & Cloud:** Git, CI/CD, Docker, GNU/Linux, GCP, AWS, Azure
 
 ---
 
