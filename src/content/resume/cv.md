@@ -1,12 +1,12 @@
 ---
-title: "Diwen's CV"
+title: "Diwen Xiao's CV"
 description: "My study experiences and projects."
 ---
 
 ### Contact
 
 ✉️ [EMAIL](mailto:lelouch@outlook.ie) | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
-🪪 **Stamp 1G Visa Holder** — Full Right to Work in Ireland
+🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland)
 
 ---
 
