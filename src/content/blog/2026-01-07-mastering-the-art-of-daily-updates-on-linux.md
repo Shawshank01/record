@@ -2,7 +2,7 @@
 title: "Mastering the Art of Daily Updates on Linux (and macOS)"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updateDate: 2026-05-23
+updateDate: 2026-08-06
 tags:
   - Bash
   - GNU/Linux
@@ -63,6 +63,9 @@ sudo apt-get update
 sudo apt-get full-upgrade -y
 sudo apt-get autoremove -y
 
+echo "--- Vacuuming Systemd Logs ---"
+sudo journalctl --vacuum-size=200M --vacuum-time=14d
+
 echo "--- Updating Docker Containers via Watchtower ---"
 # Note: Docker API version is essential for Watchtower to function correctly
 sudo docker run --rm \
@@ -97,6 +100,9 @@ set -e
 echo "--- Starting System Update ---"
 sudo dnf upgrade -y
 sudo dnf autoremove -y
+
+echo "--- Vacuuming Systemd Logs ---"
+sudo journalctl --vacuum-size=200M --vacuum-time=14d
 
 echo "--- Updating Docker Containers via Watchtower ---"
 # Note: Docker API version is essential for Watchtower to function correctly
@@ -177,6 +183,10 @@ fi
 toolbox run sudo dnf upgrade -y
 toolbox run sudo dnf autoremove -y
 toolbox run sudo dnf clean all
+
+echo ""
+echo "--- Vacuuming Systemd Logs ---"
+sudo journalctl --vacuum-size=200M --vacuum-time=14d
 
 # Clean up unused Podman resources
 echo ""
