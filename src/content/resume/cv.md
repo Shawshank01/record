@@ -75,7 +75,7 @@ This is a modern, user-friendly desktop Electron application for downloading vid
 
 This is an automated shell script that effortlessly installs and manages Docker containers on GNU/Linux systems. It can be used to construct encrypted and obfuscated traffic proxy servers using Xray (VLESS-XHTTP-REALITY) and Shadowsocks (2022). Supports IPv6.
 
-[xAI-native](https://github.com/Shawshank01/xAI-native)
+[xAI-desktop](https://github.com/Shawshank01/xAI-desktop)
 
 This is a local, user-friendly web application that provides a graphical interface for chatting with xAI's latest models via their official API. This UI provides full Markdown-rendered streaming responses with context, and image generation capabilities.
 
