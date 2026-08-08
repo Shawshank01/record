@@ -2,7 +2,7 @@
 title: "Everyone should start using a VPN or Proxy"
 description: "Protect your digital privacy by using VPNs and obfuscated proxies to stop ISPs and governments from tracking your internet traffic."
 pubDate: 2026-04-25
-updateDate: 2026-07-24
+updateDate: 2026-08-08
 tags:
   - Privacy
   - Security
@@ -28,7 +28,7 @@ Up to this point, the VPN has appeared to be unrivalled. But hang on a sec, the 
 
 [Shadowsocks-rust](https://github.com/shadowsocks/shadowsocks-rust) and [Project X](https://github.com/XTLS/Xray-core) were created for this very purpose, both are highly reputable, open-source, and considered "gold standard" tools within the network proxy and anti-censorship communities. I have used them for many years and they have never failed me. That's why I wrote a [shell script](https://github.com/Shawshank01/proxy_sh) for them — to simplify the process of building a proxy server on a VPS deployed by Docker.
 
-![proxy-script-cli](/2026-04-25/proxy-script-cli.png)
+![jxl hint](/2026-04-25/proxy-script-cli.jxl)
 
 ## What are the differences, and which one should you choose?
 
@@ -54,7 +54,7 @@ If you want to pursue ultimate proxy speed and camouflage, there is a technique 
 
 **Why bother?**
 
-Because these websites reside in the same data center—or even on the same rack cabling—as your VPS. When Xray's core "borrows" its TLS certificate and handshake characteristics, latency is under 1 ms (blazing fast). Furthermore, from the perspective of the Network Administrator, the physical network routing of your VPS traffic matches that of the legitimate neighbor site, maximising camouflage.
+Because these websites reside in the same data centre, or even on the same rack cabling, as your VPS. When Xray's core "borrows" its TLS certificate and handshake characteristics, latency is under 1 ms (blazing fast). Furthermore, from the perspective of the Network Administrator, the physical network routing of your VPS traffic matches that of the legitimate neighbor site, maximising camouflage.
 
 Before entering the domain name into your *proxy.sh* script, make sure to avoid redirects: If you enter `example.com` and it automatically redirects to `www.example.com` or `example.com/en/`, make sure to put the final redirected full domain into your script.
 
