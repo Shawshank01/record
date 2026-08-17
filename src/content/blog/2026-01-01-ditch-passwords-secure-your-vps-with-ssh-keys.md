@@ -1,7 +1,8 @@
 ---
-title: "Ditch Passwords: Secure Your VPS with SSH Keys (RackNerd Ubuntu)"
+title: "Ditch Passwords: Secure Your VPS with SSH Keys (RackNerd's Ubuntu)"
 description: "We move beyond complex passwords and harden SSH access using ed25519 keys, proper permissions, and cloud-init overrides."
 pubDate: 2026-01-01
+updatedDate: 2026-08-17
 tags:
   - GNU/Linux
   - Ubuntu
@@ -220,7 +221,7 @@ So what happened?
 
 ## The Real Issue: RackNerd `50-cloud-init.conf` Overriding Your Config
 
-On RackNerd Ubuntu VPS templates, the SSH config often includes:
+On RackNerd Ubuntu VPS templates, the SSH config often includes a directive at line 1 without a `#` comment:
 
 ```text
 Include /etc/ssh/sshd_config.d/*.conf
@@ -238,7 +239,9 @@ That file had:
 PasswordAuthentication yes
 ```
 
-So even though I set it to `no` in the main config, **cloud-init config loaded later and overrode it**.
+Here is the catch with OpenSSH: **for each keyword, the first obtained value wins**.
+
+Because `Include /etc/ssh/sshd_config.d/*.conf` is at line 1 of Ubuntu's default `/etc/ssh/sshd_config`, OpenSSH parsed `50-cloud-init.conf` **before** reading the rest of `/etc/ssh/sshd_config`. Since it encountered `PasswordAuthentication yes` first, it completely ignored the `no` in the main config!
 
 ✅ Fix: change it to:
 
@@ -246,12 +249,7 @@ So even though I set it to `no` in the main config, **cloud-init config loaded l
 PasswordAuthentication no
 ```
 
-Then restart:
-
-```bash
-sudo systemctl restart ssh
-sudo systemctl restart ssh.socket
-```
+Then restart SSH (e.g., `sudo systemctl restart ssh` on Ubuntu 22.04, or `sudo systemctl restart ssh.socket` on Ubuntu 24.04).
 
 After that, password login stopped working.
 
@@ -259,12 +257,14 @@ After that, password login stopped working.
 
 ## Step 7: Make It Future-Proof (Recommended)
 
-Cloud-init can regenerate files in the future, depending on setup.
+Cloud-init can regenerate or overwrite `50-cloud-init.conf` during system updates or re-provisioning.
 
-A safer approach is to create a final override file that loads last:
+OpenSSH uses **first match wins** and loads drop-in files in alphabetical order, we want our custom configuration to load **before** `50-cloud-init.conf`.
+
+We do this by creating a drop-in file with a lower number prefix like `01-`:
 
 ```bash
-sudo tee /etc/ssh/sshd_config.d/99-hardening.conf >/dev/null <<'EOF'
+sudo tee /etc/ssh/sshd_config.d/01-hardening.conf >/dev/null <<'EOF'
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PermitRootLogin no
@@ -272,15 +272,35 @@ PubkeyAuthentication yes
 EOF
 ```
 
-Then:
+Because `01-hardening.conf` is loaded alphabetically before `50-cloud-init.conf`, its rules take priority even if cloud-init resets `50-cloud-init.conf` in the future.
+
+### Test syntax before restarting
+
+Before restarting the SSH service, **always test your configuration syntax first**:
 
 ```bash
 sudo sshd -t
-sudo systemctl restart ssh
-sudo systemctl restart ssh.socket
 ```
 
-Now even if cloud-init modifies `50-cloud-init.conf`, the final hardening file will win.
+- **No output**: That’s good! Silent success means the configuration has no syntax errors.
+
+### Restart SSH service
+
+Once verified, apply the changes by restarting the SSH service. The command depends on your distribution version:
+
+- **Ubuntu 24.04 LTS** (uses systemd socket activation by default):
+  ```bash
+  sudo systemctl restart ssh.socket
+  ```
+- **Ubuntu 22.04 LTS / Debian / older systems** (uses classic standalone service):
+  ```bash
+  sudo systemctl restart ssh
+  ```
+
+> 💡 **Tip:** If you're unsure which init mode your server uses, you can run:
+> ```bash
+> sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket
+> ```
 
 ---
 
@@ -289,21 +309,21 @@ Now even if cloud-init modifies `50-cloud-init.conf`, the final hardening file w
 On the VPS, check:
 
 ```bash
-sudo sshd -T | egrep 'passwordauthentication|permitrootlogin|pubkeyauthentication|kbdinteractiveauthentication'
+sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin|pubkeyauthentication|kbdinteractiveauthentication'
 ```
 
 Expected output includes:
 
 ```text
-passwordauthentication no
 permitrootlogin no
 pubkeyauthentication yes
+passwordauthentication no
 kbdinteractiveauthentication no
 ```
 
 ---
 
-## Bonus Hardening (Optional but Recommended)
+## Bonus Hardening (Optional)
 
 ### Install fail2ban
 
@@ -323,20 +343,7 @@ In sshd_config:
 X11Forwarding no
 ```
 
-Less attack surface.
-
----
-
-## Mission Accomplished
-
-The VPS is now significantly more secure:
-
-✅ Root SSH login disabled  
-✅ Root password locked  
-✅ SSH keys enabled  
-✅ Password authentication disabled  
-✅ cloud-init overrides handled properly  
-✅ permissions correctly locked down
+Less attack surface is always better.
 
 ---
 
@@ -347,3 +354,4 @@ The VPS is now significantly more secure:
 - monitoring login attempts
 - restricting SSH access by IP or using VPN
 - adding 2FA
+- Secure DNS

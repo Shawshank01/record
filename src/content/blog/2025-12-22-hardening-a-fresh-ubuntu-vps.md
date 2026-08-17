@@ -2,6 +2,7 @@
 title: "Hardening a Fresh Ubuntu VPS: From Root Login to Secure SSH"
 description: "A step-by-step guide to securing a new Ubuntu VPS by creating a regular user, configuring sudo, and disabling root SSH access."
 pubDate: 2025-12-22
+updatedDate: 2026-08-17
 tags:
   - GNU/Linux
   - Ubuntu
@@ -113,25 +114,46 @@ If this works locally, remote SSH access will work as well.
 
 Once you’ve confirmed the new user can log in and use sudo, disable root SSH access.
 
-Edit the SSH configuration:
+What you should do is create a drop-in configuration file under `/etc/ssh/sshd_config.d/`. Because OpenSSH uses **first match wins** and evaluates drop-in files alphabetically, naming the file `01-hardening.conf` guarantees our setting takes priority over any default cloud-init or provider templates:
 
 ```bash
-sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo tee /etc/ssh/sshd_config.d/01-hardening.conf >/dev/null <<'EOF'
+PermitRootLogin no
+EOF
 ```
 
-Restart SSH:
+### Test syntax before restarting
+
+Always test your configuration syntax before restarting the SSH service:
 
 ```bash
-systemctl restart ssh
+sudo sshd -t
 ```
 
-Verify:
+- **No output**: Silent success — syntax is valid and safe to apply.
+
+### Restart SSH service
+
+Apply the changes by restarting the SSH service depending on your distribution:
+
+- **Ubuntu 24.04 LTS (Socket-activated SSH):**
+  ```bash
+  sudo systemctl restart ssh.socket
+  ```
+- **Ubuntu 22.04 LTS / Debian (Classic SSH service):**
+  ```bash
+  sudo systemctl restart ssh
+  ```
+
+> 💡 **Tip:** You can also run `sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket` to handle either setup automatically.
+
+### Verify root login is disabled
 
 ```bash
-sshd -T | grep permitrootlogin
+sudo sshd -T | grep permitrootlogin
 ```
 
-Expected:
+Expected output:
 
 ```text
 permitrootlogin no
@@ -141,7 +163,7 @@ permitrootlogin no
 
 ## Step 6 (Optional but Recommended): Lock the Root Password
 
-To prevent *any* password-based root login:
+To prevent **any** password-based root login:
 
 ```bash
 passwd -l root
@@ -186,16 +208,6 @@ sudo -i
 drops you directly into a root shell.
 
 > ⚠️ Note: This trades convenience for security. Use with care.
-
----
-
-## Final Checklist
-
-- ✅ Regular user created
-- ✅ Sudo configured
-- ✅ SSH access verified
-- ✅ Root SSH login disabled
-- ✅ Root password locked (optional)
 
 ---
 
