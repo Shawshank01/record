@@ -221,8 +221,8 @@ One of the most impactful improvements is switching from password-based SSH auth
 - Protection against brute-force password attacks
 - Better usability once configured
 
-Use SSH key will significantly reduce the attack surface of an internet-facing server.
+Using SSH keys will significantly reduce the attack surface of an internet-facing server.
 
-In someday, perhaps we can walk through the process of configuring SSH keys step by step and locking down SSH access even further.
+In a future post, we'll walk through the process of configuring SSH keys step by step and locking down SSH access even further.
 
 But until then, I wish you a Merry Christmas 🎄✨🎅

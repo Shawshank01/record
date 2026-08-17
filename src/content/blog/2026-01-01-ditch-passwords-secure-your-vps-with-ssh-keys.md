@@ -94,7 +94,7 @@ This is where many people get confused (including me).
 
 Your public key file name on your Mac can be anything, like `id_ed25519.pub`.
 
-But on a Ubuntu VPS, SSH expects keys to be listed inside:
+But on an Ubuntu VPS, SSH expects keys to be listed inside:
 
 ```bash
 ~/.ssh/authorized_keys
@@ -188,7 +188,7 @@ Keep your current SSH session open during testing so you don’t lock yourself o
 
 ## Step 6: Disable Password Login (And It Didn’t Work at First)
 
-After edited `/etc/ssh/sshd_config` and added:
+After editing `/etc/ssh/sshd_config` and adding:
 
 ```text
 PasswordAuthentication no
@@ -259,7 +259,7 @@ After that, password login stopped working.
 
 Cloud-init can regenerate or overwrite `50-cloud-init.conf` during system updates or re-provisioning.
 
-OpenSSH uses **first match wins** and loads drop-in files in alphabetical order, we want our custom configuration to load **before** `50-cloud-init.conf`.
+Because OpenSSH uses **first match wins** and loads drop-in files in alphabetical order, we want our custom configuration to load **before** `50-cloud-init.conf`.
 
 We do this by creating a drop-in file with a lower number prefix like `01-`:
 
