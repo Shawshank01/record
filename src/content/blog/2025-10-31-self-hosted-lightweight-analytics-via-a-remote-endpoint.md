@@ -2,7 +2,7 @@
 title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-04-18
+updateDate: 2026-08-19
 tags:
   - GNU/Linux
   - Fedora CoreOS
@@ -106,23 +106,25 @@ All subsequent commands (creating the project, installing packages, running the 
 Create a new folder and initialise a Node project:
 
 > [!TIP]  
-> I use `better-sqlite3` instead of `sqlite3` to avoid npm vulnerabilities and get better performance. It's synchronous (simpler) and has less security issues.
+> I use `better-sqlite3` instead of `sqlite3` to avoid npm vulnerabilities and get better performance. It's synchronous (simpler) and has fewer security issues.
 
 ```bash
-mkdir ~/page-stats && cd ~/page-stats
+mkdir -p ~/page-stats/data && cd ~/page-stats
 npm init -y
-npm install express better-sqlite3 cors
+npm install express better-sqlite3
 ```
 
 Create `server.js`:
 
 ```js
+const fs = require("fs");
 const express = require("express");
 const Database = require("better-sqlite3");
-const cors = require("cors");
 const app = express();
 app.set("trust proxy", 1);
 app.set("json spaces", 2);
+
+fs.mkdirSync("./data", { recursive: true });
 const db = new Database("./data/stats.db");
 
 app.use(express.json({ limit: "2kb" }));
@@ -339,8 +341,8 @@ pm2 unstartup
 Or manually disable the systemd service:
 
 ```bash
-sudo systemctl disable pm2-ubuntu
-sudo systemctl stop pm2-ubuntu
+sudo systemctl disable pm2-$USER
+sudo systemctl stop pm2-$USER
 ```
 
 ### Fedora CoreOS: Podman + Systemd
@@ -405,9 +407,10 @@ Wants=network-online.target
 Type=simple
 Restart=always
 RestartSec=10
+ExecStartPre=-/usr/bin/podman rm -f -i page-stats
 ExecStart=/usr/bin/podman run --rm --name page-stats \
   -p 8080:8080 \
-  -v ~/page-stats/data:/app/data:Z \
+  -v %h/page-stats/data:/app/data:Z \
   localhost/page-stats:latest
 
 ExecStop=/usr/bin/podman stop -t 10 page-stats
@@ -660,17 +663,17 @@ If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. 
 1) Install Go (latest stable version):
 
 > [!TIP]  
-> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.26.2` below with the current version number.
+> Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.26.6` below with the current version number.
 
 **Debian/Ubuntu:**
 
 ```bash
 sudo apt remove -y golang-go golang || true
 cd /tmp
-# Replace 1.26.2 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.26.2.linux-amd64.tar.gz
+# Replace 1.26.6 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.26.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.26.6.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh >/dev/null
 source /etc/profile.d/go.sh
 ```
@@ -679,10 +682,10 @@ source /etc/profile.d/go.sh
 
 ```bash
 cd /tmp
-# Replace 1.26.2 with the latest version from https://go.dev/dl/
-curl -LO https://go.dev/dl/go1.26.2.linux-amd64.tar.gz
+# Replace 1.26.6 with the latest version from https://go.dev/dl/
+curl -LO https://go.dev/dl/go1.26.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.26.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.26.6.linux-amd64.tar.gz
 echo 'export PATH=/usr/local/go/bin:$PATH' | sudo tee /etc/profile.d/go.sh > /dev/null
 source /etc/profile.d/go.sh
 ```
@@ -984,14 +987,14 @@ All analytics live in `stats.db`. To migrate to a new VM:
 pm2 stop stats
 
 # Checkpoint WAL to merge all data into the main database file
-sqlite3 ~/page-stats/stats.db "PRAGMA wal_checkpoint(TRUNCATE);"
+sqlite3 ~/page-stats/data/stats.db "PRAGMA wal_checkpoint(TRUNCATE);"
 ```
 
 **On your local machine:**
 
 ```bash
-scp user@OLD_VPS_IP:~/page-stats/stats.db ~/Downloads/stats.db
-scp ~/Downloads/stats.db user@NEW_VPS_IP:~/page-stats/stats.db
+scp user@OLD_VPS_IP:~/page-stats/data/stats.db ~/Downloads/stats.db
+scp ~/Downloads/stats.db user@NEW_VPS_IP:~/page-stats/data/stats.db
 ```
 
 **On the new VPS:**
@@ -1057,8 +1060,8 @@ BACKUP_DIR="$HOME/backups/analytics"
 mkdir -p "$BACKUP_DIR"
 
 # Export CSV from the analytics endpoint using basic_auth
-# Set STATS_PASSWORD in your environment (e.g. via ~/.profile or a secrets manager)
-curl -s -u "admin:${STATS_PASSWORD}" "https://stats.zaku.eu.org/export" \
+# Set STATS_PASSWORD in your environment or systemd unit
+curl -fsSL -u "admin:${STATS_PASSWORD}" "https://stats.zaku.eu.org/export" \
   -o "$BACKUP_DIR/stats-$(date +%Y-%m-%d).csv"
 
 # Keep only last 30 days of backups
@@ -1082,7 +1085,7 @@ crontab -e
 Add this line:
 
 ```
-0 2 * * * /home/YOUR_USERNAME/backups/backup-stats.sh >> /home/YOUR_USERNAME/backups/backup.log 2>&1
+0 2 * * * STATS_PASSWORD="YOUR_PASSWORD_HERE" /home/YOUR_USERNAME/backups/backup-stats.sh >> /home/YOUR_USERNAME/backups/backup.log 2>&1
 ```
 
 **Fedora CoreOS: Schedule with systemd timer (daily at 2 AM):**
@@ -1096,6 +1099,7 @@ Description=Backup analytics CSV
 
 [Service]
 Type=oneshot
+Environment=STATS_PASSWORD=YOUR_PASSWORD_HERE
 ExecStart=%h/backups/backup-stats.sh
 EOF
 ```
@@ -1149,7 +1153,7 @@ systemctl --user start page-stats.service
 On Debian/Ubuntu with PM2, use SQLite's built-in backup command (safe, works while the service is running):
 
 ```bash
-sqlite3 ~/page-stats/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$(date +%Y-%m-%d).db'"
+sqlite3 ~/page-stats/data/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$(date +%Y-%m-%d).db'"
 ```
 
 ---
