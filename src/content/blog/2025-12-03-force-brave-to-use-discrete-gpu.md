@@ -2,6 +2,7 @@
 title: "How I Forced Brave to Use the AMD GPU on an Intel MacBook Pro"
 description: "Brave Browser (Chromium) kept sticking to Intel iGPU for WebGL/WebGPU. Here’s the exact fix I used and a one-click Automator launcher to make it permanent."
 pubDate: 2025-12-03
+updateDate: 2026-08-21
 tags:
   - macOS
   - Brave Browser
@@ -14,20 +15,18 @@ This issue has been bothering me for over half a year: ever since I got hooked o
 First, I confirmed all settings are correct:
 
 - Brave **Settings → System → Use graphics acceleration when available**: **ON**.
-- macOS **Battery → Automatic graphics switching**: **OFF** (so the system prefers AMD).
+- macOS **Battery → Automatic graphics switching**: **OFF** (forces the system to use the discrete GPU).
 - Terminal (system‑wide GPU preference):
   ```bash
   sudo pmset -a gpuswitch 1
   ```
-  This tells macOS power management to **prefer the discrete GPU** when deciding between integrated vs discrete graphics. It’s a coarse, system‑level hint, useful for testing, but not a guaranteed per‑app lock.
+  This forces macOS to use the discrete GPU system‑wide. While this locks the display output to the AMD chip, Chromium's internal GPU process still defaulted to creating its context on the integrated adapter.
   
   **Reset to default:**
   ```bash
   sudo pmset -a gpuswitch 2
   ```
-  (`2` restores automatic switching.)
-  
-  Then reboot.
+  (`2` restores automatic switching. The change takes effect immediately, though a reboot can ensure all background processes reload.)
 
 Despite all that, Brave still stubbornly used Intel.
 
@@ -38,9 +37,9 @@ Despite all that, Brave still stubbornly used Intel.
 To reproduce the problem, I used a classic GPU-stressing WebGL demo from [Three.js](https://threejs.org/):
 
 - In **Safari**, opening the Three.js animation example immediately flipped the machine to the discrete AMD GPU with stable 60 FPS.
-- In **Brave**, the same page stayed on the Intel iGPU, even under obvious heavy rendering load, barely reached 30 FPS.
+- In **Brave**, the same page stayed on the Intel iGPU and, even under heavy rendering load, barely reached 30 FPS.
 
-I checked the report from [brave://gpu](brave://gpu), which showed that Brave was clearly *hardware-accelerating*, just on the wrong adapter.
+I checked the report from `brave://gpu`, which showed that Brave was clearly *hardware-accelerating*, just on the wrong adapter.
 
 ---
 
@@ -63,17 +62,22 @@ So it wasn’t a software fallback. Chromium was simply choosing the low‑power
 
 Since the Chromium flag to force high‑performance GPU is **not available on Intel dual‑GPU macOS builds**, there’s no UI toggle that persists this choice.
 
-But Chromium still honors a startup argument that overrides the early GPU selection:
+Chromium, however, still honors a startup argument that overrides the early GPU selection.
+
+> [!IMPORTANT]
+> **Make sure to quit Brave completely (`Cmd + Q`) first.** On macOS, `open -a` will simply bring an already-running instance to the foreground and silently ignore any new `--args`.
+
+Run this in Terminal:
 
 ```bash
 open -a "Brave Browser" --args --force_high_performance_gpu
 ```
 
-After launching Brave this way, [brave://gpu](brave://gpu) finally showed the AMD GPU as **ACTIVE**, and the Three.js demo ran just as smoothly as it did in Safari.
+After launching Brave this way, `brave://gpu` finally showed the AMD GPU as **ACTIVE**, and the Three.js demo ran just as smoothly as it did in Safari.
 
 ### Why this works
 
-Chromium decides which GPU to bind **very early during startup** for its GPU process. On dual‑GPU Macs it defaults to the integrated Intel chip for battery life, and once that choice is made, most WebGL/WebGPU contexts follow it for the rest of the session. It seems this "bug" still exists until today (see Chromium issue [#393263507](https://issues.chromium.org/issues/393263507)).
+Chromium decides which GPU to bind **very early during startup** for its GPU process. On dual‑GPU Macs it defaults to the integrated Intel chip for battery life, and once that choice is made, most WebGL/WebGPU contexts follow it for the rest of the session. It seems this issue persists to this day (see Chromium issue [#393263507](https://issues.chromium.org/issues/393263507)).
 
 The `--force_high_performance_gpu` argument injects a “prefer discrete GPU” directive *before* that decision locks in, so the GPU process starts on AMD, and all rendering follows.
 
@@ -93,6 +97,9 @@ Typing the launch command every time is annoying, so I made a tiny Automator app
    ```
 4. Save as something like **Brave AMD.app**.
 5. Drag **Brave AMD.app** into the Dock and remove the original Brave icon.
+
+> [!NOTE]
+> Remember to quit Brave (`Cmd + Q`) before clicking the launcher if you are switching modes; macOS won't apply launch arguments to an existing running process.
 
 Here’s what the Automator setup looks like:
 
@@ -123,4 +130,4 @@ Forcing the discrete GPU means:
 - **More battery drain**.
 - **More heat/fan usage**.
 
-For me that’s a fair trade whenever I’m doing heavy WebGL/WebGPU stuff (3D demos, map visualizations, creative coding, etc.). Daily browsing on battery? I can still open the normal Brave app if I want Intel. Not to mention, the battery on my MacBook Pro hasn't been able to last through a single hour of normal use for ages, I couldn't care less about battery life.
+For me that’s a fair trade whenever I’m doing heavy WebGL/WebGPU stuff (3D demos, map visualizations, creative coding, etc.). Daily browsing on battery? I can still quit and open the normal Brave app if I want Intel. Not to mention, the battery on my MacBook Pro hasn't been able to last through a single hour of normal use for ages, I couldn't care less about battery life.
