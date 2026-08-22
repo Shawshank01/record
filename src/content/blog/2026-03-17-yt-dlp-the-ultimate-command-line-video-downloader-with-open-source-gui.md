@@ -1,5 +1,5 @@
 ---
-title: "yt-dlp: The Ultimate Command-Line Video Downloader with Open-Source GUI"
+title: "yt-dlp: Video Downloader with Open-Source GUI"
 description: "How to use yt-dlp to download videos from YouTube and thousands of other sites, with a simple and lightweight graphical user interface."
 pubDate: 2026-03-17
 updateDate: 2026-03-23

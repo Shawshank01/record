@@ -1,9 +1,10 @@
 {
   "name": "michifumis-blog",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/check-title-length.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

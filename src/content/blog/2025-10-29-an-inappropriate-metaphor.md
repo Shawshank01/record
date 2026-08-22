@@ -1,5 +1,5 @@
 ---
-title: "An Inappropriate Metaphor (Just Being Modest, I Think It's Quite Appropriate)"
+title: "An Inappropriate Metaphor: Misusing AI"
 description: "On why misusing AI feels a lot like misusing a light bulb."
 pubDate: 2025-10-29
 tags:

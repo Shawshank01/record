@@ -1,5 +1,5 @@
 ---
-title: "Self‑Hosted Lightweight Analytics for Personal Blog (Step‑by‑Step)"
+title: "Self‑Hosted Analytics for a Personal Blog"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
 updateDate: 2026-08-19

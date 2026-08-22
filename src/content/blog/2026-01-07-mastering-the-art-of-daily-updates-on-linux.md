@@ -1,5 +1,5 @@
 ---
-title: "Mastering the Art of Daily Updates on Linux (and macOS)"
+title: "Daily Updates on Linux and macOS"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
 updateDate: 2026-08-06

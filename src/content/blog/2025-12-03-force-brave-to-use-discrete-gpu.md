@@ -1,5 +1,5 @@
 ---
-title: "How I Forced Brave to Use the AMD GPU on an Intel MacBook Pro"
+title: "How I Forced Brave to Use AMD GPU on an Intel Mac"
 description: "Brave Browser (Chromium) kept sticking to Intel iGPU for WebGL/WebGPU. Here’s the exact fix I used and a one-click Automator launcher to make it permanent."
 pubDate: 2025-12-03
 updateDate: 2026-08-21
