@@ -22,20 +22,24 @@ These tasks are a daily driver for me at certain times, but they are not worth p
 
 ---
 
-### 1. Basic Trimming
+## 1. Basic Trimming
+
 Trimming a video without re-encoding is extremely fast as it simply copies the data.
 
 **Trim the first 10 minutes:**
+
 ```bash
 ffmpeg -t 10:00 -i input.mp4 -c copy output.mp4
 ```
 
 **Extract a 10-minute segment starting from 10:00:**
+
 ```bash
 ffmpeg -ss 10:00 -t 10:00 -i input.mp4 -c copy output.mp4
 ```
 
 **Keep everything from 20 minutes onwards:**
+
 ```bash
 ffmpeg -ss 20:00 -i input.mp4 -c copy output.mp4
 ```
@@ -44,68 +48,86 @@ ffmpeg -ss 20:00 -i input.mp4 -c copy output.mp4
 
 ---
 
-### 2. Merging and Concatenation
+## 2. Merging and Concatenation
+
 If you have multiple clips with the same parameters (resolution, codec, etc.), you can merge them using the concat demuxer.
 
 **Merge clips listed in `merge.txt`:**
+
 ```bash
 ffmpeg -f concat -safe 0 -i merge.txt -c copy output.mp4
 ```
+
 *Tip: `merge.txt` should contain lines like **file 'input.mp4'**. You can download a template by clicking <a href="/merge.txt" download>Here</a>.*
 
 ---
 
-### 3. Encoding for Compatibility
+## 3. Encoding for Compatibility
+
 Sometimes you need to ensure a video plays everywhere by using standard H.264 settings.
 
 **High-quality H.264 re-encode for storage:**
+
 ```bash
 ffmpeg -i input.mp4 -c:v libx264 -crf 18 -preset veryslow -c:a copy -tag:v avc1 output.mp4
 ```
+
 *Tip: Use this one carefully, cause this only use the CPU to do the heavy encoder work since the `-crf 18` and `-preset veryslow` is consider as the high quality video close to lossless. You can lower the video quality by using `-crf 23` with `-preset medium` and have an output significantly faster.*
 
 ---
 
-### 4. Burning Subtitles (Hardsubs)
+## 4. Burning Subtitles (Hardsubs)
+
 Burning subtitles directly into the video stream ensures they show up on any player.
 
 **Basic subtitle burn-in:**
+
 ```bash
 ffmpeg -i input.mp4 -vf "subtitles=subtitle.srt" output.mp4
 ```
+
 *Tip: When declaring filters, it is better to quote the entire filter string, i.e., `-vf "subtitles=subtitle.srt"` rather than `-vf subtitles="subtitle.srt"`. This ensures the shell correctly passes the entire string as a single argument to the `-vf` option.*
 
 **Burn subtitles with spaces in the filename (Best Practice):**
+
 ```bash
 ffmpeg -i input.mkv -vf "subtitles='my subtitles.srt'" output.mkv
 ```
+
 *Tip: If your subtitle filename has spaces or special characters, nest single quotes inside the double quotes holding the filter.*
 
 **Burn VTT subtitles with a specific font (Songti SC):**
+
 ```bash
 ffmpeg -i input.mp4 -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v libx264 -crf 18 -preset veryslow -c:a libfdk_aac -tag:v avc1 output.mp4
 ```
+
 *Tip: FFmpeg's `subtitles` filter also fully supports `.srt` and `.ass` formats. While `.vtt` and `.srt` may require `force_style` to look good, `.ass` files (Advanced SubStation Alpha) can contain their own rich styling, colors, and positioning data which FFmpeg will render perfectly out of the box.*
 
 ---
 
-### 5. Format Conversion and Optimization
+## 5. Format Conversion and Optimization
+
 Converting between formats like WebM to MP4 or using modern codecs like HEVC (H.265).
 
 **Compress a video to 720p MP4 (H.264) with audio re-encoding:**
+
 ```bash
 ffmpeg -i input.mp4 -vf scale=1280:720 -c:v h264 -crf 23 -preset slow -c:a libfdk_aac -tag:v avc1 output.mp4
 ```
 
 **Compress a video to 10-bit 1080p MP4 (H.265) with original audio codec:**
+
 ```bash
 ffmpeg -i input.mp4 -vf scale=1920:1080 -c:v hevc -crf 28 -preset slow -pix_fmt yuv420p10le -c:a copy -tag:v hvc1 output.mp4
 ```
+
 *Tip: If you use `-vf scale=1280:-1`, FFmpeg will fix the width at 1280 and automatically calculate the height to ensure the video isn't stretched. Above cmds will force the dimensions even if it makes everyone look thin or fat.*
 
 ---
 
-### 6. macOS Hardware Acceleration (VideoToolbox)
+## 6. macOS Hardware Acceleration (VideoToolbox)
+
 If you're on a Mac, using `videotoolbox` will significantly speed up the encoding process and save battery.
 
 | ⚠️ GPU Compatibility Warning |
@@ -113,46 +135,55 @@ If you're on a Mac, using `videotoolbox` will significantly speed up the encodin
 | Hardware acceleration is highly dependent on your GPU's capabilities. If your Mac's GPU doesn't support a specific coding format — such as the modern **AV1** format on older models — using `-hwaccel videotoolbox` will result in an error. If you are not sure about your GPU's capabilities, you can just use the same cmds below without `-hwaccel videotoolbox` to achieve a quick encoding. |
 
 **Fast H.264 and libfdk_aac re-encoding:**
+
 ```bash
 ffmpeg -hwaccel videotoolbox -i input.webm -c:v h264_videotoolbox -b:v 5000k -c:a libfdk_aac -vbr 5 -tag:v avc1 output.mp4
 ```
 
 **Fast 10-bit HEVC (H.265) and libfdk_aac re-encoding:**
+
 ```bash
 ffmpeg -hwaccel videotoolbox -i input.webm -c:v hevc_videotoolbox -b:v 3000k -pix_fmt p010le -c:a libfdk_aac -vbr 5 -tag:v hvc1 output.mp4
 ```
 
 **HEVC and aac_at (Apple's AAC encoder audio codec) with Burned Subtitles:**
+
 ```bash
 ffmpeg -hwaccel videotoolbox -i input.webm -vf subtitles=subtitle.vtt -c:v hevc_videotoolbox -b:v 2500k -pix_fmt p010le -c:a aac_at -q:a 5 -tag:v hvc1 output.mp4
 ```
 
 **H.264 with Burned Subtitles (Custom Font for Chinese):**
+
 ```bash
 ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v h264_videotoolbox -b:v 4000k -c:a aac_at -q:a 5 -tag:v avc1 output.mp4
 ```
 
 **HEVC with Burned Subtitles (Custom Font for Chinese):**
+
 ```bash
 ffmpeg -hwaccel videotoolbox -i input.webm -vf "subtitles=subtitle.vtt:force_style='FontName=Songti SC'" -c:v hevc_videotoolbox -pix_fmt p010le -b:v 2500k -c:a aac_at -q:a 5 -tag:v hvc1 output.mp4
 ```
 
 ---
 
-### 7. Audio Extraction
+## 7. Audio Extraction
+
 Extracting high-quality audio from video files.
 
 **Extract audio to M4A without re-encoding (Fastest, Original Quality):**
+
 ```bash
 ffmpeg -i input.mp4 -vn -c:a copy output.m4a
 ```
 
 **Extract audio to M4A using `libfdk_aac` re-encoding (Options Required, 0 - 5, 5 is the highest):**
+
 ```bash
 ffmpeg -i input.mp4 -vn -c:a libfdk_aac -vbr 5 output.m4a
 ```
 
 **Extract audio to M4A using `aac_at` re-encoding (macOS Native, 0 - 14, 0 is the highest):**
+
 ```bash
 ffmpeg -i input.mp4 -vn -c:a aac_at -q:a 5 output.m4a
 ```
@@ -160,6 +191,7 @@ ffmpeg -i input.mp4 -vn -c:a aac_at -q:a 5 output.m4a
 ---
 
 ### Ignore this Part if You are NOT a macOS User
+
 If you find that some of these commands fit your requirements, or if you're interested in exploring more of the fun that FFmpeg has to offer and are ready to install it on your device, I also have some advice for you if you’re a macOS user.
 
 The first and most important thing to note is that if you use Homebrew to install it, you might want to change a little bit of your initial process. According to the [official document](https://trac.ffmpeg.org/wiki/CompilationGuide/macOS#Additionaloptions), which I quote:

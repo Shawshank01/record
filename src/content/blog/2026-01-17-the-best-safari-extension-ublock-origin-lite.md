@@ -53,7 +53,7 @@ By following the steps above, we’ve managed to get rid of ads and most of the 
 
 First, copy these rules by click the copy button below:
 
-```
+```text
 ! YT - Homepage and Subscriptions (Grid View) - Hide the Shorts section
 youtube.com##[is-shorts]
 ! YT - Menu - Hide the Shorts button

@@ -25,6 +25,7 @@ The year is 2020. The world of image formats is a battlefield. WebP, Google's sc
 **JPEG XL.**
 
 It was, by any technical measure, a marvel. It offered:
+
 - Superior compression to JPEG, WebP, and AVIF in some scenarios
 - Lossless *and* lossy modes
 - HDR and wide color gamut support
@@ -105,12 +106,14 @@ If you've read this far, I'm guessing you're quite interested in embracing JPEG 
 
 First, we need to install it on the device. If you already have FFmpeg on your Mac, it may already be installed. If not, install it using the following commands:
 
-**1. Install Homebrew**
+### Install Homebrew
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-**2. Install JPEG XL tools**
+### Install JPEG XL tools
+
 ```bash
 brew install jpeg-xl
 ```
@@ -122,28 +125,35 @@ brew install jpeg-xl
 Once installed, you can use the command-line tools `cjxl` (to encode/compress) and `djxl` (to decode/decompress).
 
 **Convert a JPEG to a JXL:**
+
 ```bash
 cjxl input.jpeg output.jxl
 ```
+
 *(Or `cjxl input.jpg output.jxl`)*
 
 If you ever need that exact same `.jpg` file back (for an old app or for "bit-for-bit" proof), you use the decoder tool `djxl`:
+
 ```bash
 djxl output.jxl restored.jpeg
 ```
+
 *(Or `djxl output.jxl restored.jpg`)*
 
 To verify it worked, you can check their MD5 hash (a digital fingerprint). If the fingerprints match, the files are bit-for-bit identical:
+
 ```bash
 md5 input.jpeg restored.jpeg
 ```
 
 **Convert a PNG file:**
+
 ```bash
 cjxl input.png output.jxl
 ```
 
 > **Tip:** If you want it to be mathematically, pixel-perfectly lossless (exactly like your PNG but highly compressed and smaller), use the `-d` (distance) flag set to 0:
+>
 > ```bash
 > cjxl input.png output.jxl -d 0
 > ```
@@ -189,11 +199,11 @@ done
 
 > **Important Note:** If you are using an older Intel-based Mac, Homebrew installs to a different directory. Change the `CJXL_PATH` line to `"/usr/local/bin/cjxl"`.
 
-### Step 3: Try it out!
+### Step 3: Try it out
 
 1. Name it something like **"Convert to JXL"**, it should look like this:
 
-![jxl hint](/2026-03-05/convert-to-jxl-shortcuts.jxl)
+    ![jxl hint](/2026-03-05/convert-to-jxl-shortcuts.jxl)
 
 2. Close the Shortcuts app.
 3. Go to your **Finder** and select any image (PNG, JPG, etc.).
@@ -203,8 +213,9 @@ done
     > Just choose **Allow** this time and you will never see it again.
 5. A small gear will spin in your menu bar, and seconds later, a highly-compressed `.jxl` file will magically appear in the same folder as your original image.
 
-> **Troubleshooting: Quick Action not showing up?** 
+> **Troubleshooting: Quick Action not showing up?**
 > Sometimes on newer Macs, the Quick Actions won't appear in the right-click menu immediately. To fix this:
+>
 > 1. Check your settings: Click the **Customize...** button in the Quick Actions menu, and make sure the new Shortcut is checked.
 > 2. **Relaunch Finder:** Hold the **Option (⌥)** key, right-click the **Finder** icon in your Dock, and click **Relaunch**. Your new action should now appear!
 
@@ -236,7 +247,7 @@ Right now, Safari supports JPEG XL natively out-of-the-box on recent Apple devic
 ## References
 
 - Jebaraj, S. D., & N, S. (2023). JPEG-XL based Compression of DICOM Images for Reduced Storage and Transmission Costs. *2023 3rd International Conference on Intelligent Technologies (CONIT)*, 1–6.  
-https://doi.org/10.1109/conit59222.2023.10205928
+<https://doi.org/10.1109/conit59222.2023.10205928>
 
 - Öztürk, E., & Mesut, A. (2021, September 1). Performance Evaluation of JPEG Standards, WebP and PNG in Terms of Compression Ratio and Time for Lossless Encoding. *IEEE Xplore*.  
-https://doi.org/10.1109/UBMK52708.2021.9558922
+<https://doi.org/10.1109/UBMK52708.2021.9558922>

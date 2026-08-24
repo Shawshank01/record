@@ -14,9 +14,7 @@ To be honest, it was hard to watch. I don't even remember how many times I press
 
 ---
 
-<div class="lang-container">
-  <button class="lang-btn" data-tooltip="Switch to Native Language Version" aria-label="Switch language"></button>
-  <div class="lang-content active">
+## English
 
 But as I mustered the courage to keep watching, I realised that opening scene was far from the beginning of hell. Although I've seen plenty of footage from drone perspectives showing buildings destroyed, tanks blown up, and even attacks on Russian soldiers, those videos always cut off the instant the drone explodes. This time, however, I witness the battlefield through the first-person perspective of helmet-mounted cameras worn by brave Ukrainian soldiers.
 
@@ -26,8 +24,7 @@ Trust me, even if you think you're desensitised to *Saving Private Ryan*-level s
 
 War, war never changes. Perhaps in my lifetime, I may not witness humanity breaking free from the painful cycle of war, but I have never ceased to envision a beautiful future where mankind eradicates war and advances hand in hand.
 
-  </div>
-  <div class="lang-content">
+## 中文
 
 可随着我鼓起勇气继续观看，我才发现我刚刚只是站在地狱的入口处。虽然我从无人机视角看过不少摧毁建筑，炸毁坦克，甚至攻击俄军士兵的场景，但那些视频在无人机爆炸的钱一瞬间就断掉了。而这次是通过士兵身上携带的头盔摄像头，以第一人称的视角，跟随英勇的乌克兰战士来观测战场。
 
@@ -36,9 +33,6 @@ War, war never changes. Perhaps in my lifetime, I may not witness humanity break
 相信我，就算你认为你已经适应了《拯救大兵瑞恩》级别的场景，你也并不知道自己将要面临什么。
 
 War, war never changes. 或许在我的有生之年，无法看到人类脱离战争的痛苦轮回，但我从未停止对人类根绝战争，携手共进的美好未来的畅想。
-
-  </div>
-</div>
 
 ---
 

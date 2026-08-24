@@ -21,7 +21,7 @@ You can use it for all sorts of things, but the feature you’ll probably use mo
 
 ---
 
-### Installation
+## Installation
 
 First, install it using Homebrew:
 
@@ -34,32 +34,37 @@ brew install yt-dlp
 Here are some commands I usually use:
 
 **Download the best quality available (Standard):**
+
 ```bash
 yt-dlp --cookies-from-browser brave 'URL'
 ```
 
 **List all available formats for a video:**
+
 ```bash
 yt-dlp -F --cookies-from-browser brave 'URL'
 ```
 
 **Download a specific format (e.g., format 299+140):**
+
 ```bash
 yt-dlp -f 299+140 --cookies-from-browser brave 'URL'
 ```
 
 **Download all available subtitles without downloading the video:**
+
 ```bash
 yt-dlp --write-subs --all-subs --skip-download 'URL'
 ```
 
 **Download and merge into an MP4 container (FFmpeg is required):**
+
 ```bash
 yt-dlp --merge-output-format mp4 --cookies-from-browser brave 'URL'
 ```
 
 > **💡 Tips**
-> 
+>
 > 1. To download videos from YouTube, it is better to use your browser's cookies (e.g., Brave, Firefox, or Chrome) to increase the success rate; using `--cookies-from-browser brave` allows `yt-dlp` to bypass bot detection and access age-restricted content by using your browser's session. However, this is usually not necessary for other platforms like X or Vimeo.
 > 2. If you want to use Safari's cookies, you need to give `yt-dlp` permission to access your Safari cookies in the system settings first.
 
@@ -107,7 +112,7 @@ Unfortunately, because I’m using VideoToolbox for hardware acceleration, this 
 
 The “Check for Dependencies” button in the lower-right corner automatically checks whether `Homebrew`, `yt-dlp`, and `FFmpeg` are installed on your macOS. If they are not installed, it also provides a one-click installation feature. If this is your first time using this GUI, or if you're using it on a brand-new system, you'll want to click on it to test it out before you start.
 
-The “Check for Updates” button in the bottom-left corner lets you see if I've released a new version on GitHub (Yes, I still occasionally optimise or add new features so I can enjoy life with even less effort.) If there is a new version, you’ll be asked if you want to open the latest releases page in your default browser (of course, you can also click [here](https://github.com/Shawshank01/yt-downloader-electron/releases) to download it).
+The “Check for Updates” button in the bottom-left corner lets you see if I've released a new version on GitHub (Yes, I still occasionally optimise or add new features so I can enjoy life with even less effort.) If there is a new version, you’ll be asked if you want to open the latest releases page in your default browser (of course, you can also click [this link](https://github.com/Shawshank01/yt-downloader-electron/releases) to download it).
 
 ---
 

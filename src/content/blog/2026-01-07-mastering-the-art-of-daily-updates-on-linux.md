@@ -28,17 +28,17 @@ That's why I need to write an update script to satisfy my perverted desire to up
 
 1. Create the script file:
 
-```bash
-sudo nano /usr/local/bin/up.sh
-```
+    ```bash
+    sudo nano /usr/local/bin/up.sh
+    ```
 
 2. Paste the content from your OS-specific script ([Debian-based Linux](#debian-based-linux), [Fedora/RHEL/CentOS 8+](#fedorarhelcentos-8), or [Fedora CoreOS](#fedora-coreos-automatic-updates-via-zincati)) into the file and save it.
 
 3. Make the script executable:
 
-```bash
-sudo chmod +x /usr/local/bin/up.sh
-```
+    ```bash
+    sudo chmod +x /usr/local/bin/up.sh
+    ```
 
 4. Run the script from anywhere in the terminal:
 
@@ -136,6 +136,7 @@ echo "Update complete!"
 **How Zincati Works:**
 
 Zincati is the automatic update agent that:
+
 1. **Periodically checks** for new Fedora CoreOS releases from the Cincinnati update server
 2. **Automatically downloads and stages** updates in the background (no bandwidth concerns during work hours)
 3. **Handles reboots** based on your configured strategy
@@ -149,11 +150,13 @@ Zincati supports different reboot strategies (configured in `/etc/zincati/config
 - **`periodic`**: Reboots only during specified time windows (e.g., 2-4 AM on weekends)
 
 You can check your current strategy with:
+
 ```bash
 systemctl status zincati | grep "update strategy"
 ```
 
 **Important:** Fedora CoreOS uses `rpm-ostree`, which means updates are **atomic** and **always require a reboot**. The new version is staged as a separate deployment and only becomes active after reboot. This ensures:
+
 - Zero chance of broken updates (either fully applied or not at all)
 - Instant rollback capability (previous version remains available)
 - No "partially updated" system states
@@ -219,7 +222,7 @@ toolbox list
 
 You'll see something like:
 
-```
+```text
 CONTAINER ID  CONTAINER NAME      CREATED      STATUS   IMAGE NAME
 a1b2c3d4e5f6  fedora-toolbox-43   3 months ago  running  registry.fedoraproject.org/fedora-toolbox:43
 f6e5d4c3b2a1  fedora-toolbox-44   2 minutes ago running  registry.fedoraproject.org/fedora-toolbox:44

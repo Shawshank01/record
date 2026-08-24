@@ -8,7 +8,7 @@ tags:
   - Brave Browser
 ---
 
-[Go to solution directly](#the-real-fix)
+[Go to solution directly](#the-real-fix-force-highperformance-gpu-at-launch)
 
 This issue has been bothering me for over half a year: ever since I got hooked on using the Brave browser, I've noticed that on my old 2018 MacBook Pro, it only utilizes the Intel integrated graphics and fails to leverage the discrete AMD GPU for rendering intensive tasks. This forces me to occasionally switch to Safari (WebKit sucks!) when encountering heavy rendering demands to achieve a smoother browsing experience. Today, I stumbled upon news that WebGPU has officially launched in major browsers. On a whim, I decided to tackle this issue.
 
@@ -17,15 +17,19 @@ First, I confirmed all settings are correct:
 - Brave **Settings → System → Use graphics acceleration when available**: **ON**.
 - macOS **Battery → Automatic graphics switching**: **OFF** (forces the system to use the discrete GPU).
 - Terminal (system‑wide GPU preference):
+
   ```bash
   sudo pmset -a gpuswitch 1
   ```
+
   This forces macOS to use the discrete GPU system‑wide. While this locks the display output to the AMD chip, Chromium's internal GPU process still defaulted to creating its context on the integrated adapter.
   
   **Reset to default:**
+
   ```bash
   sudo pmset -a gpuswitch 2
   ```
+
   (`2` restores automatic switching. The change takes effect immediately, though a reboot can ensure all background processes reload.)
 
 Despite all that, Brave still stubbornly used Intel.
@@ -57,7 +61,6 @@ So it wasn’t a software fallback. Chromium was simply choosing the low‑power
 
 ---
 
-<a id="the-real-fix"></a>
 ## The Real Fix: Force High‑Performance GPU at Launch
 
 Since the Chromium flag to force high‑performance GPU is **not available on Intel dual‑GPU macOS builds**, there’s no UI toggle that persists this choice.
@@ -92,9 +95,11 @@ Typing the launch command every time is annoying, so I made a tiny Automator app
 1. Open **Automator** → **New Document** → choose **Application**.
 2. Add **Run Shell Script**.
 3. Set shell to `/bin/zsh` and paste:
+
    ```bash
    open -a "Brave Browser" --args --force_high_performance_gpu
    ```
+
 4. Save as something like **Brave AMD.app**.
 5. Drag **Brave AMD.app** into the Dock and remove the original Brave icon.
 

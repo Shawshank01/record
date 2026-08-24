@@ -30,14 +30,16 @@ That's why you need to make sure every piece of data inside a photo or image is 
 
 First, we need to install ExifTool on the device. If you don't have Homebrew on your Mac, install it using the following command:
 
-**1. Install Homebrew**
+### 1. Install Homebrew
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-**2. Install ExifTool**
+### 2. Install ExifTool
 
 Open your Terminal and run the following command:
+
 ```bash
 brew install exiftool
 ```
@@ -103,7 +105,7 @@ done
 ```
 
 > **Note:** This is for the standard Apple Silicon Homebrew path. On an older Intel Mac, change the first line to `EXIFTOOL="/usr/local/bin/exiftool"`. You can always verify your path by typing `where exiftool` in Terminal.
-
+>
 > **What does the `osascript` line do?** macOS's Shortcuts sandbox silently blocks command-line tools like ExifTool from accessing files in protected folders (Downloads, Desktop, Documents). This clever one-liner asks Finder to touch the file via AppleScript, which forces macOS to show a permission prompt. The first time you run the shortcut, a dialog will appear asking *"Finder.app" would like to access files in your Downloads folder*. Click **Allow**, and the script will automatically retry and succeed. This only happens once — all future runs will work instantly.
 
 ---
@@ -122,16 +124,17 @@ Name it something clear like **"Image Scrub"**. Shortcuts auto-saves, so you can
 
 ---
 
-## Step 4: Test it Out!
+## Step 4: Test it Out
 
 1. Go to any folder in Finder.
 2. Right-click an image that you already have a backup copy of.
 3. Go to **Quick Actions** > **Image Scrub**.
 
 > **First-time only:** A permission dialog will appear asking *"Finder.app" would like to access files in your Downloads folder* (or whichever folder you're in). Click **Allow**. The script will wait for you and then proceed automatically. This only happens once per folder.
-
-> **Troubleshooting: Quick Action not showing up?** 
+>
+> **Troubleshooting: Quick Action not showing up?**
 > Sometimes on newer Macs, the Quick Actions won't appear in the right-click menu immediately. To fix this:
+>
 > 1. Check your settings: Click the **Customize...** button in the Quick Actions menu, and make sure the new Shortcut is checked.
 > 2. **Relaunch Finder:** Hold the **Option (⌥)** key, right-click the **Finder** icon in your Dock, and click **Relaunch**. Your new action should now appear!
 

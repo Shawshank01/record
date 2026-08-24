@@ -33,6 +33,7 @@ tags:
 ## What I've built
 
 A tiny analytics API that:
+
 - Accepts page‑view pings from this blog (`/track`)
 - Provides comprehensive analytics via `/summary` and `/daily` endpoints
 - Lets me export raw visits as CSV (`/export`)
@@ -71,17 +72,17 @@ npm --version
 
 > [!IMPORTANT]  
 > Fedora CoreOS is an **immutable operating system** designed for containerized workloads. You cannot install packages directly with `dnf install`. Instead, use **toolbox** to create a mutable container environment.
-> 
+>
 > For more information about Fedora CoreOS on GCP, see the [official documentation](https://docs.fedoraproject.org/en-US/fedora-coreos/provisioning-gcp/).
 
-**Step 1: Create and enter a toolbox**
+### Step 1: Create and enter a toolbox
 
 ```bash
 toolbox create
 toolbox enter
 ```
 
-**Step 2: Install Node.js inside the toolbox**
+### Step 2: Install Node.js inside the toolbox
 
 ```bash
 # Install Node.js from Fedora's default repositories
@@ -92,7 +93,7 @@ node --version  # Should show v22.x.x
 npm --version
 ```
 
-**Step 3: Work inside the toolbox**
+### Step 3: Work inside the toolbox
 
 All subsequent commands (creating the project, installing packages, running the server) should be executed **inside the toolbox**. The toolbox persists across reboots and you can re-enter it anytime with `toolbox enter`.
 
@@ -284,6 +285,7 @@ node server.js
 ```
 
 In another shell:
+
 ```bash
 curl -X POST http://localhost:8080/track \
   -H "Content-Type: text/plain" \
@@ -347,9 +349,10 @@ sudo systemctl stop pm2-$USER
 
 ### Fedora CoreOS: Podman + Systemd
 
-**Step 1: Create a Dockerfile (inside toolbox)**
+#### Step 1: Create a Dockerfile (inside toolbox)
 
 Inside toolbox, in ~/page-stats directory
+
 ```bash
 cat > Dockerfile <<'EOF'
 FROM node:22-alpine
@@ -363,19 +366,20 @@ CMD ["node", "server.js"]
 EOF
 ```
 
-**Step 2: Exit toolbox and build the container image on the host**
+#### Step 2: Exit toolbox and build the container image on the host
 
 ```bash
 exit
 ```
 
 On the Fedora CoreOS host, build the image
+
 ```bash
 cd ~/page-stats
 podman build -t localhost/page-stats:latest .
 ```
 
-**Step 3: Create a data directory for persistence**
+#### Step 3: Create a data directory for persistence
 
 > [!IMPORTANT]  
 > **Why use a separate data directory:** Storing the database in `~/page-stats/data/` keeps it outside the container image, so it persists across container restarts. The application code (`server.js`, `node_modules`) stays in the image, so rebuilds with `podman build` always take effect.
@@ -386,7 +390,7 @@ Create the data directory:
 mkdir -p ~/page-stats/data
 ```
 
-**Step 4: Create systemd service**
+#### Step 4: Create systemd service
 
 Create systemd user service directory:
 
@@ -420,7 +424,7 @@ WantedBy=default.target
 EOF
 ```
 
-**Step 5: Enable and start the service**
+#### Step 5: Enable and start the service
 
 Reload systemd:
 
@@ -464,7 +468,7 @@ Disable and stop (removes from startup):
 systemctl --user disable --now page-stats.service
 ```
 
-**Step 6: View logs**
+#### Step 6: View logs
 
 Follow logs in real-time:
 
@@ -480,13 +484,13 @@ journalctl --user -u page-stats.service -n 50
 
 > [!IMPORTANT]  
 > **Updating the code**: If you modify `server.js` (e.g., changing the password), you must rebuild the container image and restart the service:
-> 
+>
 > ```bash
 > cd ~/page-stats
 > podman build -t localhost/page-stats:latest .
 > systemctl --user restart page-stats.service
 > ```
-> 
+>
 > The container runs a snapshot of your code from when it was built, not the live file.
 
 ---
@@ -639,12 +643,14 @@ stats.zaku.eu.org {
 > If ports 80/443 are already in use, you can run Caddy on alternate ports, and for a publicly trusted TLS cert on non-443, you typically need DNS-01 validation (see below optional).
 
 Safely updating Caddy configurations
+
 ```bash
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 ```
 
 Start the service and check status:
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable --now caddy
@@ -652,6 +658,7 @@ sudo systemctl status caddy -l --no-pager
 ```
 
 Use reload after the service is running and you make future changes:
+
 ```bash
 sudo systemctl reload caddy
 ```
@@ -660,7 +667,7 @@ sudo systemctl reload caddy
 
 If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. This requires a Caddy build with the Cloudflare DNS module.
 
-1) Install Go (latest stable version):
+#### Install Go (latest stable version)
 
 > [!TIP]  
 > Visit [https://go.dev/dl/](https://go.dev/dl/) to find the latest stable version. Replace `1.26.6` below with the current version number.
@@ -696,27 +703,27 @@ Verify:
 go version
 ```
 
-2) Lock Go to the local toolchain:
+#### Lock Go to the local toolchain
 
 ```bash
 go env -w GOTOOLCHAIN=local
 go env -w GOPROXY=https://proxy.golang.org,direct
 ```
 
-3) Install xcaddy:
+#### Install xcaddy
 
 ```bash
 go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 export PATH="$PATH:$HOME/go/bin"
 ```
 
-4) Build Caddy with the Cloudflare DNS module:
+#### Build Caddy with the Cloudflare DNS module
 
 ```bash
 xcaddy build --with github.com/caddy-dns/cloudflare
 ```
 
-5) Replace the Caddy binary:
+#### Replace the Caddy binary
 
 ```bash
 sudo systemctl stop caddy
@@ -724,20 +731,20 @@ sudo install -m 0755 ./caddy /usr/local/bin/caddy
 sudo systemctl start caddy
 ```
 
-6) Verify the module exists:
+#### Verify the module exists
 
 ```bash
 caddy list-modules | grep cloudflare
 ```
 
-7) Create a Cloudflare API token with:
+#### Create a Cloudflare API token with
 
 - `Zone.Zone:Read`
 - `Zone.DNS:Edit`
 
 Scope it to your zone.
 
-8) Add the token to the Caddy systemd service:
+#### Add the token to the Caddy systemd service
 
 ```bash
 sudo systemctl edit caddy
@@ -752,7 +759,7 @@ Environment=CLOUDFLARE_API_TOKEN=YOUR_TOKEN_HERE
 sudo systemctl daemon-reload
 ```
 
-9) Update the Caddyfile:
+#### Update the Caddyfile
 
 ```text
 {
@@ -807,7 +814,7 @@ stats.zaku.eu.org {
 
 With `https_port 8443` set, access the API at `https://stats.zaku.eu.org:8443` and update your tracking endpoint to include `:8443`.
 
-10) Validate and reload:
+#### Validate and reload
 
 ```bash
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
@@ -816,7 +823,7 @@ sudo systemctl reload caddy
 sudo systemctl status caddy -l --no-pager
 ```
 
-11) Confirm issuance:
+#### Confirm issuance
 
 ```bash
 sudo journalctl -u caddy -f
@@ -880,6 +887,7 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
 ## 6) Verify end-to-end
 
 From the browser:
+
 - Visit the blog.
 
 The analytics API includes three useful endpoints for viewing detailed statistics:
@@ -969,6 +977,7 @@ curl -u admin -L -o stats.csv "https://stats.zaku.eu.org/export"
 
 > [!TIP]  
 > All analytics endpoints can be accessed directly from your browser. Caddy will show a native login prompt — enter your `admin` username and password.
+>
 > - `https://stats.zaku.eu.org/daily`
 > - `https://stats.zaku.eu.org/summary`
 > - `https://stats.zaku.eu.org/export` (downloads CSV)
@@ -1084,7 +1093,7 @@ crontab -e
 
 Add this line:
 
-```
+```text
 0 2 * * * STATS_PASSWORD="YOUR_PASSWORD_HERE" /home/YOUR_USERNAME/backups/backup-stats.sh >> /home/YOUR_USERNAME/backups/backup.log 2>&1
 ```
 

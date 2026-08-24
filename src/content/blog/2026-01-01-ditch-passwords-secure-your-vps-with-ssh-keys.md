@@ -107,6 +107,7 @@ That means for user `ubuntu`, the path is:
 ```
 
 Use this if there's no `.ssh/` folder
+
 ```bash
 mkdir -p ~/.ssh
 ```
@@ -289,15 +290,19 @@ sudo sshd -t
 Once verified, apply the changes by restarting the SSH service. The command depends on your distribution version:
 
 - **Ubuntu 24.04 LTS** (uses systemd socket activation by default):
+
   ```bash
   sudo systemctl restart ssh.socket
   ```
+
 - **Ubuntu 22.04 LTS / Debian / older systems** (uses classic standalone service):
+
   ```bash
   sudo systemctl restart ssh
   ```
 
 > 💡 **Tip:** If you're unsure which init mode your server uses, you can run:
+>
 > ```bash
 > sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket
 > ```

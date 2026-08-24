@@ -41,53 +41,62 @@ Login to your VPS and set up a dedicated directory with a Python virtual environ
 
 **For Debian/Ubuntu systems:**
 
-**Step 1: Update package list and install Python venv**
+#### Step 1: Update package list and install Python venv
+
 ```bash
 sudo apt update && sudo apt install python3-venv -y
 ```
 
-**Step 2: Install pip using the official method**
+#### Step 2: Install pip using the official method
+
 ```bash
 curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -
 ```
 
-**Step 3: Navigate to home directory and create project folder**
+#### Step 3: Navigate to home directory and create project folder
+
 ```bash
 cd ~
 mkdir mybot && cd mybot
 ```
 
-**Step 4: Create and activate virtual environment**
+#### Step 4: Create and activate virtual environment
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-**Step 5: Install the required library**
+#### Step 5: Install the required library
+
 ```bash
 pip install python-telegram-bot
 ```
 
 **For Fedora/RHEL-based systems:**
 
-**Step 1: Update system and install Python pip**
+#### Step 1: Update system and install Python pip
+
 ```bash
 sudo dnf update -y && sudo dnf install python3-pip -y
 ```
 
-**Step 2: Navigate to home directory and create project folder**
+#### Step 2: Navigate to home directory and create project folder
+
 ```bash
 cd ~
 mkdir mybot && cd mybot
 ```
 
-**Step 3: Create and activate virtual environment**
+#### Step 3: Create and activate virtual environment
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-**Step 4: Install the required library**
+#### Step 4: Install the required library
+
 ```bash
 pip install python-telegram-bot
 ```
@@ -172,10 +181,12 @@ The `^` anchor ensures the pattern only triggers when the link is at the start o
 
 > [!UPDATE]  
 > The bot now intelligently handles all X-related URLs:
+>
 > - Converts `x.com` and `twitter.com` to `fixupx.com`
 > - Removes tracking parameters (like `?s=46&t=xxx`) from **all** URLs, including those already using `fixupx.com`
 >
 > **Examples:**
+>
 > - `https://x.com/user/status/123?s=46&t=abc` → `https://fixupx.com/user/status/123`
 > - `https://fixupx.com/user/status/123?s=46&t=abc` → `https://fixupx.com/user/status/123`
 > - `https://fixupx.com/user/status/123` → No action (already clean)
@@ -224,16 +235,19 @@ Now you can enjoy the convenient bot with your friends in group chats!
 ### Troubleshooting Commands
 
 **Check status:**
+
 ```bash
 sudo systemctl status tgbot
 ```
 
 **View live logs:**
+
 ```bash
 sudo journalctl -u tgbot.service -f
 ```
 
 **Restart after code change:**
+
 ```bash
 sudo systemctl restart tgbot
 ```

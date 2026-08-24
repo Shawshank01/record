@@ -73,11 +73,16 @@ a:hover {
     transition: opacity 150ms ease;
 }
 
+/* Centre captions */
+.prose p:has(img) {
+    text-align: center;
+}
+
 .prose img:hover {
     opacity: 0.9;
 }
 
-/* Shrink-wrap JXL fallback links so only the visible image/prompt is clickable. */
+/* Shrink-wrap JXL fallback links so only the visible image/prompt is clickable */
 .prose a.jxl-fallback-link {
     display: block;
     width: fit-content;

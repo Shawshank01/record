@@ -14,6 +14,7 @@ tags:
 Nowadays, many cloud service providers offer VPS instances that allow direct SSH access as the root user by default. While convenient for initial setup, this configuration increases the attack surface and deviates from security best practices. This blog walks through hardening a fresh VPS step by step, from creating a regular user account to disabling root SSH login.
 
 The examples below assume:
+
 - Ubuntu as the operating system
 - You initially log in as `root`
 - SSH access is already available
@@ -29,6 +30,7 @@ Allowing direct root login over SSH has several downsides:
 - **Higher risk**: a single compromised password or key grants full system control
 
 Best practice is to:
+
 1. Use a regular user for daily operations
 2. Escalate privileges only when needed via `sudo`
 3. Disable root SSH access entirely
@@ -56,6 +58,7 @@ adduser ubuntu
 ```
 
 This command:
+
 - Creates a home directory (`/home/ubuntu`)
 - Assigns a normal UID (≥ 1000)
 - Sets `/bin/bash` as the login shell
@@ -137,10 +140,13 @@ sudo sshd -t
 Apply the changes by restarting the SSH service depending on your distribution:
 
 - **Ubuntu 24.04 LTS (Socket-activated SSH):**
+
   ```bash
   sudo systemctl restart ssh.socket
   ```
+
 - **Ubuntu 22.04 LTS / Debian (Classic SSH service):**
+
   ```bash
   sudo systemctl restart ssh
   ```
