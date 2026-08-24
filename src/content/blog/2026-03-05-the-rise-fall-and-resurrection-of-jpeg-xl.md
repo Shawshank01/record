@@ -2,7 +2,7 @@
 title: "The Rise, Fall, and Resurrection of JPEG XL"
 description: "The story of JPEG XL's rollercoaster journey, and how you can embrace it on macOS."
 pubDate: 2026-03-05
-updateDate: 2026-06-04
+updateDate: 2026-08-24
 tags:
   - JPEG XL
   - macOS
@@ -10,17 +10,17 @@ tags:
   - Shortcuts
 ---
 
-If you've read my [previous blog post](https://zaku.eu.org/blog/2026-02-26-blucher-procedural-justice-or-bureaucracy/), you may have noticed something odd — yes, because I used `.jxl` format images, which might prevent you from seeing them in most browsers.
+If you've read my [previous blog post](https://zaku.eu.org/blog/2026-02-26-blucher-procedural-justice-or-bureaucracy/), you may have noticed something odd, namely, broken images. That's because I used the `.jxl` format, which most browsers don't support out of the box.
 
 [Go directly to the section on how to display JXL images in your browser](#how-to-enable-jpeg-xl-in-your-browser)
 
-My interest in JPEG XL began when I wrote a research paper on image compression during my graduate studies. While I admire the excellence of JPEG XL, I am astonished that at the time, there were almost no mainstream browsers supporting this format. Today, I finally have the chance to share with you the story of JPEG XL in a dramatic way.
+My interest in JPEG XL began when I wrote a research paper on image compression during my graduate studies. While I was impressed by JPEG XL's capabilities, I was astonished by how few mainstream browsers supported it at the time. Today, I finally have the chance to share the dramatic saga of JPEG XL.
 
 ---
 
 ## Act I: The Contender Arrives
 
-The year is 2020. The world of image formats is a battlefield. WebP, Google's scrappy challenger, has been fighting for years to dethrone the ancient JPEG. PNG holds the lossless throne. And then — from the halls of the Joint Photographic Experts Group and the ashes of two competing proposals (Google's PIK and Cloudinary's FLIF) — a new format is born.
+The year is 2020. The world of image formats is a battlefield. WebP, Google's scrappy challenger, has been fighting for years to dethrone the ancient JPEG. PNG holds the lossless throne. And then, from the halls of the Joint Photographic Experts Group and the ashes of two competing proposals (Google's PIK and Cloudinary's FUIF, an evolution of FLIF), a new format is born.
 
 **JPEG XL.**
 
@@ -68,7 +68,7 @@ The Chromium bug thread kept growing. Open-source advocates kept maintaining enc
 
 ## Act IV: The Faithful Hold the Line
 
-Safari had quietly shipped JPEG XL support in 2022 and **kept it**. Apple, with no stake in AVIF's success, had no reason to pull the plug. This was the lifeline.
+Safari had quietly shipped JPEG XL support in 2023 and **kept it**. While Apple is also a member of the Alliance for Open Media (supporting AVIF), they chose to support both formats. This gave JPEG XL a crucial lifeline.
 
 Firefox sat on the fence. It had supported JPEG XL in its Nightly builds since version 90.0a1 in May 2021, but locked it behind the `image.jxl.enabled` flag in `about:config`. For years, they cited Chrome's decision as a reason to wait, keeping the door open but the feature firmly opted-in only.
 
@@ -80,7 +80,7 @@ The format found passionate homes in photography communities, archivists, and HD
 
 ## Act V: The Tide Turns
 
-The dam began to crack. Edge followed Safari's quiet lead — and since Edge is Chromium-based, this was a quiet irony: a fork of Chrome was supporting what Chrome had rejected.
+The dam began to crack. Operating system support broadened when Microsoft added JPEG XL decoding to Windows 11 via an official extension, bringing support to the Photos app and File Explorer.
 
 Then came the moment nobody had quite predicted: the CDN and infrastructure giants started caring. Cloudflare, Cloudinary, and others began supporting JPEG XL delivery, quietly building the ecosystem that Google said didn't exist.
 
@@ -92,11 +92,11 @@ And then — slowly, without fanfare — Google itself began to reconsider. With
 
 ## Epilogue: An Unfinished Story
 
-As of today, JPEG XL is not yet universal. Chrome's support remains the missing piece that would truly complete the story. But the format is very much alive — supported natively in Apple's ecosystem (macOS, iOS, Safari), quietly available in Firefox Nightly, embraced by major CDNs, and living in countless tools.
+As of today, JPEG XL is not yet universal. Default support in Chrome remains the missing piece that would truly complete the story. But the format is very much alive, supported natively in Apple's ecosystem (macOS, iOS, Safari), available behind experimental flags in Firefox and Chrome, embraced by major CDNs, and living in countless tools.
 
 The story of JPEG XL is ultimately a story about **who controls the web's infrastructure** and whether technical merit alone can survive corporate headwinds. It's a story about a community that refused to accept a burial decree, that kept writing code and making arguments until the ground shifted.
 
-The JPEG survived for 30 years. Its successor, it seems, may be just stubborn enough to do the same.
+JPEG has survived for over 30 years. Its successor, it seems, may be just stubborn enough to do the same.
 
 *The arc is long. But it bends toward better compression.*
 
@@ -104,7 +104,7 @@ The JPEG survived for 30 years. Its successor, it seems, may be just stubborn en
 
 If you've read this far, I'm guessing you're quite interested in embracing JPEG XL. In the following section, you'll learn how to actually use it on macOS.
 
-First, we need to install it on the device. If you already have FFmpeg on your Mac, it may already be installed. If not, install it using the following commands:
+First, let's install the JPEG XL command-line tools (`cjxl` and `djxl`) on your Mac using Homebrew:
 
 ### Install Homebrew
 
@@ -170,7 +170,7 @@ For greater convenience, you can use macOS's built-in **Shortcuts** app to turn 
 2. Click the **+** (plus) icon to create a new shortcut.
 3. In the right-hand sidebar, click the **Shortcut Details** icon (the small "i" in a circle) and check the box **"Use as Quick Action"**.
 4. Ensure **"Finder"** is selected under the Quick Action settings.
-5. At the top of the main window, change the input to: *"Receive **Image** from **Quick Actions**."*
+5. At the top of the main window, change the input to: *"Receive **Images** from **Quick Actions**."*
 
 ### Step 2: Add the "Run Shell Script" Action
 
@@ -184,20 +184,22 @@ For greater convenience, you can use macOS's built-in **Shortcuts** app to turn 
 4. Fill in the code with the script below:
 
 ```zsh
-# Path to homebrew binary (standard for Apple Silicon Macs)
-CJXL_PATH="/opt/homebrew/bin/cjxl"
+# Include both Apple Silicon (/opt/homebrew) and Intel (/usr/local) Homebrew paths
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+CJXL_PATH="$(command -v cjxl)"
 
 for f in "$@"
 do
+    # Skip if already a JXL image
+    [[ "$f" == *.jxl ]] && continue
+    
     # Create the output filename by replacing the extension
     output="${f%.*}.jxl"
     
     # Run the basic conversion
-    $CJXL_PATH "$f" "$output"
+    "$CJXL_PATH" "$f" "$output"
 done
 ```
-
-> **Important Note:** If you are using an older Intel-based Mac, Homebrew installs to a different directory. Change the `CJXL_PATH` line to `"/usr/local/bin/cjxl"`.
 
 ### Step 3: Try it out
 
@@ -223,14 +225,14 @@ done
 
 ## How to Enable JPEG XL in Your Browser
 
-Right now, Safari supports JPEG XL natively out-of-the-box on recent Apple devices. However, if you're on Chrome, Brave, or Firefox, you'll need to manually flip a few experimental flags to enable it while support is actively being developed.
+Right now, Safari supports JPEG XL natively out-of-the-box on recent Apple devices. However, if you're on Chrome, Brave, or Firefox, you can manually enable experimental flags to view JPEG XL images while default support continues to roll out.
 
 ### Google Chrome & Brave
 
 1. Open a new tab in your browser.
 2. In the address bar, type `chrome://flags` (for Chrome) or `brave://flags` (for Brave) and press **Enter**.
 3. In the search bar at the top of the page, type `jxl`.
-4. Locate the specific flag titled **Enable JXL image format** (or similar).
+4. Locate the flag titled **Enable JPEG XL image format** (or `#enable-jxl-image-format`).
 5. Click the dropdown menu next to it and change it from **Default** to **Enabled**.
 6. Click the **Relaunch** button to restart your browser.
 
@@ -240,6 +242,7 @@ Right now, Safari supports JPEG XL natively out-of-the-box on recent Apple devic
 2. If prompted with a warning, click **"Accept the Risk and Continue"**.
 3. In the search box, type `image.jxl.enabled`.
 4. Double-click the entry (or click the toggle button) to change its value from `false` to `true`.
+   *(Alternatively, in recent versions, you can enable JPEG XL directly under **Settings > Firefox Labs**.)*
 5. Restart your browser.
 
 ---
