@@ -49,27 +49,31 @@ const searchPayload = allPosts.map((entry) => ({
                 class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft"
             >
                 <p class="text-xs uppercase tracking-[0.3em] text-gray-500">
-                    {
-                        new Date(post.data.pubDate).toLocaleDateString(
+                    <time datetime={post.data.pubDate.toISOString()}>
+                        {new Date(post.data.pubDate).toLocaleDateString(
                             undefined,
                             {
                                 year: "numeric",
                                 month: "short",
                                 day: "numeric",
                             },
-                        )
-                    }
+                        )}
+                    </time>
                     {
                         post.data.updateDate && (
                             <span class="ml-2">
                                 · Updated on{" "}
-                                {new Date(
-                                    post.data.updateDate,
-                                ).toLocaleDateString(undefined, {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                })}
+                                <time
+                                    datetime={post.data.updateDate.toISOString()}
+                                >
+                                    {new Date(
+                                        post.data.updateDate,
+                                    ).toLocaleDateString(undefined, {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    })}
+                                </time>
                             </span>
                         )
                     }
