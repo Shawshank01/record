@@ -20,6 +20,15 @@ export const GET: APIRoute = async (context) => {
       const rawHtml = await container.renderToString(Content);
       const content = sanitizeHtml(rawHtml, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+        transformTags: {
+          a: (tagName, attribs) => {
+            const classes = attribs.class?.split(/\s+/) ?? [];
+
+            return classes.includes("jxl-fallback-link")
+              ? { tagName: "span", attribs: {} }
+              : { tagName, attribs };
+          },
+        },
       });
 
       return {
