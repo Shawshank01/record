@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "remark-github-blockquote-alert/alert.css";
 @plugin "@tailwindcss/typography";
 
 @font-face {
@@ -162,6 +163,26 @@ pre {
 .prose :not(pre)>code::before,
 .prose :not(pre)>code::after {
     content: none !important;
+}
+
+/* Keep GitHub alerts readable in the site's dark theme. */
+.prose .markdown-alert {
+    --color-border-default: #30363d;
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-danger-fg: #f85149;
+    --color-danger-emphasis: #da3633;
+    --color-attention-fg: #d29922;
+    --color-attention-emphasis: #9e6a03;
+    --color-done-fg: #a371f7;
+    --color-done-emphasis: #8957e5;
+    --color-success-fg: #3fb950;
+    --color-success-emphasis: #238636;
+    font-style: normal;
+}
+
+.prose .markdown-alert p {
+    font-style: normal;
 }
 
 /* Remove auto-generated " " quotation marks around blockquotes */

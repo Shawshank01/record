@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
+import { remarkAlert } from "remark-github-blockquote-alert";
 import remarkJxlHint from "./remark-jxl-hint.mjs";
 
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
 
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkJxlHint],
+      remarkPlugins: [remarkAlert, remarkJxlHint],
     }),
   },
 
