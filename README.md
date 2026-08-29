@@ -48,13 +48,13 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ## Tech Stack
 
-| Layer       | Technology                                                                 |
-| ----------- | -------------------------------------------------------------------------- |
-| Framework   | [Astro 7](https://astro.build) (static-site generation)                    |
-| Styling     | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography` |
-| Typography  | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
-| Language    | TypeScript                                                                 |
-| Deployment  | GitHub Pages via GitHub Actions                                            |
+| Layer      | Technology                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework  | [Astro 7](https://astro.build) (static-site generation)                                                                                                                                                                   |
+| Styling    | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography`                                                                                                                             |
+| Typography | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
+| Language   | TypeScript                                                                                                                                                                                                                |
+| Deployment | GitHub Pages via GitHub Actions                                                                                                                                                                                           |
 
 ## Using This Repository as a Template
 
@@ -107,12 +107,12 @@ Write your content here in Markdown.
 
 | Field         | Required | Description                                        |
 | ------------- | -------- | -------------------------------------------------- |
-| `title`       | ✅        | Post title                                         |
-| `description` | ✅        | Short summary shown on cards and in meta tags      |
-| `pubDate`     | ✅        | Publication date (`YYYY-MM-DD`)                    |
-| `tags`        | ✅        | Array of tag strings (at least one)                |
-| `draft`       | ❌        | Set to `true` to hide the post from production     |
-| `updateDate`  | ❌        | Last-updated date, used in sitemap and post header |
+| `title`       | ✅       | Post title                                         |
+| `description` | ✅       | Short summary shown on cards and in meta tags      |
+| `pubDate`     | ✅       | Publication date (`YYYY-MM-DD`)                    |
+| `tags`        | ✅       | Array of tag strings (at least one)                |
+| `draft`       | ❌       | Set to `true` to hide the post from production     |
+| `updateDate`  | ❌       | Last-updated date, used in sitemap and post header |
 
 ### 4. Develop Locally
 
