@@ -3,7 +3,7 @@ title: "Diwen Xiao's CV"
 description: "My study experiences and projects."
 ---
 
-### Contact
+## Contact
 
 ✉️ [EMAIL](mailto:lelouch@outlook.ie) | 💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)
 🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland)
@@ -25,13 +25,15 @@ A passionate **Software Engineer / Full-Stack Developer** with a strong academic
 
 ## Education
 
-### <img src="/tu-dublin-logo.svg" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="TU Dublin Logo" /> Master of Science - Technological University Dublin
+### <img src="/cv/tu-dublin-logo.svg" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="TU Dublin Logo" /> Master of Science - Technological University Dublin
+
 <div style="display: flex; justify-content: space-between;"><strong>Computer Science (Advanced Software Development)</strong><span><em>2024 - 2026</em></span></div>
 
 > Second Class Honours, First Division
 >> **Module:** Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
 
-### <img src="/nci-logo.png" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="NCI Logo" /> Higher Diploma - National College of Ireland
+### <img src="/cv/nci-logo.png" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="NCI Logo" /> Higher Diploma - National College of Ireland
+
 <div style="display: flex; justify-content: space-between;"><strong>Science in Computing</strong><span><em>2023 - 2024</em></span></div>
 
 > 2nd Class Honours Grade 1
@@ -40,19 +42,20 @@ A passionate **Software Engineer / Full-Stack Developer** with a strong academic
 ---
 
 ## Group Project
+>
 > Team Leader
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
 
 ![Homepage0](/cv/UI-Walkthrough-00.png)
-<p align="center"><em>Homepage top</em></p>
+**Homepage top**
 
 ![Homepage1](/cv/UI-Walkthrough-01.png)
-<p align="center"><em>Homepage bottom</em></p>
+**Homepage bottom**
 
 - **Acted as Team Leader**, coordinating a group of 3 developers using Agile methodologies (Scrum) to build an AI-powered platform for detecting and monitoring online harassment networks in real time.
 - **Architected a high-performance Full-Stack application**, utilizing **React, TypeScript, Tailwind CSS, and Vite** for a highly visual frontend, alongside an **Express/Node.js** backend utilizing WebSockets for sub-second real-time threat alerts.
-- **Engineered a scalable Data Pipeline**, employing **Apache Kafka and Spark** to ingest and stream live event data from social media APIs (e.g., Bluesky) for continuous downstream analysis. 
+- **Engineered a scalable Data Pipeline**, employing **Apache Kafka and Spark** to ingest and stream live event data from social media APIs (e.g., Bluesky) for continuous downstream analysis.
 - **Integrated advanced NLP models (DistilBERT)** and leveraged an **Oracle 23ai Database** for in-database machine learning, achieving over 85% accuracy in threat classification, sentiment analysis, and entity recognition.
 - **Developed complex, interactive data visualizations**, integrating **Cytoscape** and **Louvain** community detection algorithms to map coordinated harassment networks, empowering security analysts to identify emerging threats.
 - **Designed intuitive dashboard analytics** using **ApexCharts** to deliver a global threat index and sentiment history, translating complex AI insights into accessible UI components for end-users.
@@ -67,7 +70,7 @@ A passionate **Software Engineer / Full-Stack Developer** with a strong academic
 [YT-DLP Downloader](https://github.com/Shawshank01/yt-downloader-electron)
 
 ![YT-DLP-UI](https://raw.githubusercontent.com/Shawshank01/yt-downloader-electron/main/public/YT-Downloader-UI.png)
-<p align="center"><em>YT-DLP Downloader UI</em></p>
+**YT-DLP Downloader UI**
 
 This is a modern, user-friendly desktop Electron application for downloading videos from YouTube and other supported platforms. It uses yt-dlp for download, and FFmpeg to change the format or add subtitles and thumbnails.
 
