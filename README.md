@@ -60,15 +60,15 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ### Prerequisites
 
-- **Node.js** ≥ 24
-- **npm** (included with Node.js)
+- **Node.js**@24
+- **pnpm**@12
 
 ### 1. Clone & Install
 
 ```bash
 git clone https://github.com/Shawshank01/record.git
 cd record
-npm install
+pnpm install
 ```
 
 ### 2. Personalise
@@ -117,7 +117,7 @@ Write your content here in Markdown.
 ### 4. Develop Locally
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The dev server starts at `http://localhost:4321` with hot reload.
@@ -125,8 +125,8 @@ The dev server starts at `http://localhost:4321` with hot reload.
 ### 5. Build & Preview
 
 ```bash
-npm run build      # Generate static files in dist/
-npm run preview    # Preview the production build locally
+pnpm build      # Generate static files in dist/
+pnpm preview    # Preview the production build locally
 ```
 
 ### 6. Deploy
