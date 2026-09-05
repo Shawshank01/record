@@ -1,7 +1,8 @@
 {
   "name": "michifumis-blog",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "type": "module",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "dev": "astro dev",
     "prebuild": "node scripts/check-title-length.mjs",
