@@ -48,13 +48,13 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ## Tech Stack
 
-| Layer      | Technology                                                                                                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework  | [Astro 7](https://astro.build) (static-site generation)                                                                                                                                                                   |
-| Styling    | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography`                                                                                                                             |
+| Layer | Technology |
+| --- | --- |
+| Framework | [Astro 7](https://astro.build) (static-site generation) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography` |
 | Typography | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
-| Language   | TypeScript                                                                                                                                                                                                                |
-| Deployment | GitHub Pages via GitHub Actions                                                                                                                                                                                           |
+| Language | TypeScript, Javascript, HTML, CSS |
+| Deployment | GitHub Pages via GitHub Actions |
 
 ## Using This Repository as a Template
 
@@ -75,18 +75,18 @@ pnpm install
 
 Update the following to make the blog your own:
 
-| What                    | Where                                                              |
-| ----------------------- | ------------------------------------------------------------------ |
-| Site URL                | `astro.config.mjs` → `site`                                        |
-| Blog title & meta       | `src/layouts/BaseLayout.astro` → default props                     |
-| Header subtitles        | `src/data/subtitles.ts`                                            |
-| Custom domain (CNAME)   | `CNAME` (delete if not using a custom domain)                      |
-| Analytics endpoint      | `src/scripts/analytics.ts` → `endpoint` (or remove the script)     |
-| Accent colour           | `src/styles/global.css` → `@theme` block                           |
-| Background colours      | `src/styles/global.css` → `@theme` block                           |
-| Social / OG image       | `public/icon.svg` (replace with your own)                          |
-| Giscus comments         | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs         |
-| Giscus config           | `giscus.json` → origins, comment order                             |
+| What | Where |
+| --- | --- |
+| Site URL | `astro.config.mjs` → `site` |
+| Blog title & meta | `src/layouts/BaseLayout.astro` → default props |
+| Header subtitles | `src/data/subtitles.ts` |
+| Custom domain (CNAME) | `CNAME` (delete if not using a custom domain) |
+| Analytics endpoint | `src/scripts/analytics.ts` → `endpoint` (or remove the script) |
+| Accent colour | `src/styles/global.css` → `@theme` block |
+| Background colours | `src/styles/global.css` → `@theme` block |
+| Social / OG image | `public/icon.svg` (replace with your own) |
+| Giscus comments | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs |
+| Giscus config | `giscus.json` → origins, comment order |
 
 ### 3. Write a Post
 
