@@ -60,7 +60,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ### Prerequisites
 
-- **Node.js**@24
+- **Node.js**@26
 - **pnpm**@12
 
 ### 1. Clone & Install
