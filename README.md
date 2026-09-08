@@ -8,43 +8,43 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ### Content & Authoring
 
-- **Markdown blog posts** — Write posts in `.md` files with typed frontmatter (title, description, date, tags, draft status, update date).
-- **Draft support** — Set `draft: true` in frontmatter to hide a post from production without deleting it.
-- **Tag system** — Every post requires at least one tag. Tags are aggregated automatically and shown in a filterable sidebar.
-- **Language switcher** — Embed bilingual content blocks within a post; readers toggle between languages with a single click.
-- **Randomised header subtitle** — A curated list of quotes is randomly displayed beneath the site title on each page load.
-- **Giscus comments** — GitHub Discussions-powered comment system on every blog post, with reactions, lazy loading, and strict discussion matching.
+- **Markdown blog posts**: Write posts in `.md` files with typed frontmatter (title, description, pubDate, tags, draft status, update date).
+- **Draft support**: Set `draft: true` in frontmatter to hide a post from production without deleting it.
+- **Tag system**: Every post requires at least one tag. Tags are aggregated automatically and shown in a filterable sidebar.
+- **Language switcher**: Embed bilingual content blocks within a post; readers toggle between languages with a single click.
+- **Randomised header subtitle**: A curated list of quotes is randomly displayed beneath the site title on each page load.
+- **Giscus comments**: GitHub Discussions-powered comment system on every blog post, with reactions, lazy loading, and strict discussion matching.
 
 ### Discovery & Navigation
 
-- **Full-text search** — A client-side search bar filters posts by title, description, body, and tags instantly — no server required.
-- **Tag filtering sidebar** — Desktop users see a sticky sidebar of all tags; clicking one or more tags filters the post list in real time. Mobile users get a collapsible tag menu.
-- **Back-to-top button** — A floating button appears on scroll and smoothly returns users to the top of the page. Respects `prefers-reduced-motion`.
-- **Auto-hiding header** — The fixed header slides out of view on scroll to maximise reading space.
+- **Full-text search**: A client-side search bar filters posts by title, description, body, and tags instantly: no server required.
+- **Tag filtering sidebar**: Desktop users see a sticky sidebar of all tags; clicking one or more tags filters the post list in real time. Mobile users get a collapsible tag menu.
+- **Back-to-top button**: A floating button appears on scroll and smoothly returns users to the top of the page. Respects `prefers-reduced-motion`.
+- **Auto-hiding header**: The fixed header slides out of view on scroll to maximise reading space.
 
 ### Reading Experience
 
-- **Image lightbox** — Click any image inside a blog post to view it full-screen in a lightbox overlay. Press `Escape` or click to dismiss.
-- **Code block copy button** — Every `<pre>` code block gets a one-click copy button with visual feedback (copied ✓ / failed ✗).
-- **Beautiful code typography** — Code snippets and `<pre>` blocks are styling using a self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) variable font.
-- **External link handling** — Links to external domains automatically open in a new tab with `rel="noopener"`.
-- **Responsive layout** — Sidebar + content grid on desktop, single-column on mobile, with a dedicated mobile tag toggle.
+- **Image lightbox**: Click any image inside a blog post to view it full-screen in a lightbox overlay. Press `Escape` or click to dismiss.
+- **Code block copy button**: Every `<pre>` code block gets a one-click copy button with visual feedback (copied ✓ / failed ✗).
+- **Customised code typography**: Code snippets and `<pre>` blocks are styled using a self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) variable font.
+- **External link handling**: Links to external domains automatically open in a new tab with `rel="noopener"`.
+- **Responsive layout**: Sidebar + content grid on desktop, single-column on mobile, with a dedicated mobile tag toggle.
 
 ### SEO & Feeds
 
-- **RSS feed** — Auto-generated at `/rss.xml` from all published posts. The footer RSS button copies the feed URL to clipboard.
-- **XML sitemap** — Auto-generated at `/sitemap.xml` with `<lastmod>` using each post's update date (or publish date).
-- **robots.txt** — Dynamically generated, pointing crawlers to the sitemap.
-- **JSON-LD structured data** — `BlogPosting` schema markup is injected into every post page for rich search results.
-- **Open Graph & Twitter cards** — Full social-media meta tags on every page.
-- **Canonical URLs** — Every page includes a `<link rel="canonical">` tag.
-- **Comprehensive favicons** — PNG, SVG, Apple Touch Icon, and `favicon.ico` for maximum compatibility across browsers and RSS clients.
+- **RSS feed**: Auto-generated at `/rss.xml` from all published posts. The footer RSS button copies the feed URL to clipboard.
+- **XML sitemap**: Auto-generated at `/sitemap.xml` with `<lastmod>` using each post's update date (or publish date).
+- **robots.txt**: Dynamically generated, pointing crawlers to the sitemap.
+- **JSON-LD structured data**: `BlogPosting` schema markup is injected into every post page for rich search results.
+- **Open Graph & Twitter cards**: Full social-media meta tags on every page.
+- **Canonical URLs**: Every page includes a `<link rel="canonical">` tag.
+- **Comprehensive favicons**: PNG, SVG, Apple Touch Icon, and `favicon.ico` for maximum compatibility across browsers and RSS clients.
 
 ### Analytics & Infrastructure
 
-- **Self-hosted analytics** — Lightweight, privacy-respecting pageview tracking via `navigator.sendBeacon` to a self-hosted endpoint. No cookies, no third-party scripts.
-- **GitHub Pages deployment** — Ships with a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automated builds and deploys on push.
-- **Content Security Policy** — A strict CSP meta tag is applied site-wide.
+- **Self-hosted analytics**: Lightweight, privacy-respecting pageview tracking via `navigator.sendBeacon` to a self-hosted endpoint. No cookies, no third-party scripts.
+- **GitHub Pages deployment**: Ships with a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automated builds and deploys on push.
+- **Content Security Policy**: A strict CSP meta tag is applied site-wide.
 
 ## Tech Stack
 
@@ -53,7 +53,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 | Framework | [Astro 7](https://astro.build) (static-site generation) |
 | Styling | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography` |
 | Typography | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
-| Language | TypeScript, Javascript, HTML, CSS |
+| Language | TypeScript, JavaScript, HTML, CSS |
 | Deployment | GitHub Pages via GitHub Actions |
 
 ## Using This Repository as a Template
@@ -135,7 +135,7 @@ The included GitHub Actions workflow automatically builds and deploys to GitHub 
 
 1. Go to your repository **Settings → Pages**.
 2. Set the source to **GitHub Actions**.
-3. Push to the default branch — the workflow handles the rest.
+3. Push to the default branch: the workflow handles the rest.
 
 ## Licenses
 

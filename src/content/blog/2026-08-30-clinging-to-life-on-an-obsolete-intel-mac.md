@@ -108,7 +108,7 @@ I never imagined that Homebrew's decision to discontinue support for Intel Macs 
 > nodejs26 does not contain npm but it can be installed as a separate port. Pick from the choices listed by running:
 > port search --name --glob 'npm*'
 
-I was tired of npm's cache and node_modules, which are located in each project root folder, eating up a lot of my storage for a long time. But no matter whether I installed Node.js from the [official website](https://nodejs.org/en/download) or Homebrew, npm always came bundled with Node.js. Now I know that I can build it from source with only the runtime, but since there are no instructions on the official landing page or doc page, it's hard to know the distinction between the runtime and the package manager. I'd thought they were one and the same program back in the day; I was completely and utterly wrong.
+I was tired of npm's cache and node_modules, which are located in each project root folder, eating up a lot of my storage for a long time. But no matter whether I installed Node.js from the [official website](https://nodejs.org/en/download) or Homebrew, npm always came bundled with Node.js. I now know that I can build it from source with only the runtime. However, since there are no instructions on the official landing page or docs, it was hard to realise there was a distinction between the runtime and the package manager back then.
 
 It was then that I quite naturally came across [pnpm](https://pnpm.io/).
 **pnpm** is a fast, disk-efficient package manager for the JavaScript ecosystem, designed as a drop-in replacement for npm.

@@ -2,7 +2,7 @@
 title: "FFmpeg: The Ultimate Cross-Platform Video Tool"
 description: "Why FFmpeg is my daily driver for video/audio processing and a collection of useful commands."
 pubDate: 2026-02-19
-updateDate: 2026-02-28
+updateDate: 2026-09-08
 tags:
   - FFmpeg
   - macOS
@@ -58,7 +58,52 @@ If you have multiple clips with the same parameters (resolution, codec, etc.), y
 ffmpeg -f concat -safe 0 -i merge.txt -c copy output.mp4
 ```
 
-*Tip: `merge.txt` should contain lines like **file 'input.mp4'**. You can download a template by clicking <a href="/merge.txt" download>Here</a>.*
+`merge.txt` should contain lines like ***input.mp4***. You can download a [template here](/public/merge.txt).
+
+**Merge clips without a text file (Shell inline list):**
+
+```bash
+ffmpeg -f concat -safe 0 -i <(printf "file '%s'\n" input1.mp4 input2.mp4) -c copy output.mp4
+```
+
+On macOS or Linux (`zsh`/`bash`), process substitution (`<(...)`) feeds the file list directly from memory. This saves you from creating a physical `merge.txt` file on disk while keeping the blazing-fast, lossless stream copy (`-c copy`). All clips must still have identical codecs and parameters.
+
+**Merge clips with different parameters (`concat` filter):**
+
+```bash
+ffmpeg -i input1.mp4 -i input2.mp4 -filter_complex \
+"[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]" \
+-map "[v]" -map "[a]" output.mp4
+```
+
+Unlike the concat demuxer, the `concat` filter decodes and re-encodes the streams. This eliminates the need for an external file and seamlessly handles clips with different resolutions, framerates, or codecs, though it will take longer to encode.
+
+**Side-by-side comparison with audio (1080p, High Quality):**
+
+```bash
+ffmpeg -i input1.mov -i input2.mp4 -filter_complex \
+"[0:v]fps=60,scale=-2:1080[v0]; \
+ [1:v]fps=60,scale=-2:1080[v1]; \
+ [v0][v1]hstack=inputs=2[v]" \
+-map "[v]" -map 1:a -c:v libx264 -crf 19 -preset medium -c:a aac -b:a 192k -pix_fmt yuv420p -shortest output_side_by_side_hq.mp4
+```
+
+Scales both inputs to 1080p height and places them side-by-side horizontally using `hstack`. It retains the audio track from the second video (`-map 1:a`), balances high quality with reasonable file size (`-crf 19`), and trims output to the shorter video (`-shortest`).
+
+**Side-by-side comparison for desktop / text clarity (1800p, Near-lossless):**
+
+```bash
+ffmpeg -i input1.mov -i input2.mp4 -filter_complex \
+"[0:v]fps=60,scale=-2:1800:flags=lanczos[v0]; \
+ [1:v]fps=60,scale=-2:1800:flags=lanczos[v1]; \
+ [v0][v1]hstack=inputs=2[v]" \
+-map "[v]" -an \
+-c:v libx264 -crf 12 -preset veryslow \
+-x264-params "no-deblock=1:aq-mode=3:qcomp=0.8" \
+-pix_fmt yuv420p -shortest output_ultra.mp4
+```
+
+Ideal for screen recording comparisons where text and UI sharpness matter. It scales to 1800p using the sharper `lanczos` algorithm, strips audio (`-an`), and disables in-loop deblocking (`no-deblock=1`) with `-crf 12` to prevent fine UI details and fonts from being smoothed out.
 
 ---
 
