@@ -105,14 +105,14 @@ Write your content here in Markdown.
 
 **Frontmatter fields:**
 
-| Field         | Required | Description                                        |
-| ------------- | -------- | -------------------------------------------------- |
-| `title`       | ✅       | Post title                                         |
-| `description` | ✅       | Short summary shown on cards and in meta tags      |
-| `pubDate`     | ✅       | Publication date (`YYYY-MM-DD`)                    |
-| `tags`        | ✅       | Array of tag strings (at least one)                |
-| `draft`       | ❌       | Set to `true` to hide the post from production     |
-| `updateDate`  | ❌       | Last-updated date, used in sitemap and post header |
+| Field | Required | Description |
+| --- | --- | --- |
+| `title` | ✅ | Post title |
+| `description` | ✅ | Short summary shown on cards and in meta tags |
+| `pubDate` | ✅ | Publication date (`YYYY-MM-DD`) |
+| `tags` | ✅ | Array of tag strings (at least one) |
+| `draft` | ❌ | Set to `true` to hide the post from production |
+| `updateDate` | ❌ | Last-updated date, used in sitemap, post header and post cards |
 
 ### 4. Develop Locally
 

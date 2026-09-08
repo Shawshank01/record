@@ -16,18 +16,34 @@ const { data, id } = post;
                     {data.title}
                 </a>
             </h2>
-            <time
-                class="mt-1 block text-xs uppercase tracking-wide text-gray-500"
-                datetime={data.pubDate.toISOString()}
-            >
+            <p class="mt-1 text-xs uppercase tracking-wide text-gray-500">
+                <time datetime={data.pubDate.toISOString()}>
+                    {
+                        new Date(data.pubDate).toLocaleDateString(undefined, {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                        })
+                    }
+                </time>
                 {
-                    new Date(data.pubDate).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                    })
+                    data.updateDate && (
+                        <span class="ml-2">
+                            · Updated on{" "}
+                            <time datetime={data.updateDate.toISOString()}>
+                                {new Date(data.updateDate).toLocaleDateString(
+                                    undefined,
+                                    {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    },
+                                )}
+                            </time>
+                        </span>
+                    )
                 }
-            </time>
+            </p>
         </div>
         <p class="text-sm text-gray-300">{data.description}</p>
         <div class="flex flex-wrap gap-2">
