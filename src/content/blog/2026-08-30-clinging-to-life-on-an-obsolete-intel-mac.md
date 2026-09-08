@@ -2,10 +2,16 @@
 title: "Clinging to Life on an Obsolete Intel Mac"
 description: "Dealing with hardware obsolescence and Homebrew tier 3 software hurdles on an Intel MacBook in late 2026."
 pubDate: 2026-08-30
+updateDate: 2026-09-08
 tags:
-  - MacBook
+  - MacBook (x86)
   - Homebrew
+  - MacPorts
   - Node.js
+  - npm
+  - pnpm
+  - Deno
+  - Bun
 ---
 
 On 13 August 2026, Apple listed my old Intel MacBook as an obsolete product. According to the [official description](https://support.apple.com/en-ie/102772):
@@ -32,7 +38,8 @@ This is a Tier 3 configuration:
   https://docs.brew.sh/Support-Tiers#tier-3
 ```
 
-This means they are withdrawing support for the pre-built bottles for my old fellow. Although I could download the source code and compile it myself, that would mean more work. And the last thing I want is any hassle. Luckily, I found a workaround. I replaced the current one with node@24 LTS.
+This means they are withdrawing support for the pre-built bottles for my old fellow. Although I could download the source code and compile it myself, that would mean more work. And the last thing I want is any hassle. ~~Luckily, I found a workaround. I replaced the current one with node@24 LTS.~~
+Check out the truly useful update [below](#the-redemption)!
 
 Replacing it is quite simple:
 
@@ -76,3 +83,49 @@ Some might be tempted to use this to free up space:
 *npm cache clean --force*
 
 But be careful with it, not only is it unnecessary, it could also waste bandwidth and slow down future installs.
+
+---
+
+## The Redemption
+
+Several days later, another message showed up when I used brew upgrade.
+
+```text
+Warning: You are using macOS on Intel x86_64.
+We do not provide support for this platform (as-of September 2026, announced August 2025).
+
+Apple have dropped Intel x86_64 support in macOS Golden Gate (27).
+GitHub Actions are dropping macOS Intel x86_64 runners in 2027.
+Homebrew is a non-profit project run entirely by volunteers, not employees.
+If the biggest companies in the world cannot support macOS Intel x86_64
+any longer, sadly neither can we.
+
+You will have better luck with MacPorts which still supports macOS Intel x86_64:
+  https://www.macports.org
+```
+
+I never imagined that Homebrew's decision to discontinue support for Intel Macs and introduce me to [MacPorts](https://ports.macports.org/) would open up a whole new world for me, to the extent that I ended up completely overhauling my development environment. It all started with [this note](https://ports.macports.org/port/nodejs26/details/):
+> nodejs26 does not contain npm but it can be installed as a separate port. Pick from the choices listed by running:
+> port search --name --glob 'npm*'
+
+I was tired of npm's cache and node_modules, which are located in each project root folder, eating up a lot of my storage for a long time. But no matter whether I installed Node.js from the [official website](https://nodejs.org/en/download) or Homebrew, npm always came bundled with Node.js. Now I know that I can build it from source with only the runtime, but since there are no instructions on the official landing page or doc page, it's hard to know the distinction between the runtime and the package manager. I'd thought they were one and the same program back in the day; I was completely and utterly wrong.
+
+It was then that I quite naturally came across [pnpm](https://pnpm.io/).
+**pnpm** is a fast, disk-efficient package manager for the JavaScript ecosystem, designed as a drop-in replacement for npm.
+
+Compared to npm, its key advantages include:
+
+* **Massive Disk Space Savings:** It uses a global content-addressable store on your hard drive, hard-linking packages so the same dependency is never duplicated across projects.
+* **Significantly Faster Installs:** By skipping redundant downloads and running tasks concurrently, installs and CI builds are noticeably faster.
+* **Strict, Phantom-Dependency Prevention:** Unlike npm's flattened `node_modules`, pnpm uses symlinks to create a strict structure, preventing your code from accidentally importing dependencies you never explicitly declared in `package.json`.
+* **First-Class Monorepo Support:** It natively handles multi-package workspaces with zero hassle.
+
+That means I don't need to worry about running `npm cache verify`, `npm cache clean --force`, or deleting `node_modules` manually from time to time to keep my projects consistent and clean. I immediately installed MacPorts, installed nodejs26 and pnpm through it without a second thought, and migrated all my JavaScript projects to pnpm. For me, the way pnpm runs is like magic.
+
+But as I ventured deeper down the rabbit hole, I found something even more shocking: I could even get rid of pnpm! Not by switching to another package manager like Yarn that could be paired with Node.js, but an actual runtime that can replace Node.js and a package manager all by itself! That's right, with Deno or Bun, not only will you no longer have to worry about which package manager to choose, but you'll also be able to enjoy a more cutting-edge and faster development environment! If you are interested in the differences between Node.js, Deno, and Bun, you can find a more useful comparison on this [page](https://blog.stackademic.com/javascript-runtime-battle-node-js-vs-deno-vs-bun-which-should-you-pick-d3e662a37c84).
+
+In my own experience, I've already migrated one of my [JavaScript projects](https://github.com/Shawshank01/xAI-desktop) totally from Node.js to Deno. All I needed was to replace `express`, `cors`, `dotenv`, and Node-specific `http` constructs with native Deno APIs. However, while my other two projects focus on TypeScript and should have been better suited to a switch to Deno (given its native support for TypeScript), one uses Electron for its GUI and the other is this blog which relies heavily on Node.js via Astro. After careful consideration, I ultimately decided against migrating them, opting instead to switch to Node.js + pnpm.
+
+![jxl hint](/2026-08-30/meme.jxl)
+
+The reason I didn't try Bun is because Deno was already installed on my MacBook as a dependency of yt-dlp. Yep, that is the only reason. Now you know how lazy I am.

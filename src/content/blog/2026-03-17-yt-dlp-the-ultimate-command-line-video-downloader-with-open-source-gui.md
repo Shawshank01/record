@@ -17,7 +17,7 @@ In [this previous blog](https://zaku.eu.org/blog/2026-02-19-ffmpeg-the-ultimate-
 
 > yt-dlp is a feature-rich command-line audio/video downloader with support for thousands of sites.
 
-You can use it for all sorts of things, but the feature you’ll probably use most often is downloading videos or audio from YouTube to your archive, given the crazy censorship on YouTube these days. If you want to save a video that disappears within a few hours of being uploaded, give yt-dlp a go!
+You can use it for all sorts of things, but the feature you'll probably use most often is downloading videos or audio from YouTube to your archive, given the crazy censorship on YouTube these days. If you want to save a video that disappears within a few hours of being uploaded, give yt-dlp a go!
 
 ---
 
@@ -70,17 +70,17 @@ yt-dlp --merge-output-format mp4 --cookies-from-browser brave 'URL'
 
 ---
 
-However, as I used it more and more, I increasingly felt that using the command line wasn’t a convenient option. So, since laziness is the mother of invention, I decided to write my own Electron-based GUI to free myself from the command line for some of my simple, routine tasks.
+However, as I used it more and more, I increasingly felt that using the command line wasn't a convenient option. So, since laziness is the mother of invention, I decided to write my own Electron-based GUI to free myself from the command line for some of my simple, routine tasks.
 
 And this is it, the [YT-DLP Downloader](https://github.com/Shawshank01/yt-downloader-electron).
 
-This is a user-friendly desktop application for downloading videos from YouTube and other supported platforms. It uses `yt-dlp` for download, and `FFmpeg` to change the format or add subtitles. But this app itself doesn’t bundle yt-dlp and FFmpeg, since they rely heavily on aggressive upgrades. I don't want to upgrade my app every time they release an upgrade. This means that the pros of this app is that it only calls the `yt-dlp` or `FFmpeg` that are already installed on your system when needed. Every time you upgrade your dependencies, it will use the latest version seamlessly. The cons is that this app is useless without dependencies. But I'm sure that won’t be a problem if you're a fan of my blog ;-)
+This is a user-friendly desktop application for downloading videos from YouTube and other supported platforms. It uses `yt-dlp` for download, and `FFmpeg` to change the format or add subtitles. But this app itself doesn't bundle yt-dlp and FFmpeg, since they rely heavily on aggressive upgrades. I don't want to upgrade my app every time they release an upgrade. This means that the pros of this app is that it only calls the `yt-dlp` or `FFmpeg` that are already installed on your system when needed. Every time you upgrade your dependencies, it will use the latest version seamlessly. The cons is that this app is useless without dependencies. But I'm sure that won't be a problem if you're a fan of my blog ;-)
 
 This is what the app looks like:
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader.jxl)
 
-The most basic way to use it is to enter a website address (I’ll use [https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ) as an example), select which browser to retrieve cookies from (or skip this step), click the “Choose” button to select a download folder, and finally click the blue “Run” button and wait for the process to complete. It’s that simple!
+The most basic way to use it is to enter a website address (I'll use [https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ) as an example), select which browser to retrieve cookies from (or skip this step), click the "Choose" button to select a download folder, and finally click the blue "Run" button and wait for the process to complete. It's that simple!
 
 ### Advanced Actions
 
@@ -102,18 +102,18 @@ For the Download Subtitles, it allows you to download not only subtitles uploade
 
 #### MP4 Re-encoding (H.264/AAC)
 
-The Action of MP4 Re-encoding (H.264/AAC), is for compatibility. Today, a large number of videos on YouTube use the av01 and opus codec, but many people’s older devices or software are unable to decode these fancy new formats. So if you want to share downloaded videos with friends and ensure they can watch them properly, you might find this feature useful. However, for most people, you can simply ignore it.
+The Action of MP4 Re-encoding (H.264/AAC), is for compatibility. Today, a large number of videos on YouTube use the av01 and opus codec, but many people's older devices or software are unable to decode these fancy new formats. So if you want to share downloaded videos with friends and ensure they can watch them properly, you might find this feature useful. However, for most people, you can simply ignore it.
 
 At last, the **Add HarSub** Action, is the very reason I developed this GUI. It allows you to download videos and subtitles with a single click, converting the video into an H.264 or HEVC file with hardcoded subtitles. This means the subtitles are embedded directly into the video, rather than requiring manual loading like external subtitle files, ensuring they will always appear in the video.
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader-add-hardsub.jxl)
 
-Unfortunately, because I’m using VideoToolbox for hardware acceleration, this Action currently only works on macOS.
+Unfortunately, because I'm using VideoToolbox for hardware acceleration, this Action currently only works on macOS.
 
-The “Check for Dependencies” button in the lower-right corner automatically checks whether `Homebrew`, `yt-dlp`, and `FFmpeg` are installed on your macOS. If they are not installed, it also provides a one-click installation feature. If this is your first time using this GUI, or if you're using it on a brand-new system, you'll want to click on it to test it out before you start.
+The "Check for Dependencies" button in the lower-right corner automatically checks whether `Homebrew`, `yt-dlp`, and `FFmpeg` are installed on your macOS. If they are not installed, it also provides a one-click installation feature. If this is your first time using this GUI, or if you're using it on a brand-new system, you'll want to click on it to test it out before you start.
 
-The “Check for Updates” button in the bottom-left corner lets you see if I've released a new version on GitHub (Yes, I still occasionally optimise or add new features so I can enjoy life with even less effort.) If there is a new version, you’ll be asked if you want to open the latest releases page in your default browser (of course, you can also click [this link](https://github.com/Shawshank01/yt-downloader-electron/releases) to download it).
+The "Check for Updates" button in the bottom-left corner lets you see if I've released a new version on GitHub (Yes, I still occasionally optimise or add new features so I can enjoy life with even less effort.) If there is a new version, you'll be asked if you want to open the latest releases page in your default browser (of course, you can also click [this link](https://github.com/Shawshank01/yt-downloader-electron/releases) to download it).
 
 ---
 
-BTW, this blog is not affiliated with Apple. It’s just that I happen to like using their products.
+BTW, this blog is not affiliated with Apple. It's just that I happen to like using their products.

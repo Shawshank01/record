@@ -32,6 +32,6 @@ The difference lies in where the engine lives:
 
 Back then, our biggest hurdles were the astronomical cost of fetching streaming data (X's API pricing felt like robbery), and feedback from one of my mentors pointing out that our project had a blurry target audience, making it hard for everyday users to grasp the value of a standalone monitoring dashboard.
 
-Seeing twitter.now, I can’t help but marvel at how it has directly resolved the two biggest problems we faced back then, by building the platform itself instead of paying for external APIs, and tying the scoring engine directly into the core product to make it easier for users to understand.
+Seeing twitter.now, I can't help but marvel at how it has directly resolved the two biggest problems we faced back then, by building the platform itself instead of paying for external APIs, and tying the scoring engine directly into the core product to make it easier for users to understand.
 
 Perhaps that is why they have the confidence to take Musk to court and launch a \$20/\$40 subscription plan, whilst we ultimately never got beyond the stage of a final project.

@@ -16,9 +16,9 @@ Last time we covered how to enhance VPS security by creating regular users and c
 
 But is a password the most secure option? Not necessarily. Because even if your password is long and complex, password-based SSH logins still suffer from a few fundamental problems:
 
-- **They can be brute-forced** (even if it’s unlikely, attackers will try constantly).
+- **They can be brute-forced** (even if it's unlikely, attackers will try constantly).
 - **They rely on something you type**, which means they can be phished, logged, or reused.
-- **They expand the attack surface**, you’re leaving a whole authentication method enabled on the server.
+- **They expand the attack surface**, you're leaving a whole authentication method enabled on the server.
 
 The better approach is:  
 🔐 **Use SSH keys** and disable password logins completely.
@@ -29,7 +29,7 @@ This article documents the full journey: generating a strong key pair on macOS (
 
 ## Why SSH Keys are Better than Passwords
 
-SSH keys are essentially cryptographic credentials. Instead of “something you know” (password), SSH keys rely on:
+SSH keys are essentially cryptographic credentials. Instead of "something you know" (password), SSH keys rely on:
 
 - a **private key** (kept on your machine)
 - a **public key** (stored on your server)
@@ -80,7 +80,7 @@ If your laptop is compromised and your private key is stolen:
 - without passphrase: attacker gets instant access
 - with passphrase: attacker must brute-force it offline (very expensive)
 
-If convenience is a concern, macOS can store the passphrase via Keychain so you don’t type it every time.
+If convenience is a concern, macOS can store the passphrase via Keychain so you don't type it every time.
 
 For the simplest way, you can also leave it empty.
 
@@ -155,7 +155,7 @@ chmod 600 ~/.ssh/authorized_keys
 chown -R $USER:$USER ~/.ssh
 ```
 
-✅ If above cmd show no output: that’s normal. Silent success is expected.
+✅ If above cmd show no output: that's normal. Silent success is expected.
 
 To verify:
 
@@ -183,11 +183,11 @@ ssh ubuntu@your-vps
 
 If it logs in without asking for the VPS password (it may ask your key passphrase), you're ready.
 
-Keep your current SSH session open during testing so you don’t lock yourself out.
+Keep your current SSH session open during testing so you don't lock yourself out.
 
 ---
 
-## Step 6: Disable Password Login (And It Didn’t Work at First)
+## Step 6: Disable Password Login (And It Didn't Work at First)
 
 After editing `/etc/ssh/sshd_config` and adding:
 
@@ -283,7 +283,7 @@ Before restarting the SSH service, **always test your configuration syntax first
 sudo sshd -t
 ```
 
-- **No output**: That’s good! Silent success means the configuration has no syntax errors.
+- **No output**: That's good! Silent success means the configuration has no syntax errors.
 
 ### Restart SSH service
 
@@ -340,7 +340,7 @@ sudo apt install -y fail2ban
 sudo systemctl enable --now fail2ban
 ```
 
-### Disable X11 forwarding if you don’t need it
+### Disable X11 forwarding if you don't need it
 
 In sshd_config:
 

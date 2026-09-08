@@ -211,7 +211,7 @@ done
 3. Go to your **Finder** and select any image (PNG, JPG, etc.).
 4. Right-click the image, go down to **Quick Actions**, and click **Convert to JXL**.
     > You may see a pop-up window the first time you run it:  
-    > **“cjxl” would like to access files in your Downloads folder.**  
+    > **"cjxl" would like to access files in your Downloads folder.**  
     > Just choose **Allow** this time and you will never see it again.
 5. A small gear will spin in your menu bar, and seconds later, a highly-compressed `.jxl` file will magically appear in the same folder as your original image.
 

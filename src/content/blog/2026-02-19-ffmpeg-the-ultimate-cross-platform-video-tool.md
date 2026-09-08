@@ -192,7 +192,7 @@ ffmpeg -i input.mp4 -vn -c:a aac_at -q:a 5 output.m4a
 
 ### Ignore this Part if You are NOT a macOS User
 
-If you find that some of these commands fit your requirements, or if you're interested in exploring more of the fun that FFmpeg has to offer and are ready to install it on your device, I also have some advice for you if you’re a macOS user.
+If you find that some of these commands fit your requirements, or if you're interested in exploring more of the fun that FFmpeg has to offer and are ready to install it on your device, I also have some advice for you if you're a macOS user.
 
 The first and most important thing to note is that if you use Homebrew to install it, you might want to change a little bit of your initial process. According to the [official document](https://trac.ffmpeg.org/wiki/CompilationGuide/macOS#Additionaloptions), which I quote:
 

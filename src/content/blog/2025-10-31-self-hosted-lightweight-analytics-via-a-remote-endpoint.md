@@ -28,7 +28,7 @@ tags:
 
 ---
 
-> Instead of using third‑party analytics like Cloudflare, I’m running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
+> Instead of using third‑party analytics like Cloudflare, I'm running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
 
 ## What I've built
 
@@ -839,7 +839,7 @@ Add an **A** record:
 - Target: your VM public IP
 - Proxy status: **DNS only** (gray cloud)
 
-Caddy will fetch a Let’s Encrypt certificate automatically.  
+Caddy will fetch a Let's Encrypt certificate automatically.  
 After issuance, HTTPS works at `https://stats.zaku.eu.org`.
 
 ---
@@ -1189,4 +1189,4 @@ A new entry appearing in `/summary` confirms your endpoint is working correctly.
 
 ---
 
-This blog uses this as a **self‑hosted, portable, privacy‑friendly analytics** system. If you don’t want me to know you’ve visited my blog (I’d be really sad 😢), you can simply use uBlock Origin to block the domain above. If you want to build your own, feel free to fork these snippets and adapt the endpoints to your domain.
+This blog uses this as a **self‑hosted, portable, privacy‑friendly analytics** system. If you don't want me to know you've visited my blog (I'd be really sad 😢), you can simply use uBlock Origin to block the domain above. If you want to build your own, feel free to fork these snippets and adapt the endpoints to your domain.

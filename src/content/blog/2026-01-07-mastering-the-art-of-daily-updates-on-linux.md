@@ -16,7 +16,7 @@ tags:
 
 There are two types of people: those who never update their software and those who do it every day.
 
-Clearly, I'm the latter. I even perform various update operations daily across different devices: from system-level to application-level. And whenever I’m feeling bored, “update” is absolutely my default unconscious choice. I'm so addicted to updating that I wonder if it's some kind of disease such as compulsive disorder. Perhaps medical or psychological experts have already conducted similar research on this?
+Clearly, I'm the latter. I even perform various update operations daily across different devices: from system-level to application-level. And whenever I'm feeling bored, "update" is absolutely my default unconscious choice. I'm so addicted to updating that I wonder if it's some kind of disease such as compulsive disorder. Perhaps medical or psychological experts have already conducted similar research on this?
 
 Anyway, while updating functions on popular operating systems like iOS, macOS, Android, and Windows has become remarkably straightforward and user-friendly, the process remains less intuitive for Linux systems, particularly when using the command-line interface (CLI). Although users can leverage unattended-upgrades for automated updates, this solution doesn't address all challenges for heavy Docker users.
 

@@ -13,7 +13,7 @@ So here's the story: I received two promotional emails from AIB in February and 
 ![jxl hint](/2026-08-24/disney-visa-campaign-2026.jxl)
 *This one is from February. I actually won the May draw, but couldn't find that specific email.*
 
-Participation was quite simple. First, register online at [aib.ie/visapromotion](https://www.aib.ie/visapromotion) and answer a Disney-related question correctly. Then, spend with an AIB Visa debit or credit card: every transaction, whether in Euro or a foreign currency, earned one entry, capped at 10 entries per draw period. If I’m not mistaken, I didn’t even use up all 10 attempts.
+Participation was quite simple. First, register online at [aib.ie/visapromotion](https://www.aib.ie/visapromotion) and answer a Disney-related question correctly. Then, spend with an AIB Visa debit or credit card: every transaction, whether in Euro or a foreign currency, earned one entry, capped at 10 entries per draw period. If I'm not mistaken, I didn't even use up all 10 attempts.
 
 The biggest prize for both events was a multi-day activity pass to Disneyland, one for France and the other for London. Each draw would ultimately see six lucky winners take the top prize, whilst a further 100 less fortunate participants received a merchandise bundle.
 

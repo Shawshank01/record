@@ -39,19 +39,19 @@ Best practice is to:
 
 ## Step 1: Inspect Existing Users
 
-On a fresh VPS, for instance, from RackNerd, you’ll often find that only `root` is a real login user.
+On a fresh VPS, for instance, from RackNerd, you'll often find that only `root` is a real login user.
 
 ```bash
 cat /etc/passwd
 ```
 
-If you see only system accounts (with shells like `/usr/sbin/nologin`) and `root`, you’ll need to create a regular user.
+If you see only system accounts (with shells like `/usr/sbin/nologin`) and `root`, you'll need to create a regular user.
 
 ---
 
 ## Step 2: Create a Regular User
 
-Create a new user (we’ll call it `ubuntu` this time, you can change it to whatever name you like):
+Create a new user (we'll call it `ubuntu` this time, you can change it to whatever name you like):
 
 ```bash
 adduser ubuntu
@@ -115,7 +115,7 @@ If this works locally, remote SSH access will work as well.
 
 ## Step 5: Disable Root SSH Login
 
-Once you’ve confirmed the new user can log in and use sudo, disable root SSH access.
+Once you've confirmed the new user can log in and use sudo, disable root SSH access.
 
 What you should do is create a drop-in configuration file under `/etc/ssh/sshd_config.d/`. Because OpenSSH uses **first match wins** and evaluates drop-in files alphabetically, naming the file `01-hardening.conf` guarantees our setting takes priority over any default cloud-init or provider templates:
 

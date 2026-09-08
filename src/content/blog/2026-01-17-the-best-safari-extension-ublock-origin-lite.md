@@ -13,7 +13,7 @@ tags:
   - Browser Extensions
 ---
 
-> [I don’t care the bullshit, just go to the solution.](#here-is-how-this-magic-is-achieved)
+> [I don't care the bullshit, just go to the solution.](#here-is-how-this-magic-is-achieved)
 
 ---
 
@@ -49,7 +49,7 @@ Open the uBlock Origin Lite dashboard by clicking the icon in the toolbar and se
 
 ## Now for the important part
 
-By following the steps above, we’ve managed to get rid of ads and most of the annoying pop-ups. But if you absolutely hate short videos like me, we’ll need to take a few extra steps.
+By following the steps above, we've managed to get rid of ads and most of the annoying pop-ups. But if you absolutely hate short videos like me, we'll need to take a few extra steps.
 
 First, copy these rules by click the copy button below:
 

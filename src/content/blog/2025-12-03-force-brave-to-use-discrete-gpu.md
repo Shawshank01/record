@@ -1,6 +1,6 @@
 ---
 title: "How I Forced Brave to Use AMD GPU on an Intel Mac"
-description: "Brave Browser (Chromium) kept sticking to Intel iGPU for WebGL/WebGPU. Here’s the exact fix I used and a one-click Automator launcher to make it permanent."
+description: "Brave Browser (Chromium) kept sticking to Intel iGPU for WebGL/WebGPU. Here's the exact fix I used and a one-click Automator launcher to make it permanent."
 pubDate: 2025-12-03
 updateDate: 2026-08-21
 tags:
@@ -57,13 +57,13 @@ I opened `brave://gpu` and found something like this:
 - But Brave marked the Intel chip as **ACTIVE**, and WebGL reported:
   - `GL_RENDERER: ANGLE Metal Renderer: Intel UHD Graphics 630`
 
-So it wasn’t a software fallback. Chromium was simply choosing the low‑power GPU and sticking to it.
+So it wasn't a software fallback. Chromium was simply choosing the low‑power GPU and sticking to it.
 
 ---
 
 ## The Real Fix: Force High‑Performance GPU at Launch
 
-Since the Chromium flag to force high‑performance GPU is **not available on Intel dual‑GPU macOS builds**, there’s no UI toggle that persists this choice.
+Since the Chromium flag to force high‑performance GPU is **not available on Intel dual‑GPU macOS builds**, there's no UI toggle that persists this choice.
 
 Chromium, however, still honors a startup argument that overrides the early GPU selection.
 
@@ -82,9 +82,9 @@ After launching Brave this way, `brave://gpu` finally showed the AMD GPU as **AC
 
 Chromium decides which GPU to bind **very early during startup** for its GPU process. On dual‑GPU Macs it defaults to the integrated Intel chip for battery life, and once that choice is made, most WebGL/WebGPU contexts follow it for the rest of the session. It seems this issue persists to this day (see Chromium issue [#393263507](https://issues.chromium.org/issues/393263507)).
 
-The `--force_high_performance_gpu` argument injects a “prefer discrete GPU” directive *before* that decision locks in, so the GPU process starts on AMD, and all rendering follows.
+The `--force_high_performance_gpu` argument injects a "prefer discrete GPU" directive *before* that decision locks in, so the GPU process starts on AMD, and all rendering follows.
 
-Functionally this is the same behavior the missing `force-high-performance-gpu` flag would provide if it were supported on this platform, it’s just applied through a launch argument instead of Brave’s flags UI.
+Functionally this is the same behavior the missing `force-high-performance-gpu` flag would provide if it were supported on this platform, it's just applied through a launch argument instead of Brave's flags UI.
 
 ---
 
@@ -106,7 +106,7 @@ Typing the launch command every time is annoying, so I made a tiny Automator app
 > [!NOTE]
 > Remember to quit Brave (`Cmd + Q`) before clicking the launcher if you are switching modes; macOS won't apply launch arguments to an existing running process.
 
-Here’s what the Automator setup looks like:
+Here's what the Automator setup looks like:
 
 ![Automator launcher setup](/2025-12-03/automator-setup.png)
 
@@ -124,7 +124,7 @@ Because the launcher is a separate app, it has a generic Automator icon by defau
 4. Right‑click **Brave AMD.app** → **Get Info**.
 5. Click its small icon top‑left and press **Cmd‑V**.
 
-If the Dock doesn’t update immediately, remove/re‑add the launcher.
+If the Dock doesn't update immediately, remove/re‑add the launcher.
 
 ---
 
@@ -135,4 +135,4 @@ Forcing the discrete GPU means:
 - **More battery drain**.
 - **More heat/fan usage**.
 
-For me that’s a fair trade whenever I’m doing heavy WebGL/WebGPU stuff (3D demos, map visualizations, creative coding, etc.). Daily browsing on battery? I can still quit and open the normal Brave app if I want Intel. Not to mention, the battery on my MacBook Pro hasn't been able to last through a single hour of normal use for ages, I couldn't care less about battery life.
+For me that's a fair trade whenever I'm doing heavy WebGL/WebGPU stuff (3D demos, map visualizations, creative coding, etc.). Daily browsing on battery? I can still quit and open the normal Brave app if I want Intel. Not to mention, the battery on my MacBook Pro hasn't been able to last through a single hour of normal use for ages, I couldn't care less about battery life.
