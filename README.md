@@ -58,11 +58,6 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 ## Using This Repository as a Template
 
-### Prerequisites
-
-- **Node.js**@26
-- **pnpm**@11
-
 ### 1. Clone & Install
 
 ```bash
