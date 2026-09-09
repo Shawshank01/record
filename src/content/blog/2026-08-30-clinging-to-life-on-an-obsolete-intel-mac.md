@@ -127,5 +127,6 @@ But as I ventured deeper down the rabbit hole, I found something even more shock
 In my own experience, I've already migrated one of my [JavaScript projects](https://github.com/Shawshank01/xAI-desktop) totally from Node.js to Deno. All I needed was to replace `express`, `cors`, `dotenv`, and Node-specific `http` constructs with native Deno APIs. However, while my other two projects focus on TypeScript and should have been better suited to a switch to Deno (given its native support for TypeScript), one uses Electron for its GUI and the other is this blog which relies heavily on Node.js via Astro. After careful consideration, I ultimately decided against migrating them, opting instead to switch to Node.js + pnpm.
 
 ![jxl hint](/2026-08-30/meme.jxl)
+**A blessing in disguise**
 
 The reason I didn't try Bun is because Deno was already installed on my MacBook as a dependency of yt-dlp. Yep, that is the only reason. Now you know how lazy I am.
