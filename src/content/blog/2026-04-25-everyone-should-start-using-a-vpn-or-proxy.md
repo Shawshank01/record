@@ -2,13 +2,15 @@
 title: "Everyone should start using a VPN or Proxy"
 description: "A VPN secures your traffic even on untrusted networks, while an obfuscated proxy bypasses strict VPN blocks, giving you unrestricted access to the open web."
 pubDate: 2026-04-25
-updateDate: 2026-09-07
+updateDate: 2026-09-09
 tags:
   - Censorship
   - Privacy
   - Security
   - VPN
   - Proxy
+  - Xray
+  - Shadowsocks
 ---
 
 If you have watched [this video](https://www.youtube.com/watch?v=46hy3r_1VqY), you might start worrying about how to stop your ISP from finding out more about you than your mum does. Even with ECH to secure the SNI (you can test it on [this Cloudflare website](https://www.cloudflare.com/ssl/encrypted-sni/)), you still can't prevent ISPs or Wi-Fi owners from recording, or even hijacking your internet traffic. Not to mention that some internet services are still only supporting HTTP traffic until 2026 (This is pure criminality).
@@ -53,7 +55,7 @@ Xray provides several ways to bypass detection and restrictions using obfuscatio
 2. Replace the IP address below with your own and search.
 
     ```text
-    net:"your-ip-address/22" port:443 ssl.version:TLSv1.3 h2
+    net:"your-ip-address/22" port:443 ssl.version:TLSv1.3
     ```
 
 3. Select a normal website and run test scripts on your proxy server directly.
