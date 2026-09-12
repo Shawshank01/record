@@ -11,7 +11,7 @@ export default function remarkJxlHint() {
         // Mutate the parent node to a link
         node.type = "link";
         node.url =
-          "/blog/2026-03-05-the-rise-fall-and-resurrection-of-jpeg-xl/";
+          "/blog/2026-03-05-the-rise-fall-and-resurrection-of-jpeg-xl/#how-to-enable-jpeg-xl-in-your-browser";
         node.title = null;
         node.children = [imgNode];
         node.data = {
