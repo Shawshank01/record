@@ -2,7 +2,7 @@
 title: "Clinging to Life on an Obsolete Intel Mac"
 description: "Dealing with hardware obsolescence and Homebrew tier 3 software hurdles on an Intel MacBook in late 2026."
 pubDate: 2026-08-30
-updateDate: 2026-09-08
+updateDate: 2026-09-13
 tags:
   - MacBook (x86)
   - Homebrew
@@ -26,7 +26,7 @@ On 13 August 2026, Apple listed my old Intel MacBook as an obsolete product. Acc
 
 That means that, except for the battery, I cannot get any repairs from official support. I would only be able to try my luck at a third-party repair shop if this old fellow breaks again.
 
-Over the years, I've spilt milk on it and had to get the motherboard repaired. I dropped it at Connolly Station, thought it was definitely broken, and I literally held my head in my hands on the bench for several minutes. But this old chap has pulled through time and time again. Thanks to its 32 GB RAM, I can at least dip my toes into some small-size LLMs on it. While the lack of Metal framework support, which is only available on the M series of Macs, is really a pain in the ass, considering the recent price of RAM, I need it to keep chugging along for a couple more years.
+Over the years, I've spilt milk on it and had to get the motherboard repaired. I dropped it at Connolly Station, thought it was definitely broken, and I literally held my head in my hands on the bench for several minutes. But this old chap has pulled through time and time again. Thanks to its 32 GB RAM, I can at least dip my toes into some small-size LLMs on it. While the lack of Apple Silicon's unified memory architecture for GPU acceleration and modern ML frameworks like MLX is really a pain in the ass, considering the recent price of RAM, I need it to keep chugging along for a couple more years.
 
 The problem is, it's not just the lack of hardware repairs, the fading software support is coming back to bite me in the ass too. I even started seeing this issue when I updated using Homebrew:
 
@@ -71,18 +71,23 @@ Replacing it is quite simple:
 According to [Homebrew](https://formulae.brew.sh/formula/node@24), this allows me to cling to life until 30 April 2027. I hope I can afford a new Mac before that time comes, otherwise, this kind of issue will become more and more common in the foreseeable future.
 
 > [!TIP]
-> npm does not age out unused-but-valid packages. The [docs](https://docs.npmjs.com/cli/v12/commands/npm-cache) are explicit: the cache grows as you install new packages, npm will not prune it on its own.
+> npm does not age out unused-but-valid packages. The [docs](https://docs.npmjs.com/cli/v12/commands/npm-cache) are explicit: the cache grows as you install new packages, and npm will not prune it on its own.
 
-As a Node.js developer, I have found that running this command from time to time can reclaim a noticeable amount of disk space:
+To clean up corrupted or orphaned cache entries and verify integrity without wiping everything, you can run:
 
 ```bash
 npm cache verify
 ```
 
-Some might be tempted to use this to free up space:  
-*npm cache clean --force*
+This garbage-collects unneeded index records and repairs corrupted data, though because it preserves all valid cached packages, it won't free up space taken by older packages you no longer need.
 
-But be careful with it, not only is it unnecessary, it could also waste bandwidth and slow down future installs.
+If you are severely low on disk space and truly want to purge all cached packages, the only official way is:
+
+```bash
+npm cache clean --force
+```
+
+Use this sparingly, however, wiping valid cache entries forces npm to re-download dependencies from the registry on future installs, wasting bandwidth and slowing them down.
 
 ---
 
