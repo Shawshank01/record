@@ -2,11 +2,13 @@
 title: "Everyone should start using a better DNS"
 description: "Although GDPR acts as a silent guardian for your personal data, taking additional steps yourself is still important for online privacy and security."
 pubDate: 2026-06-03
+updateDate: 2026-09-15
 tags:
   - Privacy
   - Security
   - DNS
   - Quad9
+  - ISP
   - Vodafone
   - Ireland
 ---
@@ -23,7 +25,7 @@ This is just a conspiracy theory, and I have no way of proving whether my theory
 
 The Domain Name System (DNS) is a foundational protocol of the internet, serving as the primary mechanism for translating human-readable hostnames into machine-readable IP addresses. Think of it this way: instead of memorizing a string of numbers like 172.135.248.206, you only need to remember a meaningful phrase like ThisIsRían.com. The DNS server resolves that name into the correct IP address (172.135.248.206), guiding your browser directly to Rían's digital front door.
 
-Generally speaking, this task is handled by your ISP by default. This means that your ISP knows exactly which websites you visited, down to the year, month, day, hour, minute and second, and they are more than happy to record it. Not only does recording this data allow them to rake in huge profits from advertisers, but the laws in most countries also require ISPs to retain this information for periods ranging from several months to several years. In the following section, I will use Irish law and Vodafone as examples.
+Generally speaking, this task is handled by your ISP by default. This means that your ISP has the technical visibility to observe every domain you visit, down to the exact second. While privacy frameworks like the EU GDPR and ePrivacy regulations forbid European ISPs from selling browsing metadata to advertisers or retaining web history indiscriminately, laws in many jurisdictions still mandate retaining subscriber IP allocation data for months or years. More crucially, unencrypted DNS leaves your lookups vulnerable to on-path monitoring. In the following sections, I will use Irish law and Vodafone as examples.
 
 While your ISP absolutely knows you visited a specific website, HTTPS encryption stops them from seeing everything you do on that site. With HTTPS, your data looks like this to your ISP:
 
@@ -109,7 +111,7 @@ Modern DNS design relies heavily on cryptographic transport security and perform
 | DNS-over-TLS (DoT) | Supported on TCP Port 853 | Not supported on standard ISP servers |
 | DNS-over-HTTPS (DoH) | Supported over HTTPS on port 443 | No public support documented for default customer resolvers |
 | DNSSEC Validation | Supported and enforced on secured service profiles | Not verified from public Vodafone documentation |
-| EDNS Client Subnet (ECS) | Stripped on 9.9.9.9; supported on 9.11.9.11 | Not verified from public Vodafone documentation |
+| EDNS Client Subnet (ECS) | Stripped on 9.9.9.9; supported on 9.9.9.11 | Not verified from public Vodafone documentation |
 | Extended DNS Errors (EDE) | Support varies by endpoint and implementation | Not verified from public Vodafone documentation |
 
 ### The Last-Mile Security Paradox
@@ -126,13 +128,13 @@ This creates The Last-Mile Security Paradox. If a user configures Quad9's IP add
 
 ## Infrastructure, Routing Latency, and Network Stability
 
-DNS resolution performance directly impacts the responsiveness of web browsing, gaming startup handshakes, and application connection times. The mathematical expression for the total time required to establish a secure connection, *T*<sub>total</sub>, is:
+DNS resolution performance directly impacts the responsiveness of web browsing, gaming startup handshakes, and application connection times. For classic TCP-based connections, the mathematical expression for the total time required to establish a secure connection, *T*<sub>total</sub>, is:
 
 <div style="text-align: center; margin: 1.5rem 0; font-size: 1.2rem; font-style: italic;">
   T<sub>total</sub> = T<sub>dns</sub> + T<sub>tcp</sub> + T<sub>tls</sub>
 </div>
 
-Where *T*<sub>dns</sub> represents DNS lookup latency, *T*<sub>tcp</sub> represents the TCP handshake duration, and *T*<sub>tls</sub> represents the cryptographic handshake time. A slow recursive resolver increases *T*<sub>dns</sub>, delaying the entire network handshake.
+Where *T*<sub>dns</sub> represents DNS lookup latency, *T*<sub>tcp</sub> represents the TCP handshake duration, and *T*<sub>tls</sub> represents the cryptographic handshake time (though modern HTTP/3 over QUIC combines the transport and cryptographic handshakes into a single round trip). A slow recursive resolver increases *T*<sub>dns</sub>, delaying the entire network handshake.
 
 ### Anycast Topology and Peering Infrastructure
 
@@ -146,7 +148,7 @@ Public DNS resolvers utilize Anycast routing, announcing the same IP address poo
 | Average Global Latency | ~21 ms (DNSPerf global average) | Highly dependent on the local subscriber loop |
 | EDNS Client Subnet (ECS) | Disabled on standard tier; may cause sub-optimal CDN routing | Not verified from public Vodafone documentation |
 
-Quad9 partners with Packet Clearing House (PCH), which maintains DNS nodes across many Internet Exchange Points globally. PCH's AS42 joined the Irish Internet Association Exchange (INEX) in 2009. It peers with a 10 Gbps port at Equinix DB2 Kilcarbery, Dublin, assigning IP addresses 185.6.36.60 and 2001:7f8:18::60. This can allow Irish networks with favourable routing or peering to reach Quad9 with very low latency.
+Quad9 partners with Packet Clearing House (PCH), which maintains DNS nodes across many Internet Exchange Points globally. PCH's AS42 joined the Internet Neutral Exchange Association (INEX) in 2009. It peers with a 10 Gbps port at Equinix DB2 Kilcarbery, Dublin, assigning IP addresses 185.6.36.60 and 2001:7f8:18::60. This can allow Irish networks with favourable routing or peering to reach Quad9 with very low latency.
 Vodafone Ireland (AS15502) handles massive IP space. Because its default recursive servers sit directly inside the subscriber's broadband access path, they can resolve cached records with minimal latency. However, Vodafone's DNS relies on localized routing and lacks the globally distributed redundancy of a multi-node anycast network. If a local recursor fails, standard fallback relies on the secondary server, which may still be affected by local network congestion.
 Standard Quad9 9.9.9.9 strips ECS to protect privacy, which can cause some CDNs to make less optimal routing decisions. Vodafone IE's DNS may provide strong local routing for content providers, but its ECS behaviour is not verified from public Vodafone documentation.
 
@@ -227,12 +229,12 @@ Resolve-DnsName -Type txt proto.on.quad9.net.
 
 If the result says `doh`, congratulations: your DNS is wearing a tiny encrypted trench coat.
 
-> TIP:  
-> if you're using a VPN, make sure to configure Quad9 inside the VPN client's `Custom DNS` settings instead of relying on the system DNS settings. Otherwise, you may see DNS traffic from both your VPN and Quad9, which can look like a DNS leak to privacy checkers or connection logs.
+> [!TIP]
+> If you're using a proxy, make sure to configure Quad9 inside the proxy client's `Custom DNS` settings instead of relying solely on system DNS settings. Depending on how your proxy handles DNS routing (particularly on macOS or with certain split-tunnel configurations), you may see DNS traffic routed through both your proxy tunnel and local resolvers, which can look like a DNS leak to privacy checkers or connection logs.
 
 ![jxl hint](/2026-05-27/VPN-conflict.jxl)
 
-This happens on MacOS and Android. But on iOS, it seems only the VPN DNS is used, not the system DNS, even with Quad9's profile installed.
+This commonly happens on desktop systems like macOS if the proxy client does not capture all resolver scopes. On mobile operating systems like iOS and Android, system-level encrypted DNS (such as Android's Private DNS or Apple DNS profiles) is generally bypassed or suppressed in favour of the active VPN tunnel.
 
 And if it does not work the first time, don't panic. DNS is just the internet's phonebook, and like every phonebook, sometimes it has been left under a router, behind a sofa, guarded by a very confused cat.
 
