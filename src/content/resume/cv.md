@@ -1,16 +1,12 @@
 ---
 title: "Diwen Xiao's CV"
-description: "My experiences and projects"
+description: "A passionate Software Engineer / Full-Stack Developer with a strong academic foundation in advanced software development and practical experience architecting modern, highly scalable full-stack applications"
 ---
 
 ## Contact
 
 📧 [EMAIL](mailto:lelouch@outlook.ie) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
-🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland)
-
----
-
-A passionate **Software Engineer / Full-Stack Developer** with a strong academic foundation in advanced software development and practical experience architecting modern, highly scalable full-stack applications.
+🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland🇮🇪)
 
 ---
 
