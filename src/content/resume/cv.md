@@ -5,7 +5,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 ## Contact
 
-📧 [EMAIL](mailto:lelouch@outlook.ie) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
+📧 [Email](mailto:lelouch@outlook.ie) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
 🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland🇮🇪)
 
 ---

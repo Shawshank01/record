@@ -2,14 +2,14 @@
 title: "yt-dlp: Video Downloader with Open-Source GUI"
 description: "How to use yt-dlp to download videos from YouTube and thousands of other sites, with a simple and lightweight graphical user interface."
 pubDate: 2026-03-17
-updateDate: 2026-03-23
+updateDate: 2026-09-18
 tags:
   - yt-dlp
   - FFmpeg
   - macOS
-  - Linux
+  - GNU/Linux
+  - Windows
   - Electron
-  - GUI
   - CLI
 ---
 
@@ -54,7 +54,7 @@ yt-dlp -f 299+140 --cookies-from-browser brave 'URL'
 **Download all available subtitles without downloading the video:**
 
 ```bash
-yt-dlp --write-subs --all-subs --skip-download 'URL'
+yt-dlp --write-subs --write-auto-subs --sub-langs all --skip-download 'URL'
 ```
 
 **Download and merge into an MP4 container (FFmpeg is required):**
@@ -63,10 +63,10 @@ yt-dlp --write-subs --all-subs --skip-download 'URL'
 yt-dlp --merge-output-format mp4 --cookies-from-browser brave 'URL'
 ```
 
-> **💡 Tips**
+> [!TIP]
 >
 > 1. To download videos from YouTube, it is better to use your browser's cookies (e.g., Brave, Firefox, or Chrome) to increase the success rate; using `--cookies-from-browser brave` allows `yt-dlp` to bypass bot detection and access age-restricted content by using your browser's session. However, this is usually not necessary for other platforms like X or Vimeo.
-> 2. If you want to use Safari's cookies, you need to give `yt-dlp` permission to access your Safari cookies in the system settings first.
+> 2. If you want to use Safari's cookies on macOS, you must grant **Full Disk Access** to your terminal emulator (e.g., Terminal or iTerm) or GUI app in **System Settings > Privacy & Security > Full Disk Access**, as Safari's cookie database is protected by macOS security policies.
 
 ---
 
@@ -74,7 +74,7 @@ However, as I used it more and more, I increasingly felt that using the command 
 
 And this is it, the [YT-DLP Downloader](https://github.com/Shawshank01/yt-downloader-electron).
 
-This is a user-friendly desktop application for downloading videos from YouTube and other supported platforms. It uses `yt-dlp` for download, and `FFmpeg` to change the format or add subtitles. But this app itself doesn't bundle yt-dlp and FFmpeg, since they rely heavily on aggressive upgrades. I don't want to upgrade my app every time they release an upgrade. This means that the pros of this app is that it only calls the `yt-dlp` or `FFmpeg` that are already installed on your system when needed. Every time you upgrade your dependencies, it will use the latest version seamlessly. The cons is that this app is useless without dependencies. But I'm sure that won't be a problem if you're a fan of my blog ;-)
+This is a user-friendly desktop application for downloading videos from YouTube and other supported platforms. It uses `yt-dlp` for download, and `FFmpeg` to change the format or add subtitles. But this app itself doesn't bundle yt-dlp and FFmpeg, since they rely heavily on aggressive upgrades. I don't want to upgrade my app every time they release an upgrade. This means that the main advantage of this app is that it only calls the `yt-dlp` or `FFmpeg` that are already installed on your system when needed. Every time you upgrade your dependencies, it will use the latest version seamlessly. The downside is that this app is useless without dependencies. But I'm sure that won't be a problem if you're a fan of my blog ;-)
 
 This is what the app looks like:
 
@@ -90,7 +90,7 @@ Here are some slightly more advanced Actions:
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader-list-formats.jxl)
 
-It will show all the audio and video formats that you can download from the source. After that, you can select the "Choose format" Action to specifically combine the audio and video tracks.
+It will show all the audio and video formats that you can download from the source. After that, you can select the "Download (Custom Format)" Action to specifically combine the audio and video tracks.
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader-choose-formats.jxl)
 
@@ -100,15 +100,17 @@ For the Download Subtitles, it allows you to download not only subtitles uploade
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader-download-subtitles.jxl)
 
-#### MP4 Re-encoding (H.264/AAC)
+#### Download & Re-encode as high quality MP4 (H.264/AAC)
 
-The Action of MP4 Re-encoding (H.264/AAC), is for compatibility. Today, a large number of videos on YouTube use the av01 and opus codec, but many people's older devices or software are unable to decode these fancy new formats. So if you want to share downloaded videos with friends and ensure they can watch them properly, you might find this feature useful. However, for most people, you can simply ignore it.
+The **Download & Re-encode as high quality MP4 (H.264/AAC)** Action is for compatibility. Today, a large number of videos on YouTube use the av01 and opus codec, but many people's older devices or software are unable to decode these fancy new formats. So if you want to share downloaded videos with friends and ensure they can watch them properly, you might find this feature useful. However, for most people, you can simply ignore it.
 
-At last, the **Add HarSub** Action, is the very reason I developed this GUI. It allows you to download videos and subtitles with a single click, converting the video into an H.264 or HEVC file with hardcoded subtitles. This means the subtitles are embedded directly into the video, rather than requiring manual loading like external subtitle files, ensuring they will always appear in the video.
+#### Download & Add Hardsub
+
+At last, the **Download & Add Hardsub** Action is the very reason I developed this GUI. It allows you to download videos and subtitles with a single click, converting the video into an H.264 or HEVC file with hardcoded subtitles. This means the subtitles are burned directly into the video frames, rather than requiring manual loading like external subtitle files, ensuring they will always appear in the video.
 
 ![jxl hint](/2026-03-23/yt-dlp-downloader-add-hardsub.jxl)
 
-Unfortunately, because I'm using VideoToolbox for hardware acceleration, this Action currently only works on macOS.
+By default, it uses **VideoToolbox** for hardware acceleration on macOS.
 
 The "Check for Dependencies" button in the lower-right corner automatically checks whether `Homebrew`, `yt-dlp`, and `FFmpeg` are installed on your macOS. If they are not installed, it also provides a one-click installation feature. If this is your first time using this GUI, or if you're using it on a brand-new system, you'll want to click on it to test it out before you start.
 
