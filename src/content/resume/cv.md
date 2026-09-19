@@ -61,7 +61,7 @@ Homepage Bottom
 - Implemented secure user workflows utilising **JSON Web Tokens (JWT)** and **Bcrypt**, managing customisable keyword tracking, real-time alert preferences, and GDPR-compliant data handling.
 - Conducted a pilot test of the early version with a small group of users from different demographics and carried out face-to-face interviews to gather feedback on their user experience, with a view to improving the platform.
 
-[Social Threat Guardian UI Walkthrough Video](https://ody.sh/hakpyXqP8L)
+[Social Threat Guardian UI Walkthrough Video](https://youtu.be/svm_mfvKZiM)
 
 ---
 
