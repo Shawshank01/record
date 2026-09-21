@@ -336,9 +336,7 @@ When copying files with extended attributes (such as quarantine flags or Finder 
 
 ## 6. Architectural Trade-offs & Ideal Workflows
 
-You've finally broken free from OneDrive's sickeningly broken behavior on macOSâ€”a disaster born from corporate politics and executive compromises between Apple and Microsoft. With this setup in place, here is what you've gained:
-
-### Where This Setup Excels
+You've finally broken free from OneDrive's sickeningly broken behaviour of SharePoint on macOS, a disaster born from corporate politics between Apple and Microsoft. With this setup in place, here is what you've gained:
 
 1. **Large Media & Video Streaming**:  
    Unlike the native OneDrive client, which often forces downloading entire multi-gigabyte files before playback, Rclone with `--vfs-cache-mode full` and `--buffer-size 64M` handles byte-range requests seamlessly. Media players like IINA, Infuse, or VLC can seek anywhere across a 50GB 4K video with near-instant buffering. The local cache automatically evicts stale chunks after 12 hours, freeing SSD space automatically.
@@ -346,8 +344,6 @@ You've finally broken free from OneDrive's sickeningly broken behavior on macOSâ
    Bypasses Apple's `fileproviderd` architecture completely, eliminating circular upload freezes, 0% progress bugs, and high CPU lockups during large transfers.
 3. **True Cloud Capacity**:  
    Unlocks the tenant-wide SharePoint storage pool, bypassing Microsoft's strict 10GB personal OneDrive quota on Developer E5 accounts.
-
-### Limitations & Caveats
 
 However, if you want to make your life a lot easier, pay close attention to this:
 
@@ -367,9 +363,9 @@ However, if you want to make your life a lot easier, pay close attention to this
    - **PDFs**: `.pdf` (in tenants with Microsoft Purview sensitivity labeling or metadata policies enabled)
 
    > [!NOTE]
-   > Pure media formats (`.mkv`, `.mp4`, `.mov`, `.flac`, `.mp3`), disc images (`.iso`, `.dmg`), and compressed archives (`.zip`, `.7z`, `.tar`) have no SharePoint parsers attached to them. They are stored bit-for-bit identical with zero modification.
+   > Standard images (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.heic`), video/audio media (`.mkv`, `.mp4`, `.mov`, `.flac`, `.mp3`), disc images (`.iso`, `.dmg`), and compressed archives (`.zip`, `.7z`, `.tar`) have no SharePoint document parsers attached to them. They are stored bit-for-bit identical with zero modification.
 
 ### The Golden Rule: Large Files Directly, Small Files Zipped
 
-- **Directly to Mount**: Movies, TV series, disc images (`.iso`, `.dmg`), virtual machine disks, and pre-packaged archives.
+- **Directly to Mount**: Movies, TV series, photo libraries, disc images (`.iso`, `.dmg`), virtual machine disks, and pre-packaged archives.
 - **Zip First Locally**: Code repositories, game installation directories, emulator ROM collections, and folders containing thousands of small files or HTML manuals. Compress them into a single `.zip` or `.7z` file before moving them to the mount. This avoids API rate limiting, preserves byte-for-byte integrity, and guarantees maximum upload throughput.
