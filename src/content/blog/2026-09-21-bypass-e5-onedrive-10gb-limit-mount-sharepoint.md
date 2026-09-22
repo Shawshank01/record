@@ -392,7 +392,9 @@ However, if you want to make your life a lot easier, pay close attention to this
    - **PDFs**: `.pdf` (in tenants with Microsoft Purview sensitivity labeling or metadata policies enabled)
 
    > [!NOTE]
-   > Standard images (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.heic`), video/audio media (`.mkv`, `.mp4`, `.mov`, `.flac`, `.mp3`), disc images (`.iso`, `.dmg`), and compressed archives (`.zip`, `.7z`, `.tar`) have no SharePoint document parsers attached to them. They are stored bit-for-bit identical with zero modification.
+   > Standard images (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`), video/audio media (`.mkv`, `.mp4`, `.mov`, `.flac`, `.mp3`), disc images (`.iso`, `.dmg`), and compressed archives (`.zip`, `.7z`, `.tar`) have no SharePoint document parsers attached to them. They are stored bit-for-bit identical with zero modification.
+   >
+   > **A Note on `.heic` and iOS Live Photos**: Standard `.heic` photos uploaded from macOS or Rclone are completely safe and stored byte-for-byte unmodified. The "Sizes differ" error mentioned in the official Rclone documentation applies **strictly to Live Photos uploaded using the OneDrive iOS mobile app**, where Microsoft bundles the still image and video clip into a single container but only returns the extracted still frame upon download via the API. Standard `.heic` files uploaded directly from your Mac are unaffected.
 
 ### The Golden Rule: Large Files Directly, Small Files Zipped
 
