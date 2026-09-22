@@ -2,7 +2,7 @@
 title: "How to Remove EXIF Metadata from Images on macOS"
 description: "Scrubbing EXIF data ensures your privacy by hiding sensitive location and time data, while also providing anonymity by removing the digital fingerprints that link the photo back to you."
 pubDate: 2026-02-04
-updateDate: 2026-03-07
+updateDate: 2026-09-22
 tags:
   - Anonymity
   - Privacy
@@ -59,16 +59,25 @@ brew install exiftool
 ## Step 2: Add the Shell Script
 
 1. Search for the **"Run Shell Script"** action in the right sidebar and drag it into your shortcut.
+    > [!TIP]
     > By default, macOS disables scripting actions for security to prevent untrusted scripts from running automatically. You just need to flip a single toggle in the Shortcuts app settings:
     > - Go to the menu bar and select **Shortcuts > Settings**.
     > - Click on the **Advanced** tab.
     > - Check the box that says **Allow Running Scripts**.
 2. Set the *Shell* to `/bin/zsh`.
-3. Set *Pass Input* to **"as arguments"**.
+3. Set *Pass Input* to `as arguments`.
 4. Paste the following script:
 
 ```zsh
-EXIFTOOL="/opt/homebrew/bin/exiftool"
+# Include MacPorts and Homebrew (ARM/x86) paths
+export PATH="/opt/local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+EXIFTOOL="$(command -v exiftool)"
+
+# Check if exiftool is installed
+if [ -z "$EXIFTOOL" ]; then
+    osascript -e 'display alert "exiftool not found" message "Please make sure exiftool is installed (via `brew install exiftool` or `sudo port install exiftool`)."'
+    exit 1
+fi
 
 # 0. Trigger macOS permission prompt
 osascript -e "tell application \"Finder\" to duplicate file POSIX file \"$1\" to POSIX file \"/tmp/\" with replacing" > /dev/null 2>&1 &
@@ -77,7 +86,7 @@ OSPID=$!
 # 1. Wait until permission is granted (retries every second, up to 30s)
 RETRY=0
 while [ $RETRY -lt 30 ]; do
-    RESULT=$($EXIFTOOL -all= -overwrite_original "$1" 2>&1)
+    RESULT=$("$EXIFTOOL" -all= -overwrite_original "$1" 2>&1)
     if ! echo "$RESULT" | grep -q "Error opening file"; then
         break
     fi
@@ -95,16 +104,17 @@ echo "$RESULT"
 for f in "$@"
 do
     if [ "$f" != "$1" ]; then
-        $EXIFTOOL -all= -overwrite_original "$f"
+        "$EXIFTOOL" -all= -overwrite_original "$f"
     fi
 
     echo "--- FILE: $(basename "$f") ---"
-    $EXIFTOOL "$f"
+    "$EXIFTOOL" "$f"
     echo ""
 done
 ```
 
-> **Note:** This is for the standard Apple Silicon Homebrew path. On an older Intel Mac, change the first line to `EXIFTOOL="/usr/local/bin/exiftool"`. You can always verify your path by typing `where exiftool` in Terminal.
+> [!NOTE]
+> **Why set the `PATH` manually?** macOS's Shortcuts action runs in a minimal environment without sourcing your shell configuration (like `~/.zshrc`), so package manager directories aren't in `$PATH` by default. Exporting standard paths ensures the shortcut works out of the box regardless of whether ExifTool was installed via Homebrew (Apple Silicon or Intel), MacPorts, or the official macOS package installer. If ExifTool is not installed, it displays a helpful alert popup.
 >
 > **What does the `osascript` line do?** macOS's Shortcuts sandbox silently blocks command-line tools like ExifTool from accessing files in protected folders (Downloads, Desktop, Documents). This clever one-liner asks Finder to touch the file via AppleScript, which forces macOS to show a permission prompt. The first time you run the shortcut, a dialog will appear asking *"Finder.app" would like to access files in your Downloads folder*. Click **Allow**, and the script will automatically retry and succeed. This only happens once — all future runs will work instantly.
 
@@ -176,21 +186,30 @@ Change **Pass input:** to `as arguments`.
 Clear out the default text and paste the following script:
 
 ```bash
-EXIFTOOL="/usr/local/bin/exiftool"
+# Include MacPorts and Homebrew (ARM/x86) paths
+export PATH="/opt/local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+EXIFTOOL="$(command -v exiftool)"
+
+# Check if exiftool is installed
+if [ -z "$EXIFTOOL" ]; then
+    osascript -e 'display alert "exiftool not found" message "Please make sure exiftool is installed (via `brew install exiftool` or `sudo port install exiftool`)."'
+    exit 1
+fi
 
 for f in "$@"
 do
     # 1. Strip all metadata in-place
-    $EXIFTOOL -all= -overwrite_original "$f"
-    
+    "$EXIFTOOL" -all= -overwrite_original "$f"
+
     # 2. Extract remaining info for the pop-up
     echo "--- FILE: $(basename "$f") ---"
-    $EXIFTOOL "$f"
-    echo "" 
+    "$EXIFTOOL" "$f"
+    echo ""
 done
 ```
 
-**Warning:** I recommend changing the first line that sets the `EXIFTOOL` path to the path shown by `which exiftool` in Terminal. This path may vary depending on the macOS version or hardware.
+> [!NOTE]
+> Like the Shortcuts action, setting `PATH` explicitly ensures compatibility across Apple Silicon, Intel Macs, Homebrew, and MacPorts without manual path edits.
 
 ### Step 4: Add the Display Notification
 
@@ -226,7 +245,8 @@ A dialog box will appear showing you the "cleaned" metadata (which should now on
 
 You can now upload this image to the internet without any concerns.
 
-> **Note for HEIC files:** HEIC images retain some structural metadata (such as color profile and codec parameters) that ExifTool cannot remove without corrupting the file. As a result, the popup window may extend beyond your screen borders due to the volume of remaining (non-sensitive) information. If that happens, simply press **Enter** or **Esc** to dismiss it instead of clicking the OK button.
+> [!NOTE]
+> For HEIC files: HEIC images retain some structural metadata (such as color profile and codec parameters) that ExifTool cannot remove without corrupting the file. As a result, the popup window may extend beyond your screen borders due to the volume of remaining (non-sensitive) information. If that happens, simply press **Enter** or **Esc** to dismiss it instead of clicking the OK button.
 
 ### A Little Bit More
 

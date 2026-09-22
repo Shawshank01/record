@@ -97,8 +97,6 @@ Run the following optimized mount command in the foreground to test connectivity
   --onedrive-chunk-size 125M \
   --buffer-size 64M \
   --volname "SharePoint" \
-  --exclude "._*" \
-  --exclude ".DS_Store" \
   --rc \
   --rc-web-gui \
   --rc-web-gui-no-open-browser \
@@ -121,8 +119,6 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
 | `--volname "SharePoint"` | Displays the mount as an external drive named "SharePoint" on your desktop and Finder sidebar. |
-| `--exclude "._*"` | Ignores macOS AppleDouble companion metadata files, preventing upload failures and infinite retry loops. |
-| `--exclude ".DS_Store"` | Prevents Finder desktop/folder layout metadata files from being synced to the cloud. |
 | `--rc` | Enables Rclone's Remote Control (RC) HTTP server for control and monitoring. |
 | `--rc-web-gui` | Serves the official Rclone Web GUI interface dashboard. |
 | `--rc-web-gui-no-open-browser` | Prevents the default browser from automatically launching when the mount command starts. |
@@ -184,10 +180,6 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>64M</string>
         <string>--volname</string>
         <string>SharePoint</string>
-        <string>--exclude</string>
-        <string>._*</string>
-        <string>--exclude</string>
-        <string>.DS_Store</string>
         <string>--rc</string>
         <string>--rc-web-gui</string>
         <string>--rc-web-gui-no-open-browser</string>
@@ -293,22 +285,13 @@ If you ever wish to instantly truncate and free log file space without restartin
 : > ~/.config/rclone/sharepoint-mount.log
 ```
 
-### Preventing AppleDouble (`._*`) and `.DS_Store` Infinite Sync Loops
+### Managing AppleDouble (`._*`) and `.DS_Store` Companion Files
 
-When copying files with extended attributes (such as quarantine flags or Finder tags) to a non-native filesystem, macOS automatically generates companion metadata files prefixed with `._` (AppleDouble format). SharePoint frequently rejects or alters these tiny metadata files, causing size mismatches that make Rclone endlessly retry uploading them every polling interval, congesting upload bandwidth.
+When copying files with extended attributes (such as quarantine flags from browser downloads, AirDrop metadata, or Finder tags) to a virtual or network filesystem, macOS automatically generates companion metadata files prefixed with `._` (AppleDouble format).
 
-1. **Purge Stuck Companion Files from Local Cache**:
+Understanding how macOS and Rclone handle these companion files resolves common sync puzzles:
 
-   If your current transfer queue is stuck retrying `._*` or `.DS_Store` files, delete them from the local cache to allow legitimate files to proceed:
-
-   ```bash
-   find ~/Library/Caches/rclone/vfs -name "._*" -delete 2>/dev/null
-   find ~/Library/Caches/rclone/vfs -name ".DS_Store" -delete 2>/dev/null
-   find ~/Library/Caches/rclone/vfsMeta -name "._*" -delete 2>/dev/null
-   find ~/Library/Caches/rclone/vfsMeta -name ".DS_Store" -delete 2>/dev/null
-   ```
-
-2. **Disable `.DS_Store` Generation on Network Stores (System Optimisation)**:
+1. **Disable `.DS_Store` Generation on Network Stores (System Optimisation)**:
 
    Run this native macOS command to instruct Finder never to create `.DS_Store` files on network shares and FUSE mounts, then restart Finder to apply the change immediately:
 
@@ -321,6 +304,52 @@ When copying files with extended attributes (such as quarantine flags or Finder 
 
    ```bash
    defaults read com.apple.desktopservices DSDontWriteNetworkStores
+   ```
+
+   > [!NOTE]
+   > `DSDontWriteNetworkStores` exclusively suppresses `.DS_Store`. It has zero effect on AppleDouble (`._*`) files, which macOS treats as essential file metadata forks.
+
+2. **Why `--exclude` is Omitted & Preventing `._*` Companion Files**:
+
+   In `rclone mount`, `--exclude` acts purely as a **read/visibility filter**—it hides files from Finder, but it does *not* intercept or block files written into the local VFS mount by macOS. Adding `--exclude "._*"` creates an illusion: Finder writes `._filename`, Rclone uploads it to SharePoint anyway, and then hides it from your local view so you cannot even see or delete it with normal `rm` commands.
+
+   Omitting `--exclude` keeps your local view completely consistent with cloud storage. To actually stop macOS from generating and uploading `._*` companion files:
+
+   - **Strip Extended Attributes Before Copying**: Remove metadata (quarantine, tags) so macOS sees clean data files:
+
+     ```bash
+     # Single file or folder:
+     xattr -c "filename.jpg"
+
+     # Entire directory recursively:
+     xattr -cr /path/to/folder
+     ```
+
+   - **Copy via Terminal without Extended Attributes**:
+
+     ```bash
+     cp -X "filename.jpg" ~/SharePoint/
+     # Or for directories:
+     cp -RX /path/to/folder ~/SharePoint/
+     ```
+
+3. **Purge Stuck Companion Files from Local Cache**:
+
+   If your current transfer queue is stuck retrying `._*` or `.DS_Store` files, delete them from the local cache to allow legitimate files to proceed:
+
+   ```bash
+   find ~/Library/Caches/rclone/vfs -name "._*" -delete 2>/dev/null
+   find ~/Library/Caches/rclone/vfs -name ".DS_Store" -delete 2>/dev/null
+   find ~/Library/Caches/rclone/vfsMeta -name "._*" -delete 2>/dev/null
+   find ~/Library/Caches/rclone/vfsMeta -name ".DS_Store" -delete 2>/dev/null
+   ```
+
+4. **Purge Existing Companion Files from SharePoint**:
+
+   To mass-delete any lingering `._*` and `.DS_Store` files directly from SharePoint:
+
+   ```bash
+   /opt/local/bin/rclone delete sp: --include "._*" --include ".DS_Store"
    ```
 
 ### Preventing SharePoint Version Bloat (Critical)

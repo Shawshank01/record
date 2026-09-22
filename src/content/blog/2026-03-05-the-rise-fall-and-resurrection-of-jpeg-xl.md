@@ -2,7 +2,7 @@
 title: "The Rise, Fall, and Resurrection of JPEG XL"
 description: "The story of JPEG XL's rollercoaster journey, and how you can embrace it on macOS."
 pubDate: 2026-03-05
-updateDate: 2026-08-24
+updateDate: 2026-09-22
 tags:
   - JPEG XL
   - macOS
@@ -118,6 +118,8 @@ First, let's install the JPEG XL command-line tools (`cjxl` and `djxl`) on your 
 brew install jpeg-xl
 ```
 
+*(Or via MacPorts: `sudo port install libjxl`)*
+
 ---
 
 ### Basic Conversions in Terminal
@@ -152,7 +154,8 @@ md5 input.jpeg restored.jpeg
 cjxl input.png output.jxl
 ```
 
-> **Tip:** If you want it to be mathematically, pixel-perfectly lossless (exactly like your PNG but highly compressed and smaller), use the `-d` (distance) flag set to 0:
+> [!TIP]
+> If you want it to be mathematically, pixel-perfectly lossless (exactly like your PNG but highly compressed and smaller), use the `-d` (distance) flag set to 0:
 >
 > ```bash
 > cjxl input.png output.jxl -d 0
@@ -180,22 +183,28 @@ For greater convenience, you can use macOS's built-in **Shortcuts** app to turn 
     > - **Go to Advanced:** Click on the **Advanced** tab.
     > - **Enable Scripts:** Check the box that says **Allow Running Scripts**.
 2. Set the shell to `/bin/zsh`.
-3. Set "Pass Input" to **"as arguments"**.
+3. Set *Pass Input* to `as arguments`.
 4. Fill in the code with the script below:
 
 ```zsh
-# Include both Apple Silicon (/opt/homebrew) and Intel (/usr/local) Homebrew paths
-export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+# Include MacPorts and Homebrew (ARM/x86) paths
+export PATH="/opt/local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 CJXL_PATH="$(command -v cjxl)"
+
+# Check if cjxl is installed
+if [ -z "$CJXL_PATH" ]; then
+    osascript -e 'display alert "cjxl not found" message "Please make sure JPEG XL tools are installed (via `brew install jpeg-xl` or `sudo port install libjxl`)."'
+    exit 1
+fi
 
 for f in "$@"
 do
     # Skip if already a JXL image
     [[ "$f" == *.jxl ]] && continue
-    
+
     # Create the output filename by replacing the extension
     output="${f%.*}.jxl"
-    
+
     # Run the basic conversion
     "$CJXL_PATH" "$f" "$output"
 done
@@ -215,7 +224,8 @@ done
     > Just choose **Allow** this time and you will never see it again.
 5. A small gear will spin in your menu bar, and seconds later, a highly-compressed `.jxl` file will magically appear in the same folder as your original image.
 
-> **Troubleshooting: Quick Action not showing up?**
+> [!TIP]
+> **Troubleshooting: Quick Action not showing up?**  
 > Sometimes on newer Macs, the Quick Actions won't appear in the right-click menu immediately. To fix this:
 >
 > 1. Check your settings: Click the **Customize...** button in the Quick Actions menu, and make sure the new Shortcut is checked.
