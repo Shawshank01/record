@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -12,7 +13,16 @@ export async function getStaticPaths() {
 
 type Props = { post: CollectionEntry<"blog"> };
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings = [] } = await render(post);
+
+const tocHeadings = headings.filter(
+    (h) =>
+        (h.depth === 2 || h.depth === 3) &&
+        !["table of contents", "english", "中文"].includes(
+            h.text.trim().toLowerCase(),
+        ),
+);
+const hasToc = tocHeadings.length >= 3;
 
 const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -41,88 +51,124 @@ const searchPayload = allPosts.map((entry) => ({
         tags: post.data.tags,
     }}
 >
-    <div class="mx-auto flex w-full flex-col gap-10">
-        <article
-            class="prose prose-invert prose-headings:tracking-tight w-full max-w-3xl space-y-6 mx-auto lg:max-w-4xl xl:max-w-5xl"
+    <div
+        class:list={[
+            "mx-auto flex w-full gap-8 xl:gap-10",
+            hasToc ? "justify-center" : "flex-col",
+        ]}
+    >
+        <div
+            class:list={[
+                "flex flex-col gap-10 min-w-0",
+                hasToc
+                    ? "flex-1 max-w-3xl lg:max-w-4xl"
+                    : "w-full max-w-3xl mx-auto lg:max-w-4xl xl:max-w-5xl",
+            ]}
         >
-            <header
-                class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft"
+            <article
+                class:list={[
+                    "prose prose-invert prose-headings:tracking-tight w-full space-y-6",
+                    hasToc
+                        ? "max-w-none"
+                        : "max-w-3xl mx-auto lg:max-w-4xl xl:max-w-5xl",
+                ]}
             >
-                <p class="text-xs uppercase tracking-[0.3em] text-gray-500">
-                    <time datetime={post.data.pubDate.toISOString()}>
-                        {new Date(post.data.pubDate).toLocaleDateString(
-                            undefined,
+                <header
+                    class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft"
+                >
+                    <p class="text-xs uppercase tracking-[0.3em] text-gray-500">
+                        <time datetime={post.data.pubDate.toISOString()}>
                             {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                            },
-                        )}
-                    </time>
-                    {
-                        post.data.updateDate && (
-                            <span class="ml-2">
-                                · Updated on{" "}
-                                <time
-                                    datetime={post.data.updateDate.toISOString()}
-                                >
-                                    {new Date(
-                                        post.data.updateDate,
-                                    ).toLocaleDateString(undefined, {
+                                new Date(post.data.pubDate).toLocaleDateString(
+                                    undefined,
+                                    {
                                         year: "numeric",
                                         month: "short",
                                         day: "numeric",
-                                    })}
-                                </time>
-                            </span>
+                                    },
+                                )
+                            }
+                        </time>
+                        {
+                            post.data.updateDate && (
+                                <span class="ml-2">
+                                    · Updated on{" "}
+                                    <time
+                                        datetime={post.data.updateDate.toISOString()}
+                                    >
+                                        {new Date(
+                                            post.data.updateDate,
+                                        ).toLocaleDateString(undefined, {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                                    </time>
+                                </span>
+                            )
+                        }
+                    </p>
+                    <h1 class="mt-4 text-3xl font-bold text-white md:text-4xl">
+                        {post.data.title}
+                    </h1>
+                    <p class="mt-3 max-w-2xl text-base text-gray-300">
+                        {post.data.description}
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        {
+                            post.data.tags.map((tag) => (
+                                <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-gray-200">
+                                    #{tag}
+                                </span>
+                            ))
+                        }
+                    </div>
+                </header>
+                <section
+                    class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft text-base leading-relaxed text-gray-200"
+                >
+                    {
+                        hasToc && (
+                            <TableOfContents
+                                headings={tocHeadings}
+                                variant="inline"
+                            />
                         )
                     }
-                </p>
-                <h1 class="mt-4 text-3xl font-bold text-white md:text-4xl">
-                    {post.data.title}
-                </h1>
-                <p class="mt-3 max-w-2xl text-base text-gray-300">
-                    {post.data.description}
-                </p>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    {
-                        post.data.tags.map((tag) => (
-                            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-gray-200">
-                                #{tag}
-                            </span>
-                        ))
-                    }
-                </div>
-            </header>
+                    <Content />
+                </section>
+            </article>
             <section
-                class="rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft text-base leading-relaxed text-gray-200"
+                class:list={[
+                    "rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft",
+                    hasToc
+                        ? "w-full"
+                        : "mx-auto w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl",
+                ]}
             >
-                <Content />
+                <div class="giscus"></div>
+                <script
+                    is:inline
+                    src="https://giscus.app/client.js"
+                    data-repo="Shawshank01/record"
+                    data-repo-id="R_kgDOQLHASQ"
+                    data-category="Announcements"
+                    data-category-id="DIC_kwDOQLHASc4C5-nl"
+                    data-mapping="pathname"
+                    data-strict="1"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="top"
+                    data-theme="noborder_dark"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async></script>
             </section>
-        </article>
-        <section
-            class="mx-auto w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl rounded-3xl border border-white/5 bg-soft/70 p-8 shadow-soft"
-        >
-            <div class="giscus"></div>
-            <script
-                is:inline
-                src="https://giscus.app/client.js"
-                data-repo="Shawshank01/record"
-                data-repo-id="R_kgDOQLHASQ"
-                data-category="Announcements"
-                data-category-id="DIC_kwDOQLHASc4C5-nl"
-                data-mapping="pathname"
-                data-strict="1"
-                data-reactions-enabled="1"
-                data-emit-metadata="0"
-                data-input-position="top"
-                data-theme="noborder_dark"
-                data-lang="en"
-                data-loading="lazy"
-                crossorigin="anonymous"
-                async></script>
-        </section>
+        </div>
+        {hasToc && <TableOfContents headings={tocHeadings} variant="sidebar" />}
     </div>
+    {hasToc && <script src="../../scripts/toc.ts" />}
     <style is:global>
         .giscus {
             width: 100% !important;

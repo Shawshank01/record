@@ -13,22 +13,7 @@ tags:
   - Database
 ---
 
-## Table of Contents
-
-- [0) Prerequisites](#0-prerequisites)
-- [1) Create the analytics service](#1-create-the-analytics-service)
-- [2) Keep it running in the background](#2-keep-it-running-in-the-background)
-- [3) Obtain HTTPS with Caddy](#3-obtain-https-with-caddy-reverse-proxy)
-- [4) DNS (Cloudflare)](#4-dns-cloudflare)
-- [5) Add the tracking snippet to the blog](#5-add-the-tracking-snippet-to-the-blog-astro)
-- [6) Verify end-to-end](#6-verify-end-to-end)
-- [7) Data Migration](#7-data-migration)
-- [8) Backup and Data Safety](#8-backup-and-data-safety)
-- [9) Troubleshooting](#9-troubleshooting)
-
----
-
-> Instead of using third‑party analytics like Cloudflare, I'm running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
+Instead of using third‑party analytics like Cloudflare, I'm running a tiny **self‑hosted** tracker and you can also learn how it works and replicate it.
 
 ## What I've built
 

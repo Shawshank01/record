@@ -42,6 +42,13 @@
 
 html {
     overflow-anchor: none;
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 }
 
 body {
@@ -311,4 +318,39 @@ pre {
 
 .lang-content.active {
     display: block;
+}
+
+/* Ensure headings have breathing room under sticky header when jumping to anchors */
+.prose :where(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: calc(var(--header-offset, 8rem) + 1.5rem);
+}
+
+/* Table of Contents sidebar link styling */
+.toc-link {
+    position: relative;
+}
+
+.toc-link[aria-current="true"] {
+    color: var(--color-accent, #b2996e) !important;
+    font-weight: 600;
+}
+
+.toc-link[aria-current="true"]::before {
+    content: "";
+    position: absolute;
+    left: -13px;
+    top: 2px;
+    bottom: 2px;
+    width: 2px;
+    background-color: var(--color-accent, #b2996e);
+    border-radius: 9999px;
+}
+
+/* Table of Contents mobile disclosure styling */
+details[data-toc-mobile]>summary::-webkit-details-marker {
+    display: none;
+}
+
+details[data-toc-mobile][open] .toc-chevron {
+    transform: rotate(180deg);
 }
