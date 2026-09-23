@@ -14,32 +14,32 @@ const { headings, variant = "sidebar", class: className = "" } = Astro.props;
     variant === "sidebar" ? (
         <aside
             class:list={[
-                "toc-sidebar sticky hidden h-fit w-64 shrink-0 space-y-3 rounded-2xl border border-white/5 bg-soft/60 p-5 shadow-soft xl:block",
+                "toc-sidebar sticky hidden h-fit w-72 2xl:w-80 shrink-0 space-y-3 rounded-2xl border border-white/5 bg-soft/60 p-5 shadow-soft xl:block",
                 className,
             ]}
             style="top: calc(var(--header-offset-active, 8rem) + 2rem); transition: top 300ms ease;"
             aria-label="Table of contents"
         >
             <div class="flex items-center justify-between border-b border-white/5 pb-3">
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <h2 class="text-xs uppercase tracking-wider font-semibold text-gray-400">
                     On this page
                 </h2>
-                <span class="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-gray-400">
+                <span class="rounded-full bg-white/5 px-2 py-0.5 text-xs text-gray-400">
                     {headings.length}
                 </span>
             </div>
-            <nav class="max-h-[calc(100vh-var(--header-offset-active,8rem)-8rem)] overflow-y-auto pr-1 text-sm">
-                <ul class="space-y-1.5 border-l border-white/10 pl-3">
+            <nav class="max-h-[calc(100vh-var(--header-offset-active,8rem)-8rem)] overflow-y-auto pr-1">
+                <ul class="space-y-2 border-l border-white/10 pl-3">
                     {headings.map((h) => (
-                        <li class={h.depth === 3 ? "pl-3" : ""}>
+                        <li class={h.depth === 3 ? "pl-3.5" : ""}>
                             <a
                                 href={`#${h.slug}`}
                                 data-toc-link={h.slug}
                                 class:list={[
-                                    "toc-link block py-1 text-xs transition-colors duration-150 leading-snug",
+                                    "toc-link block py-0.5 transition-colors duration-150 leading-snug",
                                     h.depth === 2
-                                        ? "toc-depth-2 font-medium text-gray-300 hover:text-accent"
-                                        : "toc-depth-3 text-gray-400 hover:text-accent",
+                                        ? "toc-depth-2 text-sm font-medium text-gray-300 hover:text-accent"
+                                        : "toc-depth-3 text-[13px] text-gray-400 hover:text-accent",
                                 ]}
                             >
                                 {h.text}
@@ -57,7 +57,7 @@ const { headings, variant = "sidebar", class: className = "" } = Astro.props;
             ]}
             data-toc-mobile
         >
-            <summary class="flex cursor-pointer items-center justify-between font-medium text-gray-300 hover:text-accent select-none list-none text-sm">
+            <summary class="flex cursor-pointer items-center justify-between text-base font-medium text-gray-200 hover:text-accent select-none list-none">
                 <span class="flex items-center gap-2">
                     <svg
                         class="h-4 w-4 text-accent"
@@ -94,13 +94,17 @@ const { headings, variant = "sidebar", class: className = "" } = Astro.props;
                 </svg>
             </summary>
             <nav class="mt-3 max-h-64 overflow-y-auto border-t border-white/5 pt-3">
-                <ul class="space-y-2 text-sm">
+                <ul class="space-y-2">
                     {headings.map((h) => (
-                        <li class={h.depth === 3 ? "pl-4 text-xs" : ""}>
+                        <li
+                            class={
+                                h.depth === 3 ? "pl-4 text-[13px]" : "text-sm"
+                            }
+                        >
                             <a
                                 href={`#${h.slug}`}
                                 data-toc-mobile-link
-                                class="block text-gray-300 transition hover:text-accent"
+                                class="block text-gray-300 transition hover:text-accent leading-snug"
                             >
                                 {h.text}
                             </a>
