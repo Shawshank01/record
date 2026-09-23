@@ -8,7 +8,6 @@ tags:
   - Homebrew
   - MacPorts
   - Node.js
-  - npm
   - pnpm
   - Deno
   - Bun
@@ -38,8 +37,9 @@ This is a Tier 3 configuration:
   https://docs.brew.sh/Support-Tiers#tier-3
 ```
 
-This means they are withdrawing support for the pre-built bottles for my old fellow. Although I could download the source code and compile it myself, that would mean more work. And the last thing I want is any hassle. ~~Luckily, I found a workaround. I replaced the current one with node@24 LTS.~~
-Check out the truly useful update [below](#the-redemption)!
+This means they are withdrawing support for the pre-built bottles for my old fellow. Although I could download the source code and compile it myself, that would mean more work. And the last thing I want is any hassle.
+~~Luckily, I found a workaround. I replaced the current one with node@24 LTS.~~
+[Click](#the-redemption) to ignore Homebrew and check out the truly useful masterpiece!
 
 Replacing it is quite simple:
 

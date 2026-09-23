@@ -106,7 +106,7 @@ If you've read this far, I'm guessing you're quite interested in embracing JPEG 
 
 First, let's install the JPEG XL command-line tools (`cjxl` and `djxl`) on your Mac using Homebrew:
 
-### Install Homebrew
+## Install Homebrew
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -122,7 +122,7 @@ brew install jpeg-xl
 
 ---
 
-### Basic Conversions in Terminal
+## Basic Conversions in Terminal
 
 Once installed, you can use the command-line tools `cjxl` (to encode/compress) and `djxl` (to decode/decompress).
 

@@ -7,7 +7,6 @@ tags:
   - GNU/Linux
   - Ubuntu
   - VPS
-  - RackNerd
 ---
 
 Last time we covered how to enhance VPS security by creating regular users and changing passwords to more complex ones. Here's an image for reference:
@@ -155,7 +154,7 @@ chmod 600 ~/.ssh/authorized_keys
 chown -R $USER:$USER ~/.ssh
 ```
 
-✅ If above cmd show no output: that's normal. Silent success is expected.
+If above cmd show no output: that's normal. Silent success is expected.
 
 To verify:
 
@@ -218,9 +217,7 @@ Even though my config file clearly said `no`.
 
 So what happened?
 
----
-
-## The Real Issue: RackNerd `50-cloud-init.conf` Overriding Your Config
+### The Real Issue: RackNerd `50-cloud-init.conf` Overriding Your Config
 
 On RackNerd Ubuntu VPS templates, the SSH config often includes a directive at line 1 without a `#` comment:
 
@@ -244,7 +241,7 @@ Here is the catch with OpenSSH: **for each keyword, the first obtained value win
 
 Because `Include /etc/ssh/sshd_config.d/*.conf` is at line 1 of Ubuntu's default `/etc/ssh/sshd_config`, OpenSSH parsed `50-cloud-init.conf` **before** reading the rest of `/etc/ssh/sshd_config`. Since it encountered `PasswordAuthentication yes` first, it completely ignored the `no` in the main config!
 
-✅ Fix: change it to:
+Fix: change it to:
 
 ```text
 PasswordAuthentication no
@@ -301,7 +298,8 @@ Once verified, apply the changes by restarting the SSH service. The command depe
   sudo systemctl restart ssh
   ```
 
-> 💡 **Tip:** If you're unsure which init mode your server uses, you can run:
+> [!TIP]
+> If you're unsure which init mode your server uses, you can run:
 >
 > ```bash
 > sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket

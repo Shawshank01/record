@@ -9,7 +9,6 @@ tags:
   - ExifTool
   - macOS
   - Shortcuts
-  - Automator
 ---
 
 Have you ever considered that your photo might contain more information than you could imagine? The information contained within a photo or image extends far beyond what meets the eye, and a lot of that data leaks through EXIF.

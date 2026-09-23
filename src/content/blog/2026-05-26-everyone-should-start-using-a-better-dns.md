@@ -8,20 +8,21 @@ tags:
   - Security
   - DNS
   - Quad9
-  - ISP
-  - Vodafone
   - Ireland
 ---
 
 Third year in Ireland.  
 Moved houses three times.  
-After the recent move, I received a lot of marketing SMS ads from Three.  
+After the recent move, I received a lot of marketing SMS ads from Three.
+
 ![jxl hint](/2026-05-27/three_ads.jxl)
 
 This makes me wonder: Is Three tracking my location using the cell tower? It detected that I had moved to a new place in a residential area, assumed that I needed things for the new house, and sent me these messages.
 This is just a conspiracy theory, and I have no way of proving whether my theory is correct. But it reminds me of writing this blog, which is to show you what [DNS](https://aws.amazon.com/route53/what-is-dns/) is and how your ISP can use it to know everything about you, and use this information to send you targeted marketing messages.
 
 ---
+
+## What is DNS
 
 The Domain Name System (DNS) is a foundational protocol of the internet, serving as the primary mechanism for translating human-readable hostnames into machine-readable IP addresses. Think of it this way: instead of memorizing a string of numbers like 172.135.248.206, you only need to remember a meaningful phrase like ThisIsRían.com. The DNS server resolves that name into the correct IP address (172.135.248.206), guiding your browser directly to Rían's digital front door.
 
@@ -72,6 +73,8 @@ Targeted "Quick Freeze" Orders: Irish law enforcement agencies can obtain preser
 When a subscriber queries Vodafone's default DNS servers (such as the legacy 89.19.64.164 / 89.19.64.36 or dynamically assigned resolvers like 64.43.51.22), the request is sent in cleartext, exposing the queried domain name, timestamp, and subscriber IP address to the access network. Irish retention law should not be described as a clear statutory requirement to retain every DNS query, but plaintext ISP DNS still gives the provider the technical ability to observe those lookups.
 Additionally, Vodafone Ireland has faced regulatory scrutiny regarding database management and subscriber preference handling. The Irish Data Protection Commission (DPC) has prosecuted Vodafone Ireland multiple times for unsolicited marketing communications under Regulation 13 of the ePrivacy Regulations, including documented cases in 2011, 2022, and 2023, with other reports noting prior convictions. These compliance failures underscore the privacy risks when sensitive subscriber data is managed by a commercial entity with marketing operations.
 
+---
+
 ## Security Profiling, Content Blocking, and State Censorship
 
 While recursive DNS resolvers are frequently used to enforce network security, the definition of "safety" differs significantly between a dedicated public security resolver and an ISP resolver subject to state court orders.
@@ -101,6 +104,8 @@ Quad9 does not block sites for copyright enforcement, trademark disputes, or lic
 To provide security filtering similar to public resolvers, Vodafone offers a paid network-level security subscription called Secure Net (Secure Net Home costs €2.99 per month, and Secure Net Mobile costs €1.99 per month). Secure Net is a network-level filtering product operated inside Vodafone's network. Public Vodafone materials say it can analyse network traffic, block unsafe websites/downloads, and provide parental controls like age-appropriate content filtering, Bedtime schedules, and custom domain blocking, but they do not fully document the technical mechanisms used.
 Because Secure Net operates inside Vodafone's transport loop, VPNs, encrypted proxy services, and some encrypted DNS configurations may bypass parts of its filtering, especially DNS-based filtering, depending on how the product implements detection. It may also be incompatible with browsers that utilize independent data compression.
 
+---
+
 ## Cryptographic Protocols and Resolution Capabilities
 
 Modern DNS design relies heavily on cryptographic transport security and performance optimization protocols. The architectural division between Quad9 and Vodafone Ireland reveals a stark contrast in their support for secure DNS standards.
@@ -125,6 +130,8 @@ This creates The Last-Mile Security Paradox. If a user configures Quad9's IP add
 
 ![jxl hint](/2026-05-27/vodafone-gigabox-dns-conf.jxl)
 *Only change the settings on <http://192.168.1.1/internet.html#sub=dns> from the Gigabox doesn't save your privacy!*
+
+---
 
 ## Infrastructure, Routing Latency, and Network Stability
 
@@ -240,7 +247,7 @@ And if it does not work the first time, don't panic. DNS is just the internet's 
 
 ---
 
-### One last thing
+## One last thing
 
 Encrypted DNS is not the same thing as full browsing anonymity. Even with DoH or DoT, your ISP can still see destination IP addresses, connection timing, traffic volume, and sometimes the hostname exposed through TLS metadata such as SNI. [Encrypted Client Hello (ECH)](https://blog.cloudflare.com/announcing-encrypted-client-hello/) is designed to hide more of that TLS handshake metadata, but it only works when both your browser and the website/CDN support it. You can check whether your browser is using ECH with [Cloudflare's trace page](https://crypto.cloudflare.com/cdn-cgi/trace) or [test.defo.ie](https://test.defo.ie/).
 

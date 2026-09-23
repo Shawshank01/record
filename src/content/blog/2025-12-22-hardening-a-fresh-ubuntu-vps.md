@@ -151,7 +151,8 @@ Apply the changes by restarting the SSH service depending on your distribution:
   sudo systemctl restart ssh
   ```
 
-> 💡 **Tip:** You can also run `sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket` to handle either setup automatically.
+> [!TIP]
+> You can also run `sudo systemctl restart ssh 2>/dev/null || sudo systemctl restart ssh.socket` to handle either setup automatically.
 
 ### Verify root login is disabled
 
@@ -213,7 +214,8 @@ sudo -i
 
 drops you directly into a root shell.
 
-> ⚠️ Note: This trades convenience for security. Use with care.
+> [!NOTE]
+> This trades convenience for security. Use with care.
 
 ---
 

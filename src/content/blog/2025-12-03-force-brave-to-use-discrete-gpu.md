@@ -5,6 +5,7 @@ pubDate: 2025-12-03
 updateDate: 2026-08-21
 tags:
   - macOS
+  - MacBook (x86)
   - Brave Browser
 ---
 
@@ -47,7 +48,7 @@ I checked the report from `brave://gpu`, which showed that Brave was clearly *ha
 
 ---
 
-## What `brave://gpu` Revealed
+## What brave://gpu Revealed
 
 I opened `brave://gpu` and found something like this:
 

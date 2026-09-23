@@ -12,8 +12,8 @@ A low-budget yet high-quality film set during World War II. [IMDb](https://www.i
 
 The opening pace of the film is somewhat slow, primarily focusing on the protagonist's domestic life, yet this effectively sets the stage for the heightened tension that unfolds during the war sequences later on. The battle scenes remain profoundly moving. One is struck by how truly accomplished directors can achieve effects rivalling Hollywood blockbusters on considerably smaller budgets.
 
-> **Warning**:  
-The following contains spoilers. If you haven't watched this film yet, I'd strongly recommend doing so before coming back to this blog.
+> [!WARNING]
+> The following contains spoilers. If you haven't watched this film yet, I'd strongly recommend doing so before coming back to this blog.
 
 ---
 

@@ -4,7 +4,6 @@ description: "Satisfying the compulsion for daily system updates with a custom b
 pubDate: 2026-01-07
 updateDate: 2026-08-06
 tags:
-  - Bash
   - GNU/Linux
   - Docker
   - macOS
@@ -12,6 +11,7 @@ tags:
   - Ubuntu
   - Fedora
   - Fedora CoreOS
+  - Homebrew
 ---
 
 There are two types of people: those who never update their software and those who do it every day.
@@ -216,7 +216,6 @@ echo "Note: System updates are managed automatically by Zincati."
 After Zincati upgrades Fedora CoreOS to a new major version, the script above creates a new toolbox container. The old toolbox container will remain on disk. To check and clean it up:
 
 ```bash
-# List all toolbox containers
 toolbox list
 ```
 

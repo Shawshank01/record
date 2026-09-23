@@ -9,6 +9,7 @@ tags:
   - Video
   - Audio
   - CLI
+  - YouTube
 ---
 
 I've always maintained that only cross-platform software merits long-term commitment. Final Cut Pro is indeed formidable, and Adobe's suite is undeniably capable, but neither runs natively on every operating system. Once you've grown accustomed to them, you've effectively tied yourself to the systems they run on. Departing from a particular platform means abandoning these familiar tools, significantly increasing your sunk costs.
@@ -291,11 +292,11 @@ Homebrew remembers the `--with-*` options you originally selected and reapplies 
 <div class="text-center py-16 px-4 my-12 rounded-2xl bg-soft border border-white/5 shadow-soft">
   <div class="text-5xl mb-6">🏆</div>
   <h2 class="text-2xl font-bold mb-4">Congratulations!</h2>
-  <p class="text-lg mb-8">If you've made it this far, you've officially earned the title of:</p>
+  <p class="text-lg mb-8">You have officially earned the title of:</p>
   <div class="text-4xl md:text-6xl font-black mb-6 text-accent tracking-tighter uppercase">
     FFmpeg Ruler
   </div>
-  <div class="text-sm uppercase tracking-widest opacity-60">Certified by this blog</div>
+  <div class="text-sm uppercase tracking-widest opacity-60">Certified by Michifumi</div>
 </div>
 
 ---

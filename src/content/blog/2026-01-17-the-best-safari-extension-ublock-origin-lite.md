@@ -10,11 +10,6 @@ tags:
   - Safari
   - uBlock Origin Lite
   - YouTube
-  - Browser Extensions
----
-
-> [I don't care the bullshit, just go to the solution.](#here-is-how-this-magic-is-achieved)
-
 ---
 
 The [uBlock Origin Lite](https://ublockorigin.com/) was released on the App Store in August 2025. Although it's the "Lite" version, which is not as powerful as the original, it's still one of the best things to happen in the last year, especially for users who sometimes have to use Safari as their browser, like me.
@@ -103,19 +98,15 @@ Then, in the dashboard, go to **Custom filters > Import / Export**, paste what y
 
 ![uBlock Origin Lite Custom Filter Lists](/2026-01-17/ubol-custom-filter-lists.png)
 
----
-
 Then you need to quit Safari completely by pressing **cmd + Q**. This is **essential**.
 
 Now reopen Safari, open YouTube, and savour your triumph! Those pesky adverts and short video pushes have vanished both in homepage and in search results!
-
----
 
 Keep it in mind, this is rather like a game of cat and mouse, so perhaps one day this extension may cease to function (but it is not this day! This day we fight!). Should you wish to contribute, when encountering usage issues, you may visit [this GitHub issue](https://github.com/uBlockOrigin/uAssets/issues/30158) to help the developers identify the problem more quickly.
 
 ---
 
-### Update
+## Update
 
 If you use Safari every day (god I hate to say that), you may have noticed that, each time the UBOL updates, its functions stop working, even if you restart Safari completely. In order to solve this problem, you need to complete the following steps.
 

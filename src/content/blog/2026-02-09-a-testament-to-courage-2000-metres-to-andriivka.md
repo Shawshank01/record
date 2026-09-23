@@ -5,7 +5,6 @@ pubDate: 2026-02-09
 tags:
   - Opinion
   - Documentary
-  - Ukraine War
 ---
 
 I finished watching the documentary [2000 Metres to Andriivka](https://www.imdb.com/title/tt34964205/) today.

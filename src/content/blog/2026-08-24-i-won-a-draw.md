@@ -3,9 +3,8 @@ title: "I Won a Draw"
 description: "It won't let me retire, but at least it put me in a great mood for the day."
 pubDate: 2026-08-24
 tags:
-  - AIB
-  - VISA
-  - Disney
+  - Opinion
+  - Ireland
 ---
 
 So here's the story: I received two promotional emails from AIB in February and May, respectively, and participated in both events.
