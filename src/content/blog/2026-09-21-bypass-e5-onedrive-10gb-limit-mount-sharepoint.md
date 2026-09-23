@@ -311,7 +311,7 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 
 2. **Why `--exclude` is Omitted & Preventing `._*` Companion Files**:
 
-   In `rclone mount`, `--exclude` acts purely as a **read/visibility filter**—it hides files from Finder, but it does *not* intercept or block files written into the local VFS mount by macOS. Adding `--exclude "._*"` creates an illusion: Finder writes `._filename`, Rclone uploads it to SharePoint anyway, and then hides it from your local view so you cannot even see or delete it with normal `rm` commands.
+   In `rclone mount`, `--exclude` acts purely as a **read/visibility filter**, it hides files from Finder, but it does *not* intercept or block files written into the local VFS mount by macOS. Adding `--exclude "._*"` creates an illusion: Finder writes `._filename`, Rclone uploads it to SharePoint anyway, and then hides it from your local view so you cannot even see or delete it with normal `rm` commands.
 
    Omitting `--exclude` keeps your local view completely consistent with cloud storage. To actually stop macOS from generating and uploading `._*` companion files:
 
