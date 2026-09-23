@@ -19,16 +19,18 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 - **Full-text search**: A client-side search bar filters posts by title, description, body, and tags instantly: no server required.
 - **Tag filtering sidebar**: Desktop users see a sticky sidebar of all tags; clicking one or more tags filters the post list in real time. Mobile users get a collapsible tag menu.
+- **Table of contents**: Long posts (≥3 headings) feature an interactive Table of Contents. On desktop, it renders as a sticky right-hand sidebar with a real-time scroll spy highlighting sections (`h2`) and sub-sections (`h3`). On mobile, it collapses into a native, accessible dropdown.
 - **Back-to-top button**: A floating button appears on scroll and smoothly returns users to the top of the page. Respects `prefers-reduced-motion`.
 - **Auto-hiding header**: The fixed header slides out of view on scroll to maximise reading space.
 
 ### Reading Experience
 
+- **Smooth in-page navigation**: Clicking anchor links or Table of Contents items smoothly glides to the target heading with automatic clearance beneath the sticky header. Respects `prefers-reduced-motion`.
 - **Image lightbox**: Click any image inside a blog post to view it full-screen in a lightbox overlay. Press `Escape` or click to dismiss.
 - **Code block copy button**: Every `<pre>` code block gets a one-click copy button with visual feedback (copied ✓ / failed ✗).
 - **Customised code typography**: Code snippets and `<pre>` blocks are styled using a self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) variable font.
 - **External link handling**: Links to external domains automatically open in a new tab with `rel="noopener"`.
-- **Responsive layout**: Sidebar + content grid on desktop, single-column on mobile, with a dedicated mobile tag toggle.
+- **Responsive layout**: Sidebar + content grid on desktop, single-column on mobile, with dedicated mobile toggles for tags and section navigation.
 
 ### SEO & Feeds
 
