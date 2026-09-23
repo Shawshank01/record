@@ -15,6 +15,11 @@ export function initToc() {
     const controller = new AbortController();
     const { signal } = controller;
 
+    // Immediately guarantee cleanup regardless of where subsequent code returns
+    cleanupToc = () => {
+        controller.abort();
+    };
+
     // Auto-close mobile dropdown when a heading link is clicked
     mobileLinks.forEach((link) => {
         link.addEventListener(
@@ -25,6 +30,21 @@ export function initToc() {
             },
             { signal },
         );
+    });
+
+    // Map existing links by ID to avoid querySelector selector-escaping vulnerabilities
+    const desktopMap = new Map<string, HTMLAnchorElement>();
+    desktopLinks.forEach((link) => {
+        const slug = link.getAttribute("data-toc-link");
+        if (slug) desktopMap.set(slug, link);
+    });
+
+    const mobileMap = new Map<string, HTMLAnchorElement>();
+    mobileLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href && href.startsWith("#")) {
+            mobileMap.set(href.slice(1), link);
+        }
     });
 
     const navContainer = document.querySelector<HTMLElement>(".toc-sidebar nav");
@@ -41,11 +61,11 @@ export function initToc() {
 
     headingElements.forEach((h) => {
         const id = h.id;
-        const dLink = document.querySelector<HTMLAnchorElement>(`a[data-toc-link="${id}"]`);
-        const mLink = document.querySelector<HTMLAnchorElement>(`a[data-toc-mobile-link][href="#${id}"]`);
+        const dLink = desktopMap.get(id);
+        const mLink = mobileMap.get(id);
 
         if (dLink || mLink) {
-            headingMap.set(id, { heading: h, desktop: dLink ?? undefined, mobile: mLink ?? undefined });
+            headingMap.set(id, { heading: h, desktop: dLink, mobile: mLink });
             headings.push(h);
         }
     });
@@ -68,7 +88,6 @@ export function initToc() {
 
         if (activeId) {
             const curr = headingMap.get(activeId);
-            // Use 'location' per W3C WAI-ARIA recommendation for in-page anchors
             curr?.desktop?.setAttribute("aria-current", "location");
             curr?.mobile?.setAttribute("aria-current", "location");
 
@@ -89,7 +108,6 @@ export function initToc() {
             getComputedStyle(document.documentElement).getPropertyValue("--header-offset") || "128",
             10,
         );
-        // Activation threshold line below the sticky header
         const threshold = headerOffset + 40;
 
         // Bottom-of-page check: if scrolled to bottom, activate the last heading
@@ -125,15 +143,10 @@ export function initToc() {
 
     window.addEventListener("scroll", onScroll, { passive: true, signal });
     window.addEventListener("resize", onScroll, { passive: true, signal });
-    // Recalculate once all resources (fonts, images) load to handle layout shifts
     window.addEventListener("load", onScroll, { passive: true, signal });
 
     // Initial check
     updateActiveHeading();
-
-    cleanupToc = () => {
-        controller.abort();
-    };
 }
 
 if (document.readyState === "loading") {
@@ -142,5 +155,4 @@ if (document.readyState === "loading") {
     initToc();
 }
 
-// Support Astro view transitions if ever added
 document.addEventListener("astro:page-load", initToc);
