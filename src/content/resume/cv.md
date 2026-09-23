@@ -34,7 +34,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 <div style="display: flex; justify-content: space-between;"><strong>Science in Computing</strong><span><em>2023 - 2024</em></span></div>
 
-> 2nd Class Honours Grade 1
+> Second Class Honours, Grade One
 >> **Module:** Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
 
 ---
