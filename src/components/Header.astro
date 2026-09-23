@@ -21,16 +21,16 @@ const initialSubtitle = options[0] ?? "";
     data-site-header
 >
     <div
-        class="mx-auto flex w-full max-w-6xl xl:max-w-7xl 2xl:max-w-360 flex-col gap-4 px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-6 md:px-8"
+        class="mx-auto flex w-full max-w-6xl xl:max-w-7xl 2xl:max-w-360 flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:gap-8 md:px-8"
     >
-        <div class="flex flex-col gap-1 md:max-w-[60%]">
+        <div class="flex flex-1 min-w-0 flex-col gap-1 pr-4 md:pr-8">
             <a
                 href="/"
                 class="font-title text-3xl text-accent drop-shadow-sm md:text-5xl"
                 >{title}</a
             >
             <p
-                class="text-sm text-gray-400 md:text-base"
+                class="text-xs text-gray-400 md:text-sm leading-relaxed"
                 data-subtitle
                 data-subtitle-options={JSON.stringify(options)}
             >
@@ -38,7 +38,7 @@ const initialSubtitle = options[0] ?? "";
             </p>
         </div>
         <div
-            class="relative flex w-full flex-col gap-3 md:ml-auto md:w-auto md:max-w-none md:flex-row md:items-center md:gap-0"
+            class="relative flex w-full shrink-0 flex-col gap-3 md:ml-auto md:w-auto md:max-w-none md:flex-row md:items-center md:gap-0"
         >
             <button
                 type="button"
@@ -198,7 +198,9 @@ const initialSubtitle = options[0] ?? "";
             );
             if (Array.isArray(choices) && choices.length > 1) {
                 const index = Math.floor(Math.random() * choices.length);
-                subtitleEl.textContent = choices[index];
+                const selected = choices[index];
+                subtitleEl.textContent = selected;
+                subtitleEl.setAttribute("title", selected);
             }
         } catch {}
     }
