@@ -330,12 +330,12 @@ pre {
     position: relative;
 }
 
-.toc-link[aria-current="true"] {
+.toc-link[aria-current="location"] {
     color: var(--color-accent, #b2996e) !important;
     font-weight: 600;
 }
 
-.toc-link[aria-current="true"]::before {
+.toc-link[aria-current="location"]::before {
     content: "";
     position: absolute;
     left: -13px;
@@ -344,6 +344,12 @@ pre {
     width: 2px;
     background-color: var(--color-accent, #b2996e);
     border-radius: 9999px;
+}
+
+/* Table of Contents mobile link active styling */
+[data-toc-mobile-link][aria-current="location"] {
+    color: var(--color-accent, #b2996e) !important;
+    font-weight: 600;
 }
 
 /* Table of Contents mobile disclosure styling */

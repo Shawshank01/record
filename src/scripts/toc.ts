@@ -1,57 +1,82 @@
-function initToc() {
-    const mobileLinks = document.querySelectorAll<HTMLAnchorElement>(
-        "[data-toc-mobile-link]",
-    );
-    const desktopLinks = document.querySelectorAll<HTMLAnchorElement>(
-        "a[data-toc-link]",
-    );
+let cleanupToc: (() => void) | null = null;
+
+export function initToc() {
+    // Teardown previous listeners if re-initialised (e.g. Astro View Transitions)
+    if (cleanupToc) {
+        cleanupToc();
+        cleanupToc = null;
+    }
+
+    const desktopLinks = document.querySelectorAll<HTMLAnchorElement>("a[data-toc-link]");
+    const mobileLinks = document.querySelectorAll<HTMLAnchorElement>("[data-toc-mobile-link]");
+
+    if (desktopLinks.length === 0 && mobileLinks.length === 0) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
 
     // Auto-close mobile dropdown when a heading link is clicked
     mobileLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-            const details = link.closest("details");
-            if (details) {
-                details.removeAttribute("open");
-            }
-        });
+        link.addEventListener(
+            "click",
+            () => {
+                const details = link.closest("details");
+                if (details) details.removeAttribute("open");
+            },
+            { signal },
+        );
     });
 
-    if (desktopLinks.length === 0) return;
-
     const navContainer = document.querySelector<HTMLElement>(".toc-sidebar nav");
-    const headingLinkMap = new Map<string, HTMLAnchorElement>();
+    const headingMap = new Map<
+        string,
+        { heading: HTMLElement; desktop?: HTMLAnchorElement; mobile?: HTMLAnchorElement }
+    >();
     const headings: HTMLElement[] = [];
 
-    desktopLinks.forEach((link) => {
-        const slug = link.getAttribute("data-toc-link");
-        if (!slug) return;
-        const target = document.getElementById(slug);
-        if (target) {
-            headingLinkMap.set(slug, link);
-            headings.push(target);
+    // Query headings in natural document order directly from the article section
+    const headingElements = document.querySelectorAll<HTMLElement>(
+        "article section h2[id], article section h3[id]",
+    );
+
+    headingElements.forEach((h) => {
+        const id = h.id;
+        const dLink = document.querySelector<HTMLAnchorElement>(`a[data-toc-link="${id}"]`);
+        const mLink = document.querySelector<HTMLAnchorElement>(`a[data-toc-mobile-link][href="#${id}"]`);
+
+        if (dLink || mLink) {
+            headingMap.set(id, { heading: h, desktop: dLink ?? undefined, mobile: mLink ?? undefined });
+            headings.push(h);
         }
     });
 
     if (headings.length === 0) return;
 
-    // Ensure headings are sorted by vertical document position
-    headings.sort((a, b) => a.offsetTop - b.offsetTop);
+    let activeId: string | null = null;
 
-    let activeLink: HTMLAnchorElement | null = null;
+    const setActive = (id: string | null) => {
+        if (activeId === id) return;
 
-    const setActive = (link: HTMLAnchorElement | null) => {
-        if (activeLink === link) return;
-        if (activeLink) {
-            activeLink.removeAttribute("aria-current");
+        // Clear previous active states
+        if (activeId) {
+            const prev = headingMap.get(activeId);
+            prev?.desktop?.removeAttribute("aria-current");
+            prev?.mobile?.removeAttribute("aria-current");
         }
-        activeLink = link;
-        if (activeLink) {
-            activeLink.setAttribute("aria-current", "true");
-            if (navContainer) {
+
+        activeId = id;
+
+        if (activeId) {
+            const curr = headingMap.get(activeId);
+            // Use 'location' per W3C WAI-ARIA recommendation for in-page anchors
+            curr?.desktop?.setAttribute("aria-current", "location");
+            curr?.mobile?.setAttribute("aria-current", "location");
+
+            if (curr?.desktop && navContainer) {
                 const navRect = navContainer.getBoundingClientRect();
-                const linkRect = activeLink.getBoundingClientRect();
+                const linkRect = curr.desktop.getBoundingClientRect();
                 if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
-                    activeLink.scrollIntoView({ block: "nearest" });
+                    curr.desktop.scrollIntoView({ block: "nearest" });
                 }
             }
         }
@@ -60,41 +85,35 @@ function initToc() {
     let ticking = false;
 
     const updateActiveHeading = () => {
-        const scrollY = window.scrollY;
         const headerOffset = parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue(
-                "--header-offset",
-            ) || "128",
+            getComputedStyle(document.documentElement).getPropertyValue("--header-offset") || "128",
             10,
         );
-        const activationPoint = scrollY + headerOffset + 40;
+        // Activation threshold line below the sticky header
+        const threshold = headerOffset + 40;
 
-        // If reader is near the very bottom of the page, select the last heading
-        if (
-            window.innerHeight + scrollY >=
-            document.documentElement.scrollHeight - 50
-        ) {
+        // Bottom-of-page check: if scrolled to bottom, activate the last heading
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
             const last = headings[headings.length - 1];
-            if (last) {
-                setActive(headingLinkMap.get(last.id) || null);
-                return;
-            }
+            if (last) setActive(last.id);
+            return;
         }
 
-        let currentActive: HTMLAnchorElement | null = null;
+        // Live viewport-relative calculation via getBoundingClientRect()
+        let current: HTMLElement | null = null;
         for (let i = 0; i < headings.length; i++) {
-            const heading = headings[i];
-            if (heading.offsetTop <= activationPoint) {
-                currentActive = headingLinkMap.get(heading.id) || null;
+            const rect = headings[i].getBoundingClientRect();
+            if (rect.top <= threshold) {
+                current = headings[i];
             } else {
                 break;
             }
         }
 
-        setActive(currentActive);
+        setActive(current ? current.id : (headings[0] ? headings[0].id : null));
     };
 
-    const handleScroll = () => {
+    const onScroll = () => {
         if (!ticking) {
             window.requestAnimationFrame(() => {
                 updateActiveHeading();
@@ -104,11 +123,17 @@ function initToc() {
         }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true, signal });
+    window.addEventListener("resize", onScroll, { passive: true, signal });
+    // Recalculate once all resources (fonts, images) load to handle layout shifts
+    window.addEventListener("load", onScroll, { passive: true, signal });
 
     // Initial check
     updateActiveHeading();
+
+    cleanupToc = () => {
+        controller.abort();
+    };
 }
 
 if (document.readyState === "loading") {
@@ -116,3 +141,6 @@ if (document.readyState === "loading") {
 } else {
     initToc();
 }
+
+// Support Astro view transitions if ever added
+document.addEventListener("astro:page-load", initToc);
