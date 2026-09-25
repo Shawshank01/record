@@ -118,44 +118,44 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
 | `--volname "SharePoint"` | Displays the mount as an external drive named "SharePoint" on your desktop and Finder sidebar. |
-| `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing desktop GUI clients and CLI tools to control and monitor the mount. |
+| `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
 | `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
-| `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing local desktop and web GUIs to connect seamlessly. |
+| `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
 
-### Real-Time Monitoring: Native Desktop App vs. Web GUI
+### Real-Time Monitoring with Rclone Web
 
-With the RC API exposed locally on port `5572`, you can monitor live transfer speeds, upload queues, and bandwidth metrics in real time.
+With the Remote Control (RC) API exposed locally on `127.0.0.1:5572`, you can monitor live transfer throughput, active upload queues, and bandwidth statistics without interrupting the mount.
 
-#### Recommended: Native Desktop App ([Rclone UI](https://github.com/rclone/rclone-ui))
+> [!NOTE]
+> **Why `launchd` + `rclone-web` is the default architecture**:  
+> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS `launchd` creates process collisions and launch conflicts.  
+> The decoupled architecture used here, **macOS `launchd` managing the daemon in the background, paired with `rclone-web` as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
 
-For macOS users, the recommended way to monitor and manage your mount is the native desktop client **[Rclone UI](https://github.com/rclone/rclone-ui)** (available as a `.dmg` from GitHub or at [rcloneui.com](https://rcloneui.com)):
+#### Testing the Dashboard On-Demand
 
-- **Native macOS Integration**: Built with Rust and Tauri for near-zero memory footprint, dark mode, menu bar status icon, and macOS system notifications when uploads complete or fail.
-- **Zero Configuration**: Automatically reads your existing `~/.config/rclone/rclone.conf`, so your `sp` SharePoint remote appears immediately.
-- **Dual-Pane File Manager**: Side-by-side local and cloud file browser with drag-and-drop support.
-- **Connect to Mount**: Connects directly to your running mount via `http://127.0.0.1:5572` without entering credentials.
+The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** is bundled directly into latest Rclone releases.
 
-#### Alternative: Modern Web GUI ([Rclone Web](https://github.com/rclone/rclone-web))
+During foreground testing in Step 2, you can test the dashboard by running this command in a separate Terminal tab:
 
-If you prefer not to install a desktop app and want a browser-based dashboard, use the modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** (built with React, Tailwind CSS, and Shadcn UI):
+```bash
+/opt/local/bin/rclone gui --api-addr 127.0.0.1:5572 --no-auth
+```
 
-- In modern Rclone (v1.74+), launch the modern web interface from Terminal whenever needed:
-
-  ```bash
-  /opt/local/bin/rclone gui --api-addr 127.0.0.1:5572 --no-auth
-  ```
-
-- It automatically opens your browser to a clean, responsive dashboard connected directly to your active SharePoint mount, with properly wrapped URLs and real-time speed charts.
+- **Browser-Decoupled**: Automatically opens your default web browser to a responsive, dark-mode dashboard connected directly to your active mount.
+- **Zero Process Conflicts**: Interacts purely over the local loopback HTTP API (`127.0.0.1:5572`) without attempting to manage or restart the underlying mount process.
+- **Permanent 24/7 Access**: For a permanent dashboard accessible at `<http://127.0.0.1:5580>` without running Terminal commands, proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd) where both the mount and GUI are automated via Launchd.
 
 ---
 
 ## 4. Configure Automated Startup at Login (macOS Launchd)
 
-Use macOS's native `launchd` service to maintain persistent, background mounting upon system login.
+Use macOS's native `launchd` service to maintain persistent, background mounting and live dashboard monitoring upon system login.
 
-### Step 1: Generate the LaunchAgent Configuration
+### Step 1: Generate the LaunchAgent Configurations
 
-Run the following command in Terminal to create the agent configuration file:
+#### 1. Filesystem Mount Service (`com.user.rclone.sharepoint.plist`)
+
+Run the following command to create the directory structure and the primary virtual drive mount service:
 
 ```bash
 mkdir -p ~/SharePoint
@@ -217,18 +217,56 @@ EOF
 > [!IMPORTANT]
 > **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes jobs with an extremely minimal `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`). FUSE-T depends on auxiliary helper tools located in `/usr/local/bin` to attach the virtual filesystem to macOS. Without explicit `PATH` definitions, Rclone's VFS cache and RC server will run and upload files in the background, but the filesystem mount will silently fail to register in Finder.
 
-### Step 2: Activate the Service
+#### 2. Companion Web GUI Service (`com.user.rclone.gui.plist`)
+
+Run the following command to create the companion web dashboard service:
 
 ```bash
-# Unload previous service to prevent launchd from immediately respawning rclone
+cat << 'EOF' > ~/Library/LaunchAgents/com.user.rclone.gui.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.rclone.gui</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/local/bin/rclone</string>
+        <string>gui</string>
+        <string>--addr</string>
+        <string>127.0.0.1:5580</string>
+        <string>--api-addr</string>
+        <string>127.0.0.1:5572</string>
+        <string>--no-auth</string>
+        <string>--no-open-browser</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/dev/null</string>
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+</dict>
+</plist>
+EOF
+```
+
+### Step 2: Activate the Services
+
+```bash
+# Unload previous services to prevent launchd from immediately respawning rclone
 launchctl unload ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist 2>/dev/null
+launchctl unload ~/Library/LaunchAgents/com.user.rclone.gui.plist 2>/dev/null
 
 # Terminate any existing manual instances and cleanly unmount
 killall rclone 2>/dev/null
 diskutil unmount force ~/SharePoint 2>/dev/null || umount -f ~/SharePoint 2>/dev/null
 
-# Load and start the background service
+# Load and start both background services
 launchctl load ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
+launchctl load ~/Library/LaunchAgents/com.user.rclone.gui.plist
 ```
 
 > [!TIP]
@@ -237,7 +275,10 @@ launchctl load ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
 The SharePoint drive will now automatically mount in Finder upon every login.
 
 > [!TIP]
-> **If the drive icon does not appear on your Desktop or Finder sidebar**:
+> **Bookmark Your 24/7 Live Dashboard**:  
+> Once loaded, open `<http://127.0.0.1:5580>` in Safari or Chrome and bookmark it. It gives you instant, 24/7 access to real-time transfer throughput, upload queues, and bandwidth metrics without needing to run any Terminal commands.
+>
+> **If the drive icon does not appear on your Desktop or Finder sidebar**:  
 > FUSE-T mounts the drive as a network filesystem (NFS). Ensure macOS allows displaying connected network volumes:
 >
 > 1. Open **Finder** → press `Cmd + ,` (**Settings** / **Preferences**).
@@ -253,7 +294,7 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 ### Manually Free All Local Space Immediately
 
 > [!WARNING]
-> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in **Rclone UI** or the Web GUI to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
+> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard (`http://127.0.0.1:5580`) to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
 >
 > **Never clear this directory while uploads are in progress**, as files queued in the local buffer will be permanently erased before reaching the cloud, causing irrecoverable data loss or corrupted remote files.
 
@@ -268,10 +309,11 @@ rm -rf ~/Library/Caches/rclone/vfs*
 Do not drag the mounted volume to the Trash. Unmount according to how the drive was launched:
 
 - **If running via Launchd background service (Section 4)**:
-  Unload the service directly. This terminates Rclone cleanly and automatically unmounts the volume:
+  Unload the background services directly. This terminates Rclone cleanly and automatically unmounts the volume:
 
   ```bash
-  launchctl unload ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
+  launchctl unload ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist 2>/dev/null
+  launchctl unload ~/Library/LaunchAgents/com.user.rclone.gui.plist 2>/dev/null
   ```
 
 - **If running manually via Terminal (Section 3)**:
@@ -285,7 +327,7 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
 
 ### Inspecting and Truncating Logs
 
-By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored via Rclone UI or the Web GUI.
+By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored 24/7 via the Web GUI at `<http://127.0.0.1:5580>`.
 
 To view live log output in Terminal:
 
