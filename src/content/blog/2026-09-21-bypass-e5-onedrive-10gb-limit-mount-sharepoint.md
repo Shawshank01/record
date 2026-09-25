@@ -73,7 +73,7 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 
 ## 3. Manual Mount & Connectivity Test (Optional)
 
-Configuring the local Virtual File System (VFS) cache creates a seamless experience equivalent to OneDrive's "Files On-Demand": files appear as 0-byte local placeholders, and cached files are automatically cleared from local storage after upload or playback.
+Configuring the local Virtual File System (VFS) cache provides seamless on-demand access: files are listed in Finder at their full remote sizes, while local cache files are allocated sparsely so that only read or written byte ranges consume SSD storage. Cached chunks remain available for immediate re-access and are automatically evicted by age (`--vfs-cache-max-age 12h`) or size limits (`--vfs-cache-max-size 250G`).
 
 > [!NOTE]
 > This section is intended for manually testing whether the virtual drive mounts and operates correctly. If you prefer to configure Rclone directly as a persistent background service that starts automatically at login, you can verify your mount here and proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd).
@@ -217,7 +217,7 @@ EOF
 ```
 
 > [!IMPORTANT]
-> **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes jobs with an extremely minimal `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`). FUSE-T depends on auxiliary helper tools located in `/usr/local/bin` to attach the virtual filesystem to macOS. Without explicit `PATH` definitions, Rclone's VFS cache and RC server will run and upload files in the background, but the filesystem mount will silently fail to register in Finder.
+> **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes background services with an extremely minimal system `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`, as confirmed by `getconf PATH`), completely omitting `/opt/local/bin`. Defining an explicit `PATH` is essential so `launchd` can resolve the MacPorts runtime environment and system mount helpers. (FUSE-T's userspace NFS daemon itself resides in `/Library/Application Support/fuse-t/bin/go-nfsv4`).
 >
 > **Why `--rc-allow-origin` is locked to `http://127.0.0.1:5580`**: Restricting Cross-Origin Resource Sharing (CORS) specifically to the companion web GUI on port `5580` allows the dashboard to query mount metrics while strictly blocking external websites or arbitrary browser origins from querying your unauthenticated loopback API.
 
@@ -260,21 +260,18 @@ EOF
 ### Step 2: Activate the Services
 
 ```bash
-# Unload previous services to prevent launchd from immediately respawning rclone
-launchctl unload ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist 2>/dev/null
-launchctl unload ~/Library/LaunchAgents/com.user.rclone.gui.plist 2>/dev/null
+# Boot out previous services to prevent launchd from immediately respawning rclone
+launchctl bootout gui/$(id -u)/com.user.rclone.sharepoint 2>/dev/null
+launchctl bootout gui/$(id -u)/com.user.rclone.gui 2>/dev/null
 
 # Terminate any existing manual instances and cleanly unmount
 killall rclone 2>/dev/null
 diskutil unmount force ~/SharePoint 2>/dev/null || umount -f ~/SharePoint 2>/dev/null
 
-# Load and start both background services
-launchctl load ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
-launchctl load ~/Library/LaunchAgents/com.user.rclone.gui.plist
+# Bootstrap and start both background services in the modern user GUI domain
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.gui.plist
 ```
-
-> [!TIP]
-> Unloading before terminating processes prevents a race condition where `launchd`'s `<key>KeepAlive</key><true/>` policy immediately revives `rclone` upon detecting process termination. Furthermore, running `launchctl unload` prior to `launchctl load` ensures idempotency if you update parameters in `.plist` later, avoiding `service already loaded` errors.
 
 The SharePoint drive will now automatically mount in Finder upon every login.
 
@@ -318,11 +315,11 @@ rm -rf ~/Library/Caches/rclone/vfs*
 Do not drag the mounted volume to the Trash. Unmount according to how the drive was launched:
 
 - **If running via Launchd background service (Section 4)**:
-  Unload the background services directly. This terminates Rclone cleanly and automatically unmounts the volume:
+  Boot out the background services directly. This terminates Rclone cleanly and automatically unmounts the volume:
 
   ```bash
-  launchctl unload ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist 2>/dev/null
-  launchctl unload ~/Library/LaunchAgents/com.user.rclone.gui.plist 2>/dev/null
+  launchctl bootout gui/$(id -u)/com.user.rclone.sharepoint 2>/dev/null
+  launchctl bootout gui/$(id -u)/com.user.rclone.gui 2>/dev/null
   ```
 
 - **If running manually via Terminal (Section 3)**:
