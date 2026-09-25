@@ -100,7 +100,8 @@ Run the following optimized mount command in the foreground to test connectivity
   --volname "SharePoint" \
   --rc \
   --rc-addr 127.0.0.1:5572 \
-  --rc-no-auth
+  --rc-no-auth \
+  --rc-allow-origin "*"
 ```
 
 > [!NOTE]
@@ -121,6 +122,7 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
 | `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
 | `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
+| `--rc-allow-origin "*"` | Enables Cross-Origin Resource Sharing (CORS), allowing the modern web GUI running on port `5580` to communicate with the mount API on port `5572`. |
 
 ### Real-Time Monitoring with Rclone Web
 
@@ -133,17 +135,17 @@ With the Remote Control (RC) API exposed locally on `127.0.0.1:5572`, you can mo
 
 #### Testing the Dashboard On-Demand
 
-The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** is bundled directly into latest Rclone releases.
+The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** (GUI v1.1.11+) is bundled directly into latest Rclone releases.
 
-During foreground testing in Step 2, you can test the dashboard by running this command in a separate Terminal tab:
+During foreground testing in Step 2, you can launch and test the dashboard simply by running this in a separate Terminal tab:
 
 ```bash
-/opt/local/bin/rclone gui --api-addr 127.0.0.1:5572 --no-auth
+rclone gui
 ```
 
-- **Browser-Decoupled**: Automatically opens your default web browser to a responsive, dark-mode dashboard connected directly to your active mount.
-- **Zero Process Conflicts**: Interacts purely over the local loopback HTTP API (`127.0.0.1:5572`) without attempting to manage or restart the underlying mount process.
-- **Permanent 24/7 Access**: For a permanent dashboard accessible at `<http://127.0.0.1:5580>` without running Terminal commands, proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd) where both the mount and GUI are automated via Launchd.
+- **Instant Browser Launch**: Automatically launches the embedded web interface and opens your default browser pre-authenticated.
+- **Zero Process Conflicts**: Operates cleanly alongside your foreground mount test.
+- **Permanent 24/7 Access**: For persistent, fixed-port (`5580`) monitoring that runs silently in the background and auto-starts upon login without manual Terminal commands, proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd).
 
 ---
 
@@ -200,6 +202,8 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>--rc-addr</string>
         <string>127.0.0.1:5572</string>
         <string>--rc-no-auth</string>
+        <string>--rc-allow-origin</string>
+        <string>*</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -236,7 +240,7 @@ cat << 'EOF' > ~/Library/LaunchAgents/com.user.rclone.gui.plist
         <string>--addr</string>
         <string>127.0.0.1:5580</string>
         <string>--api-addr</string>
-        <string>127.0.0.1:5572</string>
+        <string>127.0.0.1:5582</string>
         <string>--no-auth</string>
         <string>--no-open-browser</string>
     </array>
@@ -276,7 +280,12 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 
 > [!TIP]
 > **Bookmark Your 24/7 Live Dashboard**:  
-> Once loaded, open `<http://127.0.0.1:5580>` in Safari or Chrome and bookmark it. It gives you instant, 24/7 access to real-time transfer throughput, upload queues, and bandwidth metrics without needing to run any Terminal commands.
+> Once loaded, open and bookmark:  
+> `<http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/>`  
+>
+> Passing `?url=http://127.0.0.1:5572/` connects GUI v1.1.11 (`127.0.0.1:5580`) directly to your active mount's transfer engine (`127.0.0.1:5572`), giving you instant access to real-time bandwidth metrics, upload queues, and VFS cache stats without authentication prompts.
+>
+> *(Note for Brave / privacy browser users: If you see "Failed to fetch", disable Shields for `127.0.0.1` so the browser allows local cross-port API calls).*
 >
 > **If the drive icon does not appear on your Desktop or Finder sidebar**:  
 > FUSE-T mounts the drive as a network filesystem (NFS). Ensure macOS allows displaying connected network volumes:
@@ -294,7 +303,7 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 ### Manually Free All Local Space Immediately
 
 > [!WARNING]
-> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard (`http://127.0.0.1:5580`) to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
+> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard (`http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`) to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
 >
 > **Never clear this directory while uploads are in progress**, as files queued in the local buffer will be permanently erased before reaching the cloud, causing irrecoverable data loss or corrupted remote files.
 
@@ -327,7 +336,7 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
 
 ### Inspecting and Truncating Logs
 
-By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored 24/7 via the Web GUI at `<http://127.0.0.1:5580>`.
+By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored 24/7 via the Web GUI at `<http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/>`.
 
 To view live log output in Terminal:
 
