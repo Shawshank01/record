@@ -217,9 +217,9 @@ EOF
 ```
 
 > [!IMPORTANT]
-> **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes background services with an extremely minimal system `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`, as confirmed by `getconf PATH`), completely omitting `/opt/local/bin`. Defining an explicit `PATH` is essential so `launchd` can resolve the MacPorts runtime environment and system mount helpers. (FUSE-T's userspace NFS daemon itself resides in `/Library/Application Support/fuse-t/bin/go-nfsv4`).
 >
-> **Why `--rc-allow-origin` is locked to `http://127.0.0.1:5580`**: Restricting Cross-Origin Resource Sharing (CORS) specifically to the companion web GUI on port `5580` allows the dashboard to query mount metrics while strictly blocking external websites or arbitrary browser origins from querying your unauthenticated loopback API.
+> - **`PATH`**: Ensures auxiliary tools and user-space helper symlinks in `/usr/local/bin` can be resolved by background jobs.
+> - **`--rc-allow-origin`**: Restricts CORS access strictly to `http://127.0.0.1:5580`, preventing arbitrary browser origins from querying your unauthenticated loopback API.
 
 #### 2. Companion Web GUI Service (`com.user.rclone.gui.plist`)
 
