@@ -100,8 +100,7 @@ Run the following optimized mount command in the foreground to test connectivity
   --volname "SharePoint" \
   --rc \
   --rc-addr 127.0.0.1:5572 \
-  --rc-no-auth \
-  --rc-allow-origin "*"
+  --rc-no-auth
 ```
 
 > [!NOTE]
@@ -122,7 +121,6 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
 | `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
 | `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
-| `--rc-allow-origin "*"` | Enables Cross-Origin Resource Sharing (CORS), allowing the modern web GUI running on port `5580` to communicate with the mount API on port `5572`. |
 
 ### Real-Time Monitoring with Rclone Web
 
@@ -203,7 +201,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>127.0.0.1:5572</string>
         <string>--rc-no-auth</string>
         <string>--rc-allow-origin</string>
-        <string>*</string>
+        <string>http://127.0.0.1:5580</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -220,6 +218,8 @@ EOF
 
 > [!IMPORTANT]
 > **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes jobs with an extremely minimal `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`). FUSE-T depends on auxiliary helper tools located in `/usr/local/bin` to attach the virtual filesystem to macOS. Without explicit `PATH` definitions, Rclone's VFS cache and RC server will run and upload files in the background, but the filesystem mount will silently fail to register in Finder.
+>
+> **Why `--rc-allow-origin` is locked to `http://127.0.0.1:5580`**: Restricting Cross-Origin Resource Sharing (CORS) specifically to the companion web GUI on port `5580` allows the dashboard to query mount metrics while strictly blocking external websites or arbitrary browser origins from querying your unauthenticated loopback API.
 
 #### 2. Companion Web GUI Service (`com.user.rclone.gui.plist`)
 
