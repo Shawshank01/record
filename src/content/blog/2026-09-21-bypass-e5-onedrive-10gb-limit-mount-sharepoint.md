@@ -2,6 +2,7 @@
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
 description: "Bypass the Microsoft 365 Developer E5 10GB OneDrive limit and native macOS OneDrive sync bugs by mounting SharePoint as a virtual drive using Rclone and FUSE-T."
 pubDate: 2026-09-21
+updateDate: 2026-09-25
 tags:
   - macOS
   - MacPorts
@@ -98,14 +99,12 @@ Run the following optimized mount command in the foreground to test connectivity
   --buffer-size 64M \
   --volname "SharePoint" \
   --rc \
-  --rc-web-gui \
-  --rc-web-gui-no-open-browser \
   --rc-addr 127.0.0.1:5572 \
   --rc-no-auth
 ```
 
 > [!NOTE]
-> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the Web GUI initializes properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd) to set up persistent background startup.
+> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the filesystem mounts properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd) to set up persistent background startup.
 
 ### Key Parameters Explained
 
@@ -119,17 +118,34 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
 | `--volname "SharePoint"` | Displays the mount as an external drive named "SharePoint" on your desktop and Finder sidebar. |
-| `--rc` | Enables Rclone's Remote Control (RC) HTTP server for control and monitoring. |
-| `--rc-web-gui` | Serves the official Rclone Web GUI interface dashboard. |
-| `--rc-web-gui-no-open-browser` | Prevents the default browser from automatically launching when the mount command starts. |
-| `--rc-addr 127.0.0.1:5572` | Binds the Web GUI to `http://127.0.0.1:5572` locally. |
-| `--rc-no-auth` | Disables username and password authentication for local access on loopback (`127.0.0.1`). |
+| `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing desktop GUI clients and CLI tools to control and monitor the mount. |
+| `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
+| `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing local desktop and web GUIs to connect seamlessly. |
 
-> [!TIP]
-> Once mounted, open `<http://127.0.0.1:5572>` in your browser to access the Rclone Web GUI and monitor transfer speeds, active jobs, and bandwidth usage in real time.
->
-> - **First launch package download**: Rclone does not bundle Web GUI frontend assets into the binary. On first run with `--rc-web-gui`, Rclone will automatically fetch the web dashboard package (~5MB) from GitHub into its cache, taking a couple of seconds before the page is reachable.
-> - **Empty "Mounts" tab is normal**: The Web GUI's **Mounts** tab and `mount/listmounts` API only display mounts created dynamically via the Web UI itself. Standalone CLI/Launchd mounts are managed externally and intentionally do not appear in that list, but all active sync operations and transfer bandwidth are fully monitored on the **Dashboard**.
+### Real-Time Monitoring: Native Desktop App vs. Web GUI
+
+With the RC API exposed locally on port `5572`, you can monitor live transfer speeds, upload queues, and bandwidth metrics in real time.
+
+#### Recommended: Native Desktop App ([Rclone UI](https://github.com/rclone/rclone-ui))
+
+For macOS users, the recommended way to monitor and manage your mount is the native desktop client **[Rclone UI](https://github.com/rclone/rclone-ui)** (available as a `.dmg` from GitHub or at [rcloneui.com](https://rcloneui.com)):
+
+- **Native macOS Integration**: Built with Rust and Tauri for near-zero memory footprint, dark mode, menu bar status icon, and macOS system notifications when uploads complete or fail.
+- **Zero Configuration**: Automatically reads your existing `~/.config/rclone/rclone.conf`, so your `sp` SharePoint remote appears immediately.
+- **Dual-Pane File Manager**: Side-by-side local and cloud file browser with drag-and-drop support.
+- **Connect to Mount**: Connects directly to your running mount via `http://127.0.0.1:5572` without entering credentials.
+
+#### Alternative: Modern Web GUI ([Rclone Web](https://github.com/rclone/rclone-web))
+
+If you prefer not to install a desktop app and want a browser-based dashboard, use the modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** (built with React, Tailwind CSS, and Shadcn UI):
+
+- In modern Rclone (v1.74+), launch the modern web interface from Terminal whenever needed:
+
+  ```bash
+  /opt/local/bin/rclone gui --api-addr 127.0.0.1:5572 --no-auth
+  ```
+
+- It automatically opens your browser to a clean, responsive dashboard connected directly to your active SharePoint mount, with properly wrapped URLs and real-time speed charts.
 
 ---
 
@@ -181,8 +197,6 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>--volname</string>
         <string>SharePoint</string>
         <string>--rc</string>
-        <string>--rc-web-gui</string>
-        <string>--rc-web-gui-no-open-browser</string>
         <string>--rc-addr</string>
         <string>127.0.0.1:5572</string>
         <string>--rc-no-auth</string>
@@ -201,7 +215,7 @@ EOF
 ```
 
 > [!IMPORTANT]
-> **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes jobs with an extremely minimal `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`). FUSE-T depends on auxiliary helper tools located in `/usr/local/bin` to attach the virtual filesystem to macOS. Without explicit `PATH` definitions, Rclone's VFS cache and Web GUI will run and upload files in the background, but the filesystem mount will silently fail to register in Finder.
+> **Why `EnvironmentVariables` (`PATH`) is mandatory**: By default, macOS `launchd` executes jobs with an extremely minimal `$PATH` (`/usr/bin:/bin:/usr/sbin:/sbin`). FUSE-T depends on auxiliary helper tools located in `/usr/local/bin` to attach the virtual filesystem to macOS. Without explicit `PATH` definitions, Rclone's VFS cache and RC server will run and upload files in the background, but the filesystem mount will silently fail to register in Finder.
 
 ### Step 2: Activate the Service
 
@@ -239,7 +253,7 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 ### Manually Free All Local Space Immediately
 
 > [!WARNING]
-> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check the **Transfers** tab in the Web GUI (`http://127.0.0.1:5572`) to confirm there are no active tasks, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
+> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in **Rclone UI** or the Web GUI to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
 >
 > **Never clear this directory while uploads are in progress**, as files queued in the local buffer will be permanently erased before reaching the cloud, causing irrecoverable data loss or corrupted remote files.
 
@@ -271,7 +285,7 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
 
 ### Inspecting and Truncating Logs
 
-By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored via the Web GUI.
+By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored via Rclone UI or the Web GUI.
 
 To view live log output in Terminal:
 
