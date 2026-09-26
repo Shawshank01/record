@@ -2,7 +2,7 @@
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
 description: "Bypass the Microsoft 365 Developer E5 10GB OneDrive limit and native macOS OneDrive sync bugs by mounting SharePoint as a virtual drive using Rclone and FUSE-T."
 pubDate: 2026-09-21
-updateDate: 2026-09-25
+updateDate: 2026-09-26
 tags:
   - macOS
   - MacPorts
@@ -76,7 +76,7 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 Configuring the local Virtual File System (VFS) cache provides seamless on-demand access: files are listed in Finder at their full remote sizes, while local cache files are allocated sparsely so that only read or written byte ranges consume SSD storage. Cached chunks remain available for immediate re-access and are automatically evicted by age (`--vfs-cache-max-age 12h`) or size limits (`--vfs-cache-max-size 250G`).
 
 > [!NOTE]
-> This section is intended for manually testing whether the virtual drive mounts and operates correctly. If you prefer to configure Rclone directly as a persistent background service that starts automatically at login, you can verify your mount here and proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd).
+> This section is intended for manually testing whether the virtual drive mounts and operates correctly. If you prefer to configure Rclone directly as a persistent background service that starts automatically at login, you can verify your mount here and proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl).
 
 ### Step 1: Create the Local Mount Point
 
@@ -104,7 +104,7 @@ Run the following optimized mount command in the foreground to test connectivity
 ```
 
 > [!NOTE]
-> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the filesystem mounts properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd) to set up persistent background startup.
+> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the filesystem mounts properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl) to set up persistent background startup.
 
 ### Key Parameters Explained
 
@@ -126,14 +126,9 @@ Run the following optimized mount command in the foreground to test connectivity
 
 With the Remote Control (RC) API exposed locally on `127.0.0.1:5572`, you can monitor live transfer throughput, active upload queues, and bandwidth statistics without interrupting the mount.
 
-> [!NOTE]
-> **Why `launchd` + `rclone-web` is the default architecture**:  
-> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS `launchd` creates process collisions and launch conflicts.  
-> The decoupled architecture used here, **macOS `launchd` managing the daemon in the background, paired with `rclone-web` as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
-
 #### Testing the Dashboard On-Demand
 
-The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** (GUI v1.1.11+) is bundled directly into latest Rclone releases.
+The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** is bundled directly into latest Rclone releases.
 
 During foreground testing in Step 2, you can launch and test the dashboard simply by running this in a separate Terminal tab:
 
@@ -143,13 +138,18 @@ rclone gui
 
 - **Instant Browser Launch**: Automatically launches the embedded web interface and opens your default browser pre-authenticated.
 - **Zero Process Conflicts**: Operates cleanly alongside your foreground mount test.
-- **Permanent 24/7 Access**: For persistent, fixed-port (`5580`) monitoring that runs silently in the background and auto-starts upon login without manual Terminal commands, proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchd).
+- **Permanent 24/7 Access**: For persistent, fixed-port (`5580`) monitoring that runs silently in the background and auto-starts upon login without manual Terminal commands, proceed to Section 4.
 
 ---
 
-## 4. Configure Automated Startup at Login (macOS Launchd)
+## 4. Configure Automated Startup at Login (macOS Launchctl)
 
-Use macOS's native `launchd` service to maintain persistent, background mounting and live dashboard monitoring upon system login.
+Use macOS's native `launchctl` service to maintain persistent, background mounting and live dashboard monitoring upon system login.
+
+> [!NOTE]
+> **Why `launchctl` + `rclone-web` is the default architecture**:  
+> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS `launchctl` creates process collisions and launch conflicts.  
+> The decoupled architecture used here, **macOS `launchctl` managing the daemon in the background, paired with `rclone-web` as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
 
 ### Step 1: Generate the LaunchAgent Configurations
 
@@ -260,12 +260,7 @@ EOF
 ### Step 2: Activate the Services
 
 ```bash
-# Boot out previous services to prevent launchd from immediately respawning rclone
-launchctl bootout gui/$(id -u)/com.user.rclone.sharepoint 2>/dev/null
-launchctl bootout gui/$(id -u)/com.user.rclone.gui 2>/dev/null
-
-# Terminate any existing manual instances and cleanly unmount
-killall rclone 2>/dev/null
+# Ensure the target mount point is clean and unmounted
 diskutil unmount force ~/SharePoint 2>/dev/null || umount -f ~/SharePoint 2>/dev/null
 
 # Bootstrap and start both background services in the modern user GUI domain
@@ -278,11 +273,9 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 > [!TIP]
 > **Bookmark Your 24/7 Live Dashboard**:  
 > Once loaded, open and bookmark:  
-> `<http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/>`  
+> `http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`  
 >
-> Passing `?url=http://127.0.0.1:5572/` connects GUI v1.1.11 (`127.0.0.1:5580`) directly to your active mount's transfer engine (`127.0.0.1:5572`), giving you instant access to real-time bandwidth metrics, upload queues, and VFS cache stats without authentication prompts.
->
-> *(Note for Brave / privacy browser users: If you see "Failed to fetch", disable Shields for `127.0.0.1` so the browser allows local cross-port API calls).*
+> Passing `?url=http://127.0.0.1:5572/` connects GUI (`127.0.0.1:5580`) directly to your active mount's transfer engine (`127.0.0.1:5572`), giving you instant access to real-time bandwidth metrics, upload queues, and VFS cache stats without authentication prompts.
 >
 > **If the drive icon does not appear on your Desktop or Finder sidebar**:  
 > FUSE-T mounts the drive as a network filesystem (NFS). Ensure macOS allows displaying connected network volumes:
@@ -300,7 +293,7 @@ The SharePoint drive will now automatically mount in Finder upon every login.
 ### Manually Free All Local Space Immediately
 
 > [!WARNING]
-> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard (`http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`) to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
+> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
 >
 > **Never clear this directory while uploads are in progress**, as files queued in the local buffer will be permanently erased before reaching the cloud, causing irrecoverable data loss or corrupted remote files.
 
@@ -314,7 +307,7 @@ rm -rf ~/Library/Caches/rclone/vfs*
 
 Do not drag the mounted volume to the Trash. Unmount according to how the drive was launched:
 
-- **If running via Launchd background service (Section 4)**:
+- **If running via Launchctl background service (Section 4)**:
   Boot out the background services directly. This terminates Rclone cleanly and automatically unmounts the volume:
 
   ```bash
@@ -329,11 +322,11 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
   diskutil unmount ~/SharePoint 2>/dev/null || umount ~/SharePoint
   ```
 
-  *(If the process is busy or unresponsive, terminate it with `killall rclone`)*
+  *(If the mount point remains busy, force unmount with `diskutil unmount force ~/SharePoint`)*
 
 ### Inspecting and Truncating Logs
 
-By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year) while routine transfers are monitored 24/7 via the Web GUI at `<http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/>`.
+By default, Rclone runs at the `NOTICE` logging level, keeping log file growth negligible (typically under 1MB per year).
 
 To view live log output in Terminal:
 
