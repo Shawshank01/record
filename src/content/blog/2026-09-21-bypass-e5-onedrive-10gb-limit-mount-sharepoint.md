@@ -23,14 +23,33 @@ It completely bypasses native macOS OneDrive client issues, such as `fileprovide
 
 ## 1. Prerequisites and Installation
 
-Mounting a cloud drive as a local filesystem via Rclone on macOS requires a FUSE framework. FUSE-T is recommended because it runs purely in user space and eliminates the need to reboot into Recovery Mode or lower system security settings.
+Mounting a cloud drive as a local filesystem on macOS requires **MacPorts** (to install Rclone with mount capabilities) and **FUSE-T** (which provides a user-space FUSE implementation without requiring macOS kernel extensions or lowering system security settings).
 
-### Step 1: Install FUSE-T
+### Step 1: Install MacPorts
+
+If you do not already have MacPorts installed on your Mac:
+
+1. Install the Xcode Command Line Tools:
+
+   ```bash
+   xcode-select --install
+   ```
+
+2. Download and run the official package installer matching your macOS version from the [MacPorts Installation Guide](https://www.macports.org/install.php).
+3. Open a new Terminal window and verify that the `port` command is available:
+
+   ```bash
+   port version
+   ```
+
+### Step 2: Install FUSE-T
+
+Mounting a cloud drive as a local filesystem via Rclone on macOS requires a FUSE framework. FUSE-T is recommended because it runs purely in user space and eliminates the need to reboot into Recovery Mode or lower system security settings:
 
 1. Visit the [FUSE-T GitHub Releases](https://github.com/macos-fuse-t/fuse-t/releases) page.
 2. Download and run the latest `fuse-t-macos-installer-x.x.x.pkg` installer.
 
-### Step 2: Install Rclone with Mount Support via MacPorts
+### Step 3: Install Rclone with Mount Support via MacPorts
 
 The default `rclone` port in MacPorts does not include mount capabilities. Install it with the `+mount` variant:
 
@@ -88,7 +107,7 @@ Overlay the base SharePoint remote with Rclone's native client-side encryption:
    sp:vault
    ```
 
-   *(This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular files if needed).*
+   *This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular files if needed.*
 5. For `filename_encryption>`, enter `1` (**Standard**) to fully encrypt filenames into randomized alphanumeric strings.
 6. For `directory_name_encryption>`, enter `true` (or `1`) to encrypt directory names.
 7. For `password>`, enter `y` and type a strong master password. Confirm when prompted.
@@ -110,7 +129,7 @@ Configuring the local Virtual File System (VFS) cache provides seamless on-deman
 ### Step 1: Create the Local Mount Point
 
 ```bash
-mkdir -p ~/SharePointVault
+mkdir -p ~/SharePoint
 ```
 
 ### Step 2: Execute the Mount Command
@@ -118,7 +137,7 @@ mkdir -p ~/SharePointVault
 Run the following optimized mount command in the foreground to test connectivity and review terminal logs:
 
 ```bash
-/opt/local/bin/rclone mount sp-crypt: ~/SharePointVault \
+/opt/local/bin/rclone mount sp-crypt: ~/SharePoint \
   --vfs-cache-mode full \
   --vfs-cache-max-age 12h \
   --vfs-cache-max-size 50G \
@@ -127,7 +146,7 @@ Run the following optimized mount command in the foreground to test connectivity
   --vfs-write-back 5s \
   --onedrive-chunk-size 125M \
   --buffer-size 64M \
-  --volname "SharePointVault" \
+  --volname "SharePoint" \
   --rc \
   --rc-addr 127.0.0.1:5572 \
   --rc-no-auth
@@ -148,14 +167,14 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--vfs-write-back 5s` | Delays upload until 5 seconds after a file is closed, preventing lockups caused by simultaneous writing and uploading. |
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
-| `--volname "SharePointVault"` | Displays the mount as an external drive named "SharePointVault" on your desktop and Finder sidebar. |
+| `--volname "SharePoint"` | Displays the mount as an external drive named "SharePoint" on your desktop and Finder sidebar. |
 | `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
 | `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
 | `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
 
 > [!TIP]
 > **Transparent Client-Side Decryption**:  
-> Even though all data stored in the cloud is encrypted with AES-256 via `sp-crypt:`, the local mount at `~/SharePointVault` functions completely transparently. Finder displays normal filenames and directories, and files can be opened, edited, or streamed without any manual decryption steps.
+> Even though all data stored in the cloud is encrypted with AES-256 via `sp-crypt:`, the local mount at `~/SharePoint` functions completely transparently. Finder displays normal filenames and directories, and files can be opened, edited, or streamed without any manual decryption steps.
 
 ### Real-Time Monitoring with Rclone Web
 
@@ -193,7 +212,7 @@ Use macOS's native `launchctl` service to maintain persistent, background mounti
 Run the following command to create the directory structure and the primary virtual drive mount service:
 
 ```bash
-mkdir -p ~/SharePointVault
+mkdir -p ~/SharePoint
 mkdir -p ~/Library/LaunchAgents
 mkdir -p ~/.config/rclone
 
@@ -214,7 +233,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>/opt/local/bin/rclone</string>
         <string>mount</string>
         <string>sp-crypt:</string>
-        <string>$HOME/SharePointVault</string>
+        <string>$HOME/SharePoint</string>
         <string>--vfs-cache-mode</string>
         <string>full</string>
         <string>--vfs-cache-max-age</string>
@@ -232,7 +251,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>--buffer-size</string>
         <string>64M</string>
         <string>--volname</string>
-        <string>SharePointVault</string>
+        <string>SharePoint</string>
         <string>--rc</string>
         <string>--rc-addr</string>
         <string>127.0.0.1:5572</string>
@@ -308,14 +327,14 @@ EOF
 
 ```bash
 # Ensure the target mount point is clean and unmounted
-diskutil unmount force ~/SharePointVault 2>/dev/null || umount -f ~/SharePointVault 2>/dev/null
+diskutil unmount force ~/SharePoint 2>/dev/null || umount -f ~/SharePoint 2>/dev/null
 
 # Bootstrap and start both background services in the modern user GUI domain
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.gui.plist
 ```
 
-The SharePointVault drive will now automatically mount in Finder upon every login.
+The SharePoint drive will now automatically mount in Finder upon every login.
 
 > [!TIP]
 > **Bookmark Your 24/7 Live Dashboard**:  
@@ -331,7 +350,7 @@ The SharePointVault drive will now automatically mount in Finder upon every logi
 > 2. Under the **General** tab, check **Connected servers**.
 > 3. Under the **Sidebar** tab, ensure **Connected servers** is checked under **Locations**.
 >
-> *Alternatively, navigate to `~/SharePointVault` in Finder and drag the folder directly into your **Favorites** sidebar for one-click access.*
+> *Alternatively, navigate to `~/SharePoint` in Finder and drag the folder directly into your **Favorites** sidebar for one-click access.*
 
 ---
 
@@ -366,10 +385,10 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
   Unmount the mount point directly:
 
   ```bash
-  diskutil unmount ~/SharePointVault 2>/dev/null || umount ~/SharePointVault
+  diskutil unmount ~/SharePoint 2>/dev/null || umount ~/SharePoint
   ```
 
-  *(If the mount point remains busy, force unmount with `diskutil unmount force ~/SharePointVault`)*
+  *(If the mount point remains busy, force unmount with `diskutil unmount force ~/SharePoint`)*
 
 ### Inspecting and Truncating Logs
 
@@ -430,9 +449,9 @@ Understanding how macOS and Rclone handle these companion files resolves common 
    - **Copy via Terminal without Extended Attributes**:
 
      ```bash
-     cp -X "filename.jpg" ~/SharePointVault/
+     cp -X "filename.jpg" ~/SharePoint/
      # Or for directories:
-     cp -RX /path/to/folder ~/SharePointVault/
+     cp -RX /path/to/folder ~/SharePoint/
      ```
 
 3. **Purge Stuck Companion Files from Local Cache**:
