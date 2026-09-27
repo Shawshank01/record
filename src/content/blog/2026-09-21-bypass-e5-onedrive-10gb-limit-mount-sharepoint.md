@@ -1,6 +1,6 @@
 ---
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
-description: "Bypass the Microsoft 365 Developer E5 10GB OneDrive limit and native macOS OneDrive sync bugs by mounting SharePoint as a virtual drive using Rclone and FUSE-T."
+description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and native macOS sync bugs by mounting an encrypted SharePoint drive using Rclone Crypt and FUSE-T."
 pubDate: 2026-09-21
 updateDate: 2026-09-27
 tags:
@@ -13,9 +13,9 @@ tags:
   - SharePoint
 ---
 
-This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool.
+This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool with end-to-end client-side encryption via **Rclone Crypt**.
 
-It completely bypasses native macOS OneDrive client issues, such as `fileproviderd` circular deadlocks, 0% progress freezes, and high CPU spikes during large file transfers, by delivering a native-like virtual drive with automated space reclamation (on-demand caching) and high-throughput streaming uploads.
+It completely bypasses native macOS OneDrive client issues—such as `fileproviderd` circular deadlocks, 0% progress freezes, high CPU spikes, and SharePoint's metadata injection into Office documents—by delivering an encrypted native virtual drive with automated space reclamation (on-demand caching) and transparent on-the-fly decryption.
 
 ---
 
@@ -39,7 +39,11 @@ sudo port install rclone +mount
 
 ---
 
-## 2. Configure Rclone with SharePoint
+## 2. Configure Rclone with SharePoint and Crypt
+
+To ensure total data privacy, prevent SharePoint from corrupting Office files with injected metadata, and eliminate filename character restrictions, we configure a base SharePoint remote and overlay it with Rclone's native encryption layer (`crypt`).
+
+### Step 1: Authorize the SharePoint Base Remote (`sp`)
 
 Authorize and bind the dedicated SharePoint site using Rclone's built-in configuration wizard:
 
@@ -51,7 +55,7 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 
 2. **Configuration Prompts**:
 
-   - Enter `n` to create a new remote, and name it `sp` (or whatever you want).
+   - Enter `n` to create a new remote, and name it `sp`.
    - `Storage>`: Find `Microsoft OneDrive` and choose it (handles both OneDrive and SharePoint).
    - `client_id>` / `client_secret>`: Press Enter to leave blank (uses default application credentials).
    - `region>`: Enter `1` (Microsoft Cloud Global).
@@ -63,11 +67,34 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 
    - Return to the terminal after successful browser authorisation. When prompted for the storage type, enter `2` (SharePoint site).
    - Rclone will list all SharePoint sites in your tenant. Enter the corresponding numerical index for your target team site.
-   - Select the document library by entering the numerical index for `Documents` or just use the root one.
+   - Select the document library by entering the numerical index for `Documents` or the site root.
 
-4. **Save and Exit**:
+4. **Confirm the Base Remote**:
 
-   - Review the configuration summary, enter `y` to confirm, and enter `q` to quit the wizard.
+   - Review the configuration summary and enter `y` to confirm.
+
+### Step 2: Create the Encrypted Overlay Remote (`sp-crypt`)
+
+Overlay the base SharePoint remote with Rclone's native client-side encryption:
+
+1. In the `rclone config` menu, enter `n` to create a second remote.
+2. Name the remote `sp-crypt`.
+3. For `Storage>`, enter `crypt` (or select the number for **Encrypt/Decrypt a remote**).
+4. For `remote>`, specify the base remote and target storage folder:
+
+   ```text
+   sp:vault
+   ```
+
+   *(This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular files if needed).*
+5. For `filename_encryption>`, enter `1` (**Standard**) to fully encrypt filenames into randomized alphanumeric strings.
+6. For `directory_name_encryption>`, enter `true` (or `1`) to encrypt directory names.
+7. For `password>`, enter `y` and type a strong master password. Confirm when prompted.
+8. For `password2>` (salt), enter `y` and type a strong salt phrase (or enter `g` to generate a random one).
+9. Press Enter to skip advanced configuration, review the summary, enter `y` to save, and enter `q` to quit the wizard.
+
+> [!CAUTION]
+> **Backup Your Password and Salt**: Rclone uses standard, zero-knowledge encryption (XSalsa20 + Poly1305). There is no password recovery or reset mechanism. Store both your password and salt safely in a password manager. With these two keys, you can decrypt and access your files on any Mac, Linux, or Windows system.
 
 ---
 
@@ -89,11 +116,12 @@ mkdir -p ~/SharePoint
 Run the following optimized mount command in the foreground to test connectivity and review terminal logs:
 
 ```bash
-/opt/local/bin/rclone mount sp: ~/SharePoint \
+/opt/local/bin/rclone mount sp-crypt: ~/SharePoint \
   --vfs-cache-mode full \
   --vfs-cache-max-age 12h \
   --vfs-cache-max-size 50G \
   --vfs-cache-poll-interval 1m \
+  --poll-interval 1m \
   --vfs-write-back 5s \
   --onedrive-chunk-size 125M \
   --buffer-size 64M \
@@ -114,6 +142,7 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--vfs-cache-max-age 12h` | Automatic Space Freeing: Deletes the local SSD cache of any file that has not been read or written to for 12 hours, returning local disk consumption to zero. |
 | `--vfs-cache-max-size 50G` | Caps maximum local cache size. Cleans older cached chunks using an LRU (least-recently-used) policy if this threshold is reached. |
 | `--vfs-cache-poll-interval 1m` | Scans the local cache directory once per minute to evict expired or overflowing data promptly. |
+| `--poll-interval 1m` | Delta Polling: Queries Microsoft Graph every minute for changes, ensuring additions or deletions made in the cloud reflect in Finder promptly. |
 | `--vfs-write-back 5s` | Delays upload until 5 seconds after a file is closed, preventing lockups caused by simultaneous writing and uploading. |
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
@@ -121,6 +150,10 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
 | `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
 | `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
+
+> [!TIP]
+> **Transparent Client-Side Decryption**:  
+> Even though all data stored in the cloud is encrypted with AES-256 via `sp-crypt:`, the local mount at `~/SharePoint` functions completely transparently. Finder displays normal filenames and directories, and files can be opened, edited, or streamed without any manual decryption steps.
 
 ### Real-Time Monitoring with Rclone Web
 
@@ -178,7 +211,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
     <array>
         <string>/opt/local/bin/rclone</string>
         <string>mount</string>
-        <string>sp:</string>
+        <string>sp-crypt:</string>
         <string>$HOME/SharePoint</string>
         <string>--vfs-cache-mode</string>
         <string>full</string>
@@ -187,6 +220,8 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>--vfs-cache-max-size</string>
         <string>50G</string>
         <string>--vfs-cache-poll-interval</string>
+        <string>1m</string>
+        <string>--poll-interval</string>
         <string>1m</string>
         <string>--vfs-write-back</string>
         <string>5s</string>
@@ -206,7 +241,12 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
-    <true/>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
     <key>StandardOutPath</key>
     <string>$HOME/.config/rclone/sharepoint-mount.log</string>
     <key>StandardErrorPath</key>
@@ -247,7 +287,12 @@ cat << 'EOF' > ~/Library/LaunchAgents/com.user.rclone.gui.plist
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
-    <true/>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
     <key>StandardOutPath</key>
     <string>/dev/null</string>
     <key>StandardErrorPath</key>
@@ -399,12 +444,12 @@ Understanding how macOS and Rclone handle these companion files resolves common 
    find ~/Library/Caches/rclone/vfsMeta -name ".DS_Store" -delete 2>/dev/null
    ```
 
-4. **Purge Existing Companion Files from SharePoint**:
+4. **Purge Existing Companion Files from the Encrypted Vault**:
 
-   To mass-delete any lingering `._*` and `.DS_Store` files directly from SharePoint:
+   To mass-delete any lingering `._*` and `.DS_Store` files from your cloud storage:
 
    ```bash
-   /opt/local/bin/rclone delete sp: --include "._*" --include ".DS_Store"
+   /opt/local/bin/rclone delete sp-crypt: --include "._*" --include ".DS_Store"
    ```
 
 ### Preventing SharePoint Version Bloat (Critical)
@@ -428,28 +473,17 @@ You've finally broken free from OneDrive's sickeningly broken behaviour of Share
    Bypasses Apple's `fileproviderd` architecture completely, eliminating circular upload freezes, 0% progress bugs, and high CPU lockups during large transfers.
 3. **True Cloud Capacity**:  
    Unlocks the tenant-wide SharePoint storage pool, bypassing Microsoft's strict 10GB personal OneDrive quota on Developer E5 accounts.
+4. **Permanent Immunity to SharePoint Property Promotion**:  
+   SharePoint is an enterprise collaboration engine rather than transparent object storage. Normally, its parsers crack open Office documents (`.docx`, `.xlsx`, `.pptx`), PDFs, and markup files to inject tenant metadata and UUIDs—altering file sizes by a few hundred bytes and triggering endless Rclone upload loops (`corrupted on transfer: sizes differ`). Because `rclone crypt` encrypts all data and filenames into opaque ciphertext blobs before upload, SharePoint cannot parse, inspect, or modify any file. Bit-for-bit cryptographic integrity is 100% preserved.
+5. **Zero-Knowledge Cloud Privacy**:  
+   All files, directory structures, and filenames are encrypted client-side using XSalsa20 + Poly1305 (AES-256 equivalent). Microsoft, tenant administrators, or compromised cloud credentials can only see scrambled hashes, completely neutralizing cloud data-mining and file inspection.
+6. **Elimination of Filename Character Restrictions**:  
+   SharePoint strictly rejects characters like `" * : < > ? / \ |`, leading/trailing spaces, periods at the end of filenames, and reserved Windows names (`CON`, `PRN`, `AUX`). Because `rclone crypt` encrypts all filenames into standard alphanumeric hashes, every valid macOS filename is supported without errors.
 
-However, if you want to make your life a lot easier, pay close attention to this:
+However, to ensure optimal performance, keep this in mind:
 
 1. **High Overhead on Thousands of Small Files**:  
    Uploading a single 10GB video requires one continuous stream that saturates available network bandwidth. In contrast, copying a directory containing 30,000 fragmented files (such as `node_modules` or unpacked game assets) requires tens of thousands of individual REST API calls to Microsoft Graph. This creates severe network round-trip latency and quickly triggers **HTTP 429 (Too Many Requests)** rate limiting from Microsoft.
-
-2. **SharePoint Property Promotion (The Metadata Injection Trap)**:  
-   SharePoint is an enterprise document collaboration engine rather than transparent object storage. When certain files are uploaded, SharePoint's internal parsers crack open the file and inject tenant metadata, schema properties, UUIDs, or security wrapper headers. This alters the file's binary contents and changes its size by a few hundred bytes. Rclone immediately flags this discrepancy as `corrupted on transfer: sizes differ` and endlessly retries uploading them at 100% every minute.
-
-   **Formats altered by SharePoint include**:
-   - **Microsoft Office Documents**: `.docx`, `.xlsx`, `.pptx`, `.vsdx` (Word, Excel, PowerPoint, Visio)
-   - **Macro & Template Files**: `.docm`, `.xlsm`, `.pptm`, `.dotx`
-   - **Web & Markup Files**: `.html`, `.htm`, `.aspx`, `.shtml` (Game manuals, offline documentation, web rips)
-   - **Outlook Message Files**: `.msg`, `.eml`
-   - **Tagged Images**: `.tif`, `.tiff`
-   - **Internet Shortcuts**: `.url`, `.website`
-   - **PDFs**: `.pdf` (in tenants with Microsoft Purview sensitivity labeling or metadata policies enabled)
-
-   > [!NOTE]
-   > Standard images (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`), video/audio media (`.mkv`, `.mp4`, `.mov`, `.flac`, `.mp3`), disc images (`.iso`, `.dmg`), and compressed archives (`.zip`, `.7z`, `.tar`) have no SharePoint document parsers attached to them. They are stored bit-for-bit identical with zero modification.
-   >
-   > **A Note on `.heic` and iOS Live Photos**: Standard `.heic` photos uploaded from macOS or Rclone are completely safe and stored byte-for-byte unmodified. The "Sizes differ" error mentioned in the official Rclone documentation applies **strictly to Live Photos uploaded using the OneDrive iOS mobile app**, where Microsoft bundles the still image and video clip into a single container but only returns the extracted still frame upon download via the API. Standard `.heic` files uploaded directly from your Mac are unaffected.
 
 ### The Golden Rule: Large Files Directly, Small Files Zipped
 
