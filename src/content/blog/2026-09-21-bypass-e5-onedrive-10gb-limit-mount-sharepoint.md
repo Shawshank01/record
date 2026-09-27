@@ -2,7 +2,7 @@
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
 description: "Bypass the Microsoft 365 Developer E5 10GB OneDrive limit and native macOS OneDrive sync bugs by mounting SharePoint as a virtual drive using Rclone and FUSE-T."
 pubDate: 2026-09-21
-updateDate: 2026-09-26
+updateDate: 2026-09-27
 tags:
   - macOS
   - MacPorts
@@ -73,7 +73,7 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 
 ## 3. Manual Mount & Connectivity Test (Optional)
 
-Configuring the local Virtual File System (VFS) cache provides seamless on-demand access: files are listed in Finder at their full remote sizes, while local cache files are allocated sparsely so that only read or written byte ranges consume SSD storage. Cached chunks remain available for immediate re-access and are automatically evicted by age (`--vfs-cache-max-age 12h`) or size limits (`--vfs-cache-max-size 250G`).
+Configuring the local Virtual File System (VFS) cache provides seamless on-demand access: files are listed in Finder at their full remote sizes, while local cache files are allocated sparsely so that only read or written byte ranges consume SSD storage. Cached chunks remain available for immediate re-access and are automatically evicted by age (`--vfs-cache-max-age 12h`) or size limits (`--vfs-cache-max-size 50G`).
 
 > [!NOTE]
 > This section is intended for manually testing whether the virtual drive mounts and operates correctly. If you prefer to configure Rclone directly as a persistent background service that starts automatically at login, you can verify your mount here and proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl).
@@ -92,7 +92,7 @@ Run the following optimized mount command in the foreground to test connectivity
 /opt/local/bin/rclone mount sp: ~/SharePoint \
   --vfs-cache-mode full \
   --vfs-cache-max-age 12h \
-  --vfs-cache-max-size 250G \
+  --vfs-cache-max-size 50G \
   --vfs-cache-poll-interval 1m \
   --vfs-write-back 5s \
   --onedrive-chunk-size 125M \
@@ -112,7 +112,7 @@ Run the following optimized mount command in the foreground to test connectivity
 | :--- | :--- |
 | `--vfs-cache-mode full` | Enables a comprehensive cache layer. Allows sequential and random access (seeking) on large videos without data corruption. |
 | `--vfs-cache-max-age 12h` | Automatic Space Freeing: Deletes the local SSD cache of any file that has not been read or written to for 12 hours, returning local disk consumption to zero. |
-| `--vfs-cache-max-size 250G` | Caps maximum local cache size. Cleans older cached chunks using an LRU (least-recently-used) policy if this threshold is reached. |
+| `--vfs-cache-max-size 50G` | Caps maximum local cache size. Cleans older cached chunks using an LRU (least-recently-used) policy if this threshold is reached. |
 | `--vfs-cache-poll-interval 1m` | Scans the local cache directory once per minute to evict expired or overflowing data promptly. |
 | `--vfs-write-back 5s` | Delays upload until 5 seconds after a file is closed, preventing lockups caused by simultaneous writing and uploading. |
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
@@ -185,7 +185,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>--vfs-cache-max-age</string>
         <string>12h</string>
         <string>--vfs-cache-max-size</string>
-        <string>250G</string>
+        <string>50G</string>
         <string>--vfs-cache-poll-interval</string>
         <string>1m</string>
         <string>--vfs-write-back</string>
