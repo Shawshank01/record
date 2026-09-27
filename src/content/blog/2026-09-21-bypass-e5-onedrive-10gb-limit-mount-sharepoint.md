@@ -110,8 +110,14 @@ Overlay the base SharePoint remote with Rclone's native client-side encryption:
    *This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular files if needed.*
 5. For `filename_encryption>`, enter `1` (**Standard**) to fully encrypt filenames into randomized alphanumeric strings.
 6. For `directory_name_encryption>`, enter `true` (or `1`) to encrypt directory names.
-7. For `password>`, enter `y` and type a strong master password. Confirm when prompted.
-8. For `password2>` (salt), enter `y` and type a strong salt phrase (or enter `g` to generate a random one).
+7. For `password>`, enter `g` to **generate a random password** (recommended over a manual password for maximum cryptographic security):
+   - When prompted for `Password strength in bits`, enter `128` or `1024`.
+   - Enter `y` to confirm the generated password, and immediately save it in your password manager.
+   - *(Alternatively, enter `y` if you prefer to type in your own passphrase).*
+8. For `password2>` (salt), enter `g` to generate a random salt phrase as well:
+   - When prompted for bits, enter `128` or `1024`.
+   - Enter `y` to confirm, and save the salt alongside your password in your password manager.
+   - *(Alternatively, enter `y` to type a custom salt, or `n` to skip, though adding a salt is strongly recommended).*
 9. Press Enter to skip advanced configuration, review the summary, enter `y` to save, and enter `q` to quit the wizard.
 
 > [!CAUTION]
