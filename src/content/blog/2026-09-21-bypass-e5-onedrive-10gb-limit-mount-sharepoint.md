@@ -14,6 +14,7 @@ tags:
 ---
 
 ![jxl hint](/2026-09-21/sharepoint-storage.jxl)
+[SharePoint Storage](https://admin.cloud.microsoft/?#/reportsUsage/SharePointStorage)
 
 This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool with a **Dual-Mount Architecture**:
 
@@ -26,7 +27,27 @@ It completely bypasses native macOS OneDrive client issues, such as `fileprovide
 
 ## 0. Create a Communication Site in SharePoint
 
+Before installing tools and configuring Rclone, you must create a dedicated **Communication site** in your Microsoft 365 tenant to host your files.
+
 ![jxl hint](/2026-09-21/communication-site-sharepoint.jxl)
+
+### Why a Communication Site is Essential
+
+Microsoft SharePoint treats Team sites and Communication sites fundamentally differently when it comes to document versioning:
+
+- **Team Sites (Do Not Use)**: Team sites are tied to Microsoft 365 Groups and Microsoft Teams. Microsoft mandates document version history on Team sites, enforcing a strict minimum of 100 to 500 major versions that **cannot be disabled**. If you store large files (such as 20GB–50GB video files, disk images, or encrypted vault chunks) in a Team site, any minor file modification or re-upload causes SharePoint to duplicate the entire multi-gigabyte payload into version history, silently exhausting your 1.24TB tenant storage pool within days.
+- **Communication Sites (Essential)**: Only standalone Communication sites allow administrators to set Document Version History to **"No versioning"** in the classic library settings. Disabling versioning ensures that overwriting or modifying a file consumes exactly the size of the current file with zero hidden storage bloat.
+
+### Creating the Site
+
+1. Sign in to your Microsoft 365 portal and navigate to SharePoint (`https://<tenant>.sharepoint.com/_layouts/15/sharepoint.aspx/build`).
+2. Click **Site** in the top navigation bar.
+3. Select **Communication site** (do *not* choose Team site).
+4. Choose the **Blank** template, enter a site name (such as `Storage` or `Drive`), and finish the creation wizard.
+5. In [Section 2](#2-configure-rclone-with-sharepoint-and-crypt), select this newly created Communication site when Rclone prompts you to bind your SharePoint remote.
+
+> [!IMPORTANT]
+> Once your Communication site is created, make sure to disable version history on its default document library before uploading large files. Follow the step-by-step instructions in [Preventing SharePoint Version Bloat (Critical)](#preventing-sharepoint-version-bloat-critical) in Section 5.
 
 ---
 
@@ -96,8 +117,8 @@ Authorize and bind the dedicated SharePoint site using Rclone's built-in configu
 3. **Select the Target SharePoint Site**:
 
    - Return to the terminal after successful browser authorisation. When prompted for the storage type, enter `2` (SharePoint site).
-   - Rclone will list all SharePoint sites in your tenant. Enter the corresponding numerical index for your target team site.
-   - Select the document library by entering the numerical index for `Documents` or the site root.
+   - Rclone will list all SharePoint sites in your tenant. Enter the corresponding numerical index for the communication site created in [Section 0](#0-create-a-communication-site-in-sharepoint).
+   - Select the document library by entering the numerical index.
 
 4. **Confirm the Base Remote**:
 
@@ -519,9 +540,9 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 ### Preventing SharePoint Version Bloat (Critical)
 
 > [!WARNING]
-> To prevent minor file modifications or metadata changes on large videos from consuming the 1.24TB pool through version history, adjust document versioning settings:
+> To prevent minor file modifications or metadata changes on large videos from consuming the 1.24TB pool through version history, adjust document versioning settings on your Communication site *(as noted in [Section 0](#0-create-a-communication-site-in-sharepoint), "No versioning" is only available on Communication sites)*:
 
-1. Navigate to your SharePoint site document library in a web browser.
+1. Navigate to your Communication site document library in a web browser.
 2. Click the gear icon (**Settings**) → **Library settings** → **More library settings** → **Versioning settings**.
 3. Under **Document Version History**, select **No versioning** and click **OK** at the bottom.
 
