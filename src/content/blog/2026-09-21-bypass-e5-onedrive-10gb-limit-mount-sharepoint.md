@@ -350,6 +350,23 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepoi
 
 Both the **SharePoint** and **SharePointVault** drives will now automatically mount in Finder upon every login.
 
+> [!IMPORTANT]
+> Because `~/SharePoint` mounts the root of your SharePoint document library, the `vault/` folder will appear inside `~/SharePoint` containing encrypted hashes.
+> **Do not edit, rename, or write files directly into `~/SharePoint/vault`**. Always interact with your encrypted files through the dedicated `~/SharePointVault` mount point.
+
+The **Dual-Mount Architecture**:
+
+```text
+Local Mac (Finder):
+├── ~/SharePoint         ──(FUSE-T)──>  sp:        (Unencrypted: Videos, Media, Public files)
+└── ~/SharePointVault    ──(FUSE-T)──>  sp-crypt:  (Encrypted: Private documents & backups)
+
+Microsoft SharePoint (Cloud):
+├── Videos/              (Plain unencrypted files — downloadable anywhere)
+├── Documents/           (Plain unencrypted files)
+└── vault/               (Encrypted ciphertext blobs — managed by sp-crypt)
+```
+
 > [!TIP]
 > **If the drive icons do not appear on your Desktop or Finder sidebar**:
 > FUSE-T mounts the drives as network filesystems (NFS). Ensure macOS allows displaying connected network volumes:
