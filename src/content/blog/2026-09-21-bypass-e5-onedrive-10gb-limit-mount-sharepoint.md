@@ -156,10 +156,7 @@ Run the following optimised mount command in the foreground to test connectivity
   --vfs-write-back 5s \
   --onedrive-chunk-size 125M \
   --buffer-size 64M \
-  --volname "SharePoint" \
-  --rc \
-  --rc-addr 127.0.0.1:5572 \
-  --rc-no-auth
+  --volname "SharePoint"
 ```
 
 *To test mounting the encrypted vault instead, substitute `sp:` with `sp-crypt:`, `~/SharePoint` with `~/SharePointVault`, and `--volname "SharePoint"` with `--volname "SharePointVault"`.*
@@ -180,42 +177,31 @@ Run the following optimised mount command in the foreground to test connectivity
 | `--onedrive-chunk-size 125M` | Increases upload chunk size to 125MB (a multiple of 320KiB required by Microsoft's API), optimizing throughput on high-speed internet. |
 | `--buffer-size 64M` | Allocates a 64MB read-ahead buffer in RAM for each open file to absorb network latency fluctuations during video playback. |
 | `--volname "SharePoint"` | Displays the mount as an external drive named "SharePoint" on your desktop and Finder sidebar. |
-| `--rc` | Enables Rclone's Remote Control (RC) HTTP server, allowing web dashboards and CLI tools to control and monitor the mount. |
-| `--rc-addr 127.0.0.1:5572` | Binds the RC API server to `http://127.0.0.1:5572` locally. |
-| `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
 
 > [!TIP]
 > **Transparent Decryption & Universal Streaming Access**:
 > In `~/SharePointVault`, Rclone decrypts files dynamically in RAM-presenting normal filenames and data with zero manual steps. In `~/SharePoint`, files are uploaded unencrypted, allowing you to stream or download large videos on any device (such as mobile phones, smart TVs, or web browsers) without needing Rclone or encryption keys.
 
-### Real-Time Monitoring with Rclone Web
+### Exploring Remotes with Rclone Web (Optional)
 
-With the Remote Control (RC) API exposed locally on `127.0.0.1:5572`, you can monitor live transfer throughput, active upload queues, and bandwidth statistics without interrupting the mount.
-
-#### Testing the Dashboard On-Demand
-
-The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** is bundled directly into latest Rclone releases.
-
-During foreground testing in Step 2, you can launch and test the dashboard simply by running this in a separate Terminal tab:
+The modern official web interface **[Rclone Web](https://github.com/rclone/rclone-web)** is bundled directly into latest Rclone releases. If you ever want to visually inspect your configured cloud remotes (`sp` and `sp-crypt`) or explore cloud files in a web browser without mounting:
 
 ```bash
 rclone gui
 ```
 
-- **Instant Browser Launch**: Automatically launches the embedded web interface and opens your default browser pre-authenticated.
-- **Zero Process Conflicts**: Operates cleanly alongside your foreground mount test.
-- **Permanent 24/7 Access**: For persistent, fixed-port (`5580`) monitoring that runs silently in the background and auto-starts upon login without manual Terminal commands, proceed to Section 4.
+- **Instant Browser Launch**: Automatically starts a temporary web GUI server and opens your default browser pre-authenticated.
+- **On-Demand Inspection**: When you are finished exploring, press `Ctrl + C` in Terminal to terminate the web GUI.
 
 ---
 
 ## 4. Configure Automated Startup at Login (macOS Launchctl)
 
-Use macOS's native `launchctl` service to maintain persistent, background mounting and live dashboard monitoring upon system login.
+Use macOS's native `launchctl` service to maintain persistent, background mounting for both virtual drives upon system login.
 
 > [!NOTE]
-> **Why `launchctl` + `rclone-web` is the default architecture**:
-> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS launchctl creates process collisions and launch conflicts.
-> The decoupled architecture used here, **macOS launchctl managing the daemon in the background, paired with rclone-web as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
+> **Why `launchctl` is the ideal service manager on macOS**:
+> macOS `launchctl` manages both virtual drives as native user daemons. It monitors both processes silently, consumes minimal memory, and automatically relaunches a mount if an unexpected network disruption occurs.
 
 ### Step 1: Generate the LaunchAgent Configurations
 
@@ -268,12 +254,6 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
         <string>64M</string>
         <string>--volname</string>
         <string>SharePoint</string>
-        <string>--rc</string>
-        <string>--rc-addr</string>
-        <string>127.0.0.1:5572</string>
-        <string>--rc-no-auth</string>
-        <string>--rc-allow-origin</string>
-        <string>http://127.0.0.1:5580</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -334,12 +314,6 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepointvault.plist
         <string>64M</string>
         <string>--volname</string>
         <string>SharePointVault</string>
-        <string>--rc</string>
-        <string>--rc-addr</string>
-        <string>127.0.0.1:5574</string>
-        <string>--rc-no-auth</string>
-        <string>--rc-allow-origin</string>
-        <string>http://127.0.0.1:5580</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -360,51 +334,7 @@ EOF
 ```
 
 > [!IMPORTANT]
->
-> - **`PATH`**: Ensures auxiliary tools and user-space helper symlinks in `/usr/local/bin` can be resolved by background jobs.
-> - **Port Allocation**: The unencrypted mount API listens on port `5572`, while the vault mount API listens on port `5574` to prevent port collisions.
-> - **`--rc-allow-origin`**: Restricts CORS access strictly to `http://127.0.0.1:5580`, preventing arbitrary browser origins from querying your unauthenticated loopback APIs.
-
-#### 3. Companion Web GUI Service (`com.user.rclone.gui.plist`)
-
-Run the following command to create the companion web dashboard service:
-
-```bash
-cat << 'EOF' > ~/Library/LaunchAgents/com.user.rclone.gui.plist
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.user.rclone.gui</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/opt/local/bin/rclone</string>
-        <string>gui</string>
-        <string>--addr</string>
-        <string>127.0.0.1:5580</string>
-        <string>--api-addr</string>
-        <string>127.0.0.1:5582</string>
-        <string>--no-auth</string>
-        <string>--no-open-browser</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <dict>
-        <key>SuccessfulExit</key>
-        <false/>
-    </dict>
-    <key>ThrottleInterval</key>
-    <integer>10</integer>
-    <key>StandardOutPath</key>
-    <string>/dev/null</string>
-    <key>StandardErrorPath</key>
-    <string>/dev/null</string>
-</dict>
-</plist>
-EOF
-```
+> **`PATH`**: Ensures auxiliary tools and user-space helper symlinks in `/usr/local/bin` can be resolved by background jobs.
 
 ### Step 2: Activate the Services
 
@@ -416,35 +346,11 @@ diskutil unmount force ~/SharePointVault 2>/dev/null || umount -f ~/SharePointVa
 # Bootstrap and start background services in the modern user GUI domain
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepointvault.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.gui.plist
 ```
 
 Both the **SharePoint** and **SharePointVault** drives will now automatically mount in Finder upon every login.
 
-> [!IMPORTANT]
-> Because `~/SharePoint` mounts the root of your SharePoint document library, the `vault/` folder will appear inside `~/SharePoint` containing encrypted hashes.
-> **Do not edit, rename, or write files directly into `~/SharePoint/vault`**. Always interact with your encrypted files through the dedicated `~/SharePointVault` mount point.
-
-The **Dual-Mount Architecture**:
-
-```text
-Local Mac (Finder):
-├── ~/SharePoint         ──(FUSE-T)──>  sp:        (Unencrypted: Videos, Media, Public files)
-└── ~/SharePointVault    ──(FUSE-T)──>  sp-crypt:  (Encrypted: Private documents & backups)
-
-Microsoft SharePoint (Cloud):
-├── Videos/              (Plain unencrypted files — downloadable anywhere)
-├── Documents/           (Plain unencrypted files)
-└── vault/               (Encrypted ciphertext blobs — managed by sp-crypt)
-```
-
 > [!TIP]
-> **Bookmark Your 24/7 Live Dashboards**:
-> Once loaded, you can monitor transfer statistics for either mount:
->
-> - **SharePoint (Media)**: `http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`
-> - **SharePointVault (Encrypted)**: `http://127.0.0.1:5580/login?url=http://127.0.0.1:5574/`
->
 > **If the drive icons do not appear on your Desktop or Finder sidebar**:
 > FUSE-T mounts the drives as network filesystems (NFS). Ensure macOS allows displaying connected network volumes:
 >
@@ -461,7 +367,7 @@ Microsoft SharePoint (Cloud):
 ### Manually Free All Local Space Immediately
 
 > [!WARNING]
-> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can check active tasks in the Web GUI dashboard to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
+> **Data Loss Risk**: Before running this command, verify that all files have finished uploading to the cloud. You can monitor log files (`tail -f ~/.config/rclone/sharepoint-mount.log`) to confirm transfer queues are empty, or check Activity Monitor to ensure `rclone` network egress has dropped to zero.
 >
 > **Never clear this directory while uploads are in progress**, as files queued in the local buffer will be permanently erased before reaching the cloud, causing irrecoverable data loss or corrupted remote files.
 
@@ -481,7 +387,6 @@ Do not drag the mounted volume to the Trash. Unmount according to how the drive 
   ```bash
   launchctl bootout gui/$(id -u)/com.user.rclone.sharepoint 2>/dev/null
   launchctl bootout gui/$(id -u)/com.user.rclone.sharepointvault 2>/dev/null
-  launchctl bootout gui/$(id -u)/com.user.rclone.gui 2>/dev/null
   ```
 
 - **If running manually via Terminal (Section 3)**:
