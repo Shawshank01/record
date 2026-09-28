@@ -24,6 +24,12 @@ It completely bypasses native macOS OneDrive client issues, such as `fileprovide
 
 ---
 
+## 0. Create a Communication Site in SharePoint
+
+![jxl hint](/2026-09-21/communication-site-sharepoint.jxl)
+
+---
+
 ## 1. Prerequisites and Installation
 
 Mounting a cloud drive as a local filesystem on macOS requires **MacPorts** (to install Rclone with mount capabilities) and **FUSE-T** (which provides a user-space FUSE implementation without requiring macOS kernel extensions or lowering system security settings).
@@ -518,6 +524,8 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 1. Navigate to your SharePoint site document library in a web browser.
 2. Click the gear icon (**Settings**) → **Library settings** → **More library settings** → **Versioning settings**.
 3. Under **Document Version History**, select **No versioning** and click **OK** at the bottom.
+
+![jxl hint](/2026-09-21/versioning-settings.jxl)
 
 ---
 
