@@ -1,8 +1,8 @@
 ---
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
-description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and native macOS sync bugs by mounting an encrypted SharePoint drive using Rclone Crypt and FUSE-T."
+description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and native macOS sync bugs by configuring a dual-mount unencrypted media drive and encrypted vault with Rclone and FUSE-T."
 pubDate: 2026-09-21
-updateDate: 2026-09-27
+updateDate: 2026-09-28
 tags:
   - macOS
   - MacPorts
@@ -13,11 +13,14 @@ tags:
   - SharePoint
 ---
 
-This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool with end-to-end client-side encryption via **Rclone Crypt**.
-
 ![jxl hint](/2026-09-21/sharepoint-storage.jxl)
 
-It completely bypasses native macOS OneDrive client issues, such as `fileproviderd` circular deadlocks, 0% progress freezes, high CPU spikes, and SharePoint's metadata injection into Office documents, by delivering an encrypted native virtual drive with automated space reclamation (on-demand caching) and transparent on-the-fly decryption.
+This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool with a **Dual-Mount Architecture**:
+
+- **`~/SharePoint` (Raw Mount)**: Dedicated to large video files and general media. Files remain unencrypted in the cloud so you can stream or download them anywhere (SharePoint web portal, OneDrive mobile app, Infuse or VLC on Apple TV) without requiring Rclone or decryption keys.
+- **`~/SharePointVault` (Encrypted Overlay Mount)**: Dedicated to sensitive records, personal documents, and private backups. Uses client-side zero-knowledge encryption via **Rclone Crypt** to protect data from cloud inspection and eliminate SharePoint metadata alteration loops.
+
+It completely bypasses native macOS OneDrive client issues, such as `fileproviderd` circular deadlocks and 0% progress freezes, delivering native virtual drives with automated space reclamation (on-demand caching) and transparent on-the-fly decryption.
 
 ---
 
@@ -107,7 +110,8 @@ Overlay the base SharePoint remote with Rclone's native client-side encryption:
    sp:vault
    ```
 
-   *This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular files if needed.*
+   *This stores all encrypted blobs inside a dedicated `vault` folder in your SharePoint document library, leaving the rest of your SharePoint available for regular, unencrypted media files.*
+
 5. For `filename_encryption>`, enter `1` (**Standard**) to fully encrypt filenames into randomized alphanumeric strings.
 6. For `directory_name_encryption>`, enter `true` (or `1`) to encrypt directory names.
 7. For `password>`, enter `g` to **generate a random password** (recommended over a manual password for maximum cryptographic security):
@@ -132,18 +136,18 @@ Configuring the local Virtual File System (VFS) cache provides seamless on-deman
 > [!NOTE]
 > This section is intended for manually testing whether the virtual drive mounts and operates correctly. If you prefer to configure Rclone directly as a persistent background service that starts automatically at login, you can verify your mount here and proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl).
 
-### Step 1: Create the Local Mount Point
+### Step 1: Create the Local Mount Points
 
 ```bash
-mkdir -p ~/SharePoint
+mkdir -p ~/SharePoint ~/SharePointVault
 ```
 
 ### Step 2: Execute the Mount Command
 
-Run the following optimized mount command in the foreground to test connectivity and review terminal logs:
+Run the following optimised mount command in the foreground to test connectivity and review terminal logs for the unencrypted media mount:
 
 ```bash
-/opt/local/bin/rclone mount sp-crypt: ~/SharePoint \
+/opt/local/bin/rclone mount sp: ~/SharePoint \
   --vfs-cache-mode full \
   --vfs-cache-max-age 12h \
   --vfs-cache-max-size 50G \
@@ -158,8 +162,10 @@ Run the following optimized mount command in the foreground to test connectivity
   --rc-no-auth
 ```
 
+*To test mounting the encrypted vault instead, substitute `sp:` with `sp-crypt:`, `~/SharePoint` with `~/SharePointVault`, and `--volname "SharePoint"` with `--volname "SharePointVault"`.*
+
 > [!NOTE]
-> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the filesystem mounts properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl) to set up persistent background startup.
+> Running in the foreground (without `--daemon`) lets you inspect real-time log output, verify connectivity, and confirm that the filesystem mounts properly. Once you have confirmed that the mount functions as expected, press `Ctrl + C` in Terminal to cleanly terminate the test run, then proceed to [Section 4](#4-configure-automated-startup-at-login-macos-launchctl) to set up persistent background startup for both drives.
 
 ### Key Parameters Explained
 
@@ -179,8 +185,8 @@ Run the following optimized mount command in the foreground to test connectivity
 | `--rc-no-auth` | Disables authentication for loopback access (`127.0.0.1`), allowing the local web dashboard to connect seamlessly. |
 
 > [!TIP]
-> **Transparent Client-Side Decryption**:  
-> Even though all data stored in the cloud is encrypted with AES-256 via `sp-crypt:`, the local mount at `~/SharePoint` functions completely transparently. Finder displays normal filenames and directories, and files can be opened, edited, or streamed without any manual decryption steps.
+> **Transparent Decryption & Universal Streaming Access**:
+> In `~/SharePointVault`, Rclone decrypts files dynamically in RAM-presenting normal filenames and data with zero manual steps. In `~/SharePoint`, files are uploaded unencrypted, allowing you to stream or download large videos on any device (such as mobile phones, smart TVs, or web browsers) without needing Rclone or encryption keys.
 
 ### Real-Time Monitoring with Rclone Web
 
@@ -207,21 +213,25 @@ rclone gui
 Use macOS's native `launchctl` service to maintain persistent, background mounting and live dashboard monitoring upon system login.
 
 > [!NOTE]
-> **Why `launchctl` + `rclone-web` is the default architecture**:  
-> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS `launchctl` creates process collisions and launch conflicts.  
-> The decoupled architecture used here, **macOS `launchctl` managing the daemon in the background, paired with `rclone-web` as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
+> **Why `launchctl` + `rclone-web` is the default architecture**:
+> Standalone desktop GUI wrappers are designed to spawn and supervise their own internal Rclone processes. Running them alongside macOS launchctl creates process collisions and launch conflicts.
+> The decoupled architecture used here, **macOS launchctl managing the daemon in the background, paired with rclone-web as a passive web dashboard**, provides seamless, uninterrupted startup upon login while letting you inspect metrics on demand.
 
 ### Step 1: Generate the LaunchAgent Configurations
 
-#### 1. Filesystem Mount Service (`com.user.rclone.sharepoint.plist`)
+#### 1. Unencrypted Media Mount Service (`com.user.rclone.sharepoint.plist`)
 
-Run the following command to create the directory structure and the primary virtual drive mount service:
+Run the following command to create the directory structure:
 
 ```bash
-mkdir -p ~/SharePoint
+mkdir -p ~/SharePoint ~/SharePointVault
 mkdir -p ~/Library/LaunchAgents
 mkdir -p ~/.config/rclone
+```
 
+For the unencrypted media drive mount service:
+
+```bash
 cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -238,7 +248,7 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
     <array>
         <string>/opt/local/bin/rclone</string>
         <string>mount</string>
-        <string>sp-crypt:</string>
+        <string>sp:</string>
         <string>$HOME/SharePoint</string>
         <string>--vfs-cache-mode</string>
         <string>full</string>
@@ -283,12 +293,79 @@ cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
 EOF
 ```
 
+#### 2. Encrypted Vault Mount Service (`com.user.rclone.sharepointvault.plist`)
+
+Run the following command to create the encrypted zero-knowledge vault mount service:
+
+```bash
+cat << EOF > ~/Library/LaunchAgents/com.user.rclone.sharepointvault.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.rclone.sharepointvault</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/local/bin/rclone</string>
+        <string>mount</string>
+        <string>sp-crypt:</string>
+        <string>$HOME/SharePointVault</string>
+        <string>--vfs-cache-mode</string>
+        <string>full</string>
+        <string>--vfs-cache-max-age</string>
+        <string>12h</string>
+        <string>--vfs-cache-max-size</string>
+        <string>30G</string>
+        <string>--vfs-cache-poll-interval</string>
+        <string>1m</string>
+        <string>--poll-interval</string>
+        <string>1m</string>
+        <string>--vfs-write-back</string>
+        <string>5s</string>
+        <string>--onedrive-chunk-size</string>
+        <string>125M</string>
+        <string>--buffer-size</string>
+        <string>64M</string>
+        <string>--volname</string>
+        <string>SharePointVault</string>
+        <string>--rc</string>
+        <string>--rc-addr</string>
+        <string>127.0.0.1:5574</string>
+        <string>--rc-no-auth</string>
+        <string>--rc-allow-origin</string>
+        <string>http://127.0.0.1:5580</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+    <key>StandardOutPath</key>
+    <string>$HOME/.config/rclone/sharepointvault-mount.log</string>
+    <key>StandardErrorPath</key>
+    <string>$HOME/.config/rclone/sharepointvault-mount.log</string>
+</dict>
+</plist>
+EOF
+```
+
 > [!IMPORTANT]
 >
 > - **`PATH`**: Ensures auxiliary tools and user-space helper symlinks in `/usr/local/bin` can be resolved by background jobs.
-> - **`--rc-allow-origin`**: Restricts CORS access strictly to `http://127.0.0.1:5580`, preventing arbitrary browser origins from querying your unauthenticated loopback API.
+> - **Port Allocation**: The unencrypted mount API listens on port `5572`, while the vault mount API listens on port `5574` to prevent port collisions.
+> - **`--rc-allow-origin`**: Restricts CORS access strictly to `http://127.0.0.1:5580`, preventing arbitrary browser origins from querying your unauthenticated loopback APIs.
 
-#### 2. Companion Web GUI Service (`com.user.rclone.gui.plist`)
+#### 3. Companion Web GUI Service (`com.user.rclone.gui.plist`)
 
 Run the following command to create the companion web dashboard service:
 
@@ -332,31 +409,50 @@ EOF
 ### Step 2: Activate the Services
 
 ```bash
-# Ensure the target mount point is clean and unmounted
+# Ensure both target mount points are clean and unmounted
 diskutil unmount force ~/SharePoint 2>/dev/null || umount -f ~/SharePoint 2>/dev/null
+diskutil unmount force ~/SharePointVault 2>/dev/null || umount -f ~/SharePointVault 2>/dev/null
 
-# Bootstrap and start both background services in the modern user GUI domain
+# Bootstrap and start background services in the modern user GUI domain
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepoint.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.sharepointvault.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.rclone.gui.plist
 ```
 
-The SharePoint drive will now automatically mount in Finder upon every login.
+Both the **SharePoint** and **SharePointVault** drives will now automatically mount in Finder upon every login.
+
+> [!IMPORTANT]
+> Because `~/SharePoint` mounts the root of your SharePoint document library, the `vault/` folder will appear inside `~/SharePoint` containing encrypted hashes.
+> **Do not edit, rename, or write files directly into `~/SharePoint/vault`**. Always interact with your encrypted files through the dedicated `~/SharePointVault` mount point.
+
+The **Dual-Mount Architecture**:
+
+```text
+Local Mac (Finder):
+├── ~/SharePoint         ──(FUSE-T)──>  sp:        (Unencrypted: Videos, Media, Public files)
+└── ~/SharePointVault    ──(FUSE-T)──>  sp-crypt:  (Encrypted: Private documents & backups)
+
+Microsoft SharePoint (Cloud):
+├── Videos/              (Plain unencrypted files — downloadable anywhere)
+├── Documents/           (Plain unencrypted files)
+└── vault/               (Encrypted ciphertext blobs — managed by sp-crypt)
+```
 
 > [!TIP]
-> **Bookmark Your 24/7 Live Dashboard**:  
-> Once loaded, open and bookmark:  
-> `http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`  
+> **Bookmark Your 24/7 Live Dashboards**:
+> Once loaded, you can monitor transfer statistics for either mount:
 >
-> Passing `?url=http://127.0.0.1:5572/` connects GUI (`127.0.0.1:5580`) directly to your active mount's transfer engine (`127.0.0.1:5572`), giving you instant access to real-time bandwidth metrics, upload queues, and VFS cache stats without authentication prompts.
+> - **SharePoint (Media)**: `http://127.0.0.1:5580/login?url=http://127.0.0.1:5572/`
+> - **SharePointVault (Encrypted)**: `http://127.0.0.1:5580/login?url=http://127.0.0.1:5574/`
 >
-> **If the drive icon does not appear on your Desktop or Finder sidebar**:  
-> FUSE-T mounts the drive as a network filesystem (NFS). Ensure macOS allows displaying connected network volumes:
+> **If the drive icons do not appear on your Desktop or Finder sidebar**:
+> FUSE-T mounts the drives as network filesystems (NFS). Ensure macOS allows displaying connected network volumes:
 >
 > 1. Open **Finder** → press `Cmd + ,` (**Settings** / **Preferences**).
 > 2. Under the **General** tab, check **Connected servers**.
 > 3. Under the **Sidebar** tab, ensure **Connected servers** is checked under **Locations**.
 >
-> *Alternatively, navigate to `~/SharePoint` in Finder and drag the folder directly into your **Favorites** sidebar for one-click access.*
+> *Alternatively, navigate to `~/SharePoint` and `~/SharePointVault` in Finder and drag both folders directly into your **Favorites** sidebar for one-click access.*
 
 ---
 
@@ -380,21 +476,23 @@ rm -rf ~/Library/Caches/rclone/vfs*
 Do not drag the mounted volume to the Trash. Unmount according to how the drive was launched:
 
 - **If running via Launchctl background service (Section 4)**:
-  Boot out the background services directly. This terminates Rclone cleanly and automatically unmounts the volume:
+  Boot out the background services directly. This terminates Rclone cleanly and automatically unmounts both volumes:
 
   ```bash
   launchctl bootout gui/$(id -u)/com.user.rclone.sharepoint 2>/dev/null
+  launchctl bootout gui/$(id -u)/com.user.rclone.sharepointvault 2>/dev/null
   launchctl bootout gui/$(id -u)/com.user.rclone.gui 2>/dev/null
   ```
 
 - **If running manually via Terminal (Section 3)**:
-  Unmount the mount point directly:
+  Unmount the mount points directly:
 
   ```bash
   diskutil unmount ~/SharePoint 2>/dev/null || umount ~/SharePoint
+  diskutil unmount ~/SharePointVault 2>/dev/null || umount ~/SharePointVault
   ```
 
-  *(If the mount point remains busy, force unmount with `diskutil unmount force ~/SharePoint`)*
+  *(If a mount point remains busy, force unmount with `diskutil unmount force ~/SharePoint` or `diskutil unmount force ~/SharePointVault`)*
 
 ### Inspecting and Truncating Logs
 
@@ -403,13 +501,18 @@ By default, Rclone runs at the `NOTICE` logging level, keeping log file growth n
 To view live log output in Terminal:
 
 ```bash
+# View unencrypted media mount logs:
 tail -f ~/.config/rclone/sharepoint-mount.log
+
+# View encrypted vault mount logs:
+tail -f ~/.config/rclone/sharepointvault-mount.log
 ```
 
 If you ever wish to instantly truncate and free log file space without restarting the background service:
 
 ```bash
 : > ~/.config/rclone/sharepoint-mount.log
+: > ~/.config/rclone/sharepointvault-mount.log
 ```
 
 ### Managing AppleDouble (`._*`) and `.DS_Store` Companion Files
@@ -456,7 +559,9 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 
      ```bash
      cp -X "filename.jpg" ~/SharePoint/
-     # Or for directories:
+     # Or to the encrypted vault:
+     cp -X "filename.jpg" ~/SharePointVault/
+     # For directories:
      cp -RX /path/to/folder ~/SharePoint/
      ```
 
@@ -471,11 +576,15 @@ Understanding how macOS and Rclone handle these companion files resolves common 
    find ~/Library/Caches/rclone/vfsMeta -name ".DS_Store" -delete 2>/dev/null
    ```
 
-4. **Purge Existing Companion Files from the Encrypted Vault**:
+4. **Purge Existing Companion Files from Cloud Storage**:
 
-   To mass-delete any lingering `._*` and `.DS_Store` files from your cloud storage:
+   To mass-delete any lingering `._*` and `.DS_Store` files across both cloud spaces:
 
    ```bash
+   # From unencrypted SharePoint storage:
+   /opt/local/bin/rclone delete sp: --include "._*" --include ".DS_Store"
+
+   # From encrypted vault:
    /opt/local/bin/rclone delete sp-crypt: --include "._*" --include ".DS_Store"
    ```
 
@@ -492,27 +601,25 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 
 ## 6. Architectural Trade-offs & Ideal Workflows
 
-You've finally broken free from OneDrive's sickeningly broken behaviour of SharePoint on macOS, a disaster born from corporate politics between Apple and Microsoft. With this setup in place, here is what you've gained:
+You've finally broken free from OneDrive's sickeningly broken behaviour of SharePoint on macOS, a disaster born from corporate politics between Apple and Microsoft. With this dual-mount architecture in place, here is what you've gained:
 
-1. **Large Media & Video Streaming**:  
-   Unlike the native OneDrive client, which often forces downloading entire multi-gigabyte files before playback, Rclone with `--vfs-cache-mode full` and `--buffer-size 64M` handles byte-range requests seamlessly. Media players like IINA, Infuse, or VLC can seek anywhere across a 50GB 4K video with near-instant buffering. The local cache automatically evicts stale chunks after 12 hours, freeing SSD space automatically.
-2. **Eliminating macOS Sync Deadlocks**:  
+1. **Dual-Mount Flexibility & Universal Media Access**:
+   By mounting the raw remote `sp:` to `~/SharePoint`, large video files and media collections remain unencrypted in the cloud. You can stream them seamlessly with byte-range requests and instant seeking on macOS (via players like IINA, Infuse, or VLC), but you can *also* download or play them when away from your Mac—using the SharePoint web interface, OneDrive mobile app, or smart TV players—without needing Rclone or encryption keys.
+2. **Zero-Knowledge Privacy & Metadata Immunity in `~/SharePointVault`**:
+   Sensitive personal records, credentials, and backups placed into `~/SharePointVault` are encrypted on the fly via `rclone crypt` (XSalsa20 + Poly1305). Because SharePoint only receives opaque ciphertext blobs, it cannot crack open Office documents or PDFs to inject tenant UUIDs (`sizes differ` loops), and cloud administrators or compromised credentials cannot inspect your files.
+3. **Eliminating macOS Sync Deadlocks**:
    Bypasses Apple's `fileproviderd` architecture completely, eliminating circular upload freezes, 0% progress bugs, and high CPU lockups during large transfers.
-3. **True Cloud Capacity**:  
+4. **True Cloud Capacity**:
    Unlocks the tenant-wide SharePoint storage pool, bypassing Microsoft's strict 10GB personal OneDrive quota on Developer E5 accounts.
-4. **Permanent Immunity to SharePoint Property Promotion**:  
-   SharePoint is an enterprise collaboration engine rather than transparent object storage. Normally, its parsers crack open Office documents (`.docx`, `.xlsx`, `.pptx`), PDFs, and markup files to inject tenant metadata and UUIDs—altering file sizes by a few hundred bytes and triggering endless Rclone upload loops (`corrupted on transfer: sizes differ`). Because `rclone crypt` encrypts all data and filenames into opaque ciphertext blobs before upload, SharePoint cannot parse, inspect, or modify any file. Bit-for-bit cryptographic integrity is 100% preserved.
-5. **Zero-Knowledge Cloud Privacy**:  
-   All files, directory structures, and filenames are encrypted client-side using XSalsa20 + Poly1305 (AES-256 equivalent). Microsoft, tenant administrators, or compromised cloud credentials can only see scrambled hashes, completely neutralizing cloud data-mining and file inspection.
-6. **Elimination of Filename Character Restrictions**:  
-   SharePoint strictly rejects characters like `" * : < > ? / \ |`, leading/trailing spaces, periods at the end of filenames, and reserved Windows names (`CON`, `PRN`, `AUX`). Because `rclone crypt` encrypts all filenames into standard alphanumeric hashes, every valid macOS filename is supported without errors.
+5. **Elimination of Filename Character Restrictions in the Vault**:
+   SharePoint strictly rejects characters like `" * : < > ? / \ |`, leading/trailing spaces, and periods at the end of filenames. Inside `~/SharePointVault`, `rclone crypt` encrypts all filenames into standard alphanumeric hashes, ensuring every valid macOS filename is supported without errors.
 
 However, to ensure optimal performance, keep this in mind:
 
-1. **High Overhead on Thousands of Small Files**:  
+1. **High Overhead on Thousands of Small Files**:
    Uploading a single 10GB video requires one continuous stream that saturates available network bandwidth. In contrast, copying a directory containing 30,000 fragmented files (such as `node_modules` or unpacked game assets) requires tens of thousands of individual REST API calls to Microsoft Graph. This creates severe network round-trip latency and quickly triggers **HTTP 429 (Too Many Requests)** rate limiting from Microsoft.
 
 ### The Golden Rule: Large Files Directly, Small Files Zipped
 
-- **Directly to Mount**: Movies, TV series, photo libraries, disc images (`.iso`, `.dmg`), virtual machine disks, and pre-packaged archives.
+- **Directly to Mount (`~/SharePoint` or `~/SharePointVault`)**: Videos, TV series, photo libraries, disc images (`.iso`, `.dmg`), virtual machine disks, and pre-packaged archives.
 - **Zip First Locally**: Code repositories, game installation directories, emulator ROM collections, and folders containing thousands of small files or HTML manuals. Compress them into a single `.zip` or `.7z` file before moving them to the mount. This avoids API rate limiting, preserves byte-for-byte integrity, and guarantees maximum upload throughput.
