@@ -94,7 +94,7 @@ sudo port install rclone +mount
 
 ### Step 4: Bridge FUSE-T to Rclone (`libfuse.2.dylib` Symlink)
 
-Rclone's FUSE integration layer on macOS (`cgofuse`) dynamically searches for `/usr/local/lib/libfuse.2.dylib` at runtime. Because FUSE-T installs its library as `/usr/local/lib/libfuse-t.dylib`, create a symbolic link so Rclone can locate and load FUSE-T:
+Rclone's FUSE integration layer on macOS (`cgofuse`) searches for several candidate library filenames at runtime (`libfuse.2.dylib`, `libosxfuse.2.dylib`, and `libfuse-t.dylib`). While modern Rclone builds include `libfuse-t.dylib` in their search candidates, creating this symlink ensures universal compatibility across all FUSE utilities and eliminates potential runtime lookup delays:
 
 ```bash
 sudo ln -sf /usr/local/lib/libfuse-t.dylib /usr/local/lib/libfuse.2.dylib
