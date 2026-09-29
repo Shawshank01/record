@@ -2,7 +2,7 @@
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
 description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and native macOS sync bugs by configuring a dual-mount unencrypted media drive and encrypted vault with Rclone and FUSE-T."
 pubDate: 2026-09-21
-updateDate: 2026-09-28
+updateDate: 2026-09-29
 tags:
   - macOS
   - MacPorts
@@ -87,6 +87,26 @@ The default `rclone` port in MacPorts does not include mount capabilities. Insta
 sudo port selfupdate
 sudo port install rclone +mount
 ```
+
+> [!WARNING]
+> **Do Not Install Rclone via Homebrew for Mounting**:
+> Homebrew's `rclone` formula explicitly disables the FUSE `mount` subcommand on macOS. Running `rclone mount` with a Homebrew build terminates immediately with `CRITICAL: Fatal error: failed to mount FUSE fs: rclone mount is not supported on MacOS when rclone is installed via Homebrew`. Always use MacPorts (`rclone +mount`) or the official standalone binary from [rclone.org](https://rclone.org/downloads/).
+
+### Step 4: Bridge FUSE-T to Rclone (`libfuse.2.dylib` Symlink)
+
+Rclone's FUSE integration layer on macOS (`cgofuse`) dynamically searches for `/usr/local/lib/libfuse.2.dylib` at runtime. Because FUSE-T installs its library as `/usr/local/lib/libfuse-t.dylib`, create a symbolic link so Rclone can locate and load FUSE-T:
+
+```bash
+sudo ln -sf /usr/local/lib/libfuse-t.dylib /usr/local/lib/libfuse.2.dylib
+```
+
+> [!IMPORTANT]
+> **Ignore MacPorts' `macfuse.fs` Post-Install Recommendation**:
+> When compiling `rclone +mount`, MacPorts pulls its internal `macfuse` port as a build dependency to satisfy C compilation headers. Upon completion, MacPorts displays a note suggesting:
+>
+> *sudo ln -fsn /opt/local/Library/Filesystems/macfuse.fs /Library/Filesystems/macfuse.fs*
+>
+> **Do not run this command**. Linking `macfuse.fs` attempts to load the legacy macFUSE kernel extension (kext), which triggers macOS security alerts on Apple Silicon Macs requiring you to boot into Recovery Mode and lower security to "Reduced Security". Linking `libfuse-t.dylib` to `libfuse.2.dylib` ensures Rclone routes all calls purely through **FUSE-T** in user space (via FSKit or NFS), leaving your system on **Full Security** with zero kernel extensions or reboots required.
 
 ---
 
