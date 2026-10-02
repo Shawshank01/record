@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 
-const formatDate = (date: Date) => date.toISOString();
+const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
 export const GET: APIRoute = async ({ site }) => {
   if (!site) {
