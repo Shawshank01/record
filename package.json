@@ -3,6 +3,7 @@
   "version": "3.6.3",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/check-title-length.mjs",
     "dev": "astro dev",
     "prebuild": "node scripts/check-title-length.mjs",
     "build": "astro build",

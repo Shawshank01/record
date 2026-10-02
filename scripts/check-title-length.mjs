@@ -3,7 +3,9 @@ import { join } from "node:path";
 
 const contentDirectory = join(process.cwd(), "src", "content", "blog");
 const titleSuffix = " · Michifumi's Blog";
-const recommendedLimit = 70;
+const recommendedTitleLimit = 70;
+const recommendedDescMin = 25;
+const recommendedDescMax = 160;
 
 const files = (await readdir(contentDirectory))
     .filter((file) => file.endsWith(".md"))
@@ -23,20 +25,20 @@ for (const file of files) {
     const title = titleMatch[1];
     const renderedTitle = `${title}${titleSuffix}`;
 
-    if (renderedTitle.length > recommendedLimit) {
+    if (renderedTitle.length > recommendedTitleLimit) {
         warningCount += 1;
         console.warn(
-            `Warning: ${file} renders a ${renderedTitle.length}-character title (recommended maximum: ${recommendedLimit}).`,
+            `Warning: ${file} renders a ${renderedTitle.length}-character title (recommended maximum: ${recommendedTitleLimit}).`,
         );
     }
 
     const descMatch = source.match(/^description:\s*["'](.+)["']\s*$/m);
     if (descMatch) {
         const desc = descMatch[1];
-        if (desc.length < 25 || desc.length > 160) {
+        if (desc.length < recommendedDescMin || desc.length > recommendedDescMax) {
             warningCount += 1;
             console.warn(
-                `Warning: ${file} description length is ${desc.length} chars (recommended: 25-160 characters).`,
+                `Warning: ${file} description length is ${desc.length} chars (recommended: ${recommendedDescMin}-${recommendedDescMax} characters).`,
             );
         }
     }
@@ -48,6 +50,6 @@ if (warningCount === 0) {
     );
 } else {
     console.warn(
-        `Title check found ${warningCount} title${warningCount === 1 ? "" : "s"} above the recommended limit.`,
+        `SEO pre-check found ${warningCount} warning${warningCount === 1 ? "" : "s"}.`,
     );
 }
