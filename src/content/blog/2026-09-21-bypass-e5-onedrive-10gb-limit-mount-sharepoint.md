@@ -1,6 +1,6 @@
 ---
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
-description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and native macOS sync bugs by configuring a dual-mount unencrypted media drive and encrypted vault with Rclone and FUSE-T."
+description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and macOS sync bugs using a dual-mount SharePoint setup with Rclone and FUSE-T."
 pubDate: 2026-09-21
 updateDate: 2026-09-29
 tags:

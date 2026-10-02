@@ -1,6 +1,6 @@
 ---
 title: "How to Remove EXIF Metadata from Images on macOS"
-description: "Scrubbing EXIF data ensures your privacy by hiding sensitive location and time data, while also providing anonymity by removing the digital fingerprints that link the photo back to you."
+description: "Scrubbing EXIF data protects your privacy by stripping sensitive location and time info, removing digital fingerprints that link photos back to you."
 pubDate: 2026-02-04
 updateDate: 2026-09-22
 tags:

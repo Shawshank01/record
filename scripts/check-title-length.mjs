@@ -29,11 +29,22 @@ for (const file of files) {
             `Warning: ${file} renders a ${renderedTitle.length}-character title (recommended maximum: ${recommendedLimit}).`,
         );
     }
+
+    const descMatch = source.match(/^description:\s*["'](.+)["']\s*$/m);
+    if (descMatch) {
+        const desc = descMatch[1];
+        if (desc.length < 25 || desc.length > 160) {
+            warningCount += 1;
+            console.warn(
+                `Warning: ${file} description length is ${desc.length} chars (recommended: 25-160 characters).`,
+            );
+        }
+    }
 }
 
 if (warningCount === 0) {
     console.log(
-        `Title check passed: all blog titles are ${recommendedLimit} characters or fewer with the site suffix.`,
+        `SEO pre-check passed: all blog titles and descriptions meet recommended length limits.`,
     );
 } else {
     console.warn(
