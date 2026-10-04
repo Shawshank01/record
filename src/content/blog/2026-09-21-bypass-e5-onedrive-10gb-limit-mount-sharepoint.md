@@ -551,10 +551,10 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 
    ```bash
    # From unencrypted SharePoint storage:
-   /opt/local/bin/rclone delete sp: --include "._*" --include ".DS_Store"
+   rclone delete sp: --include "._*" --include ".DS_Store"
 
    # From encrypted vault:
-   /opt/local/bin/rclone delete sp-crypt: --include "._*" --include ".DS_Store"
+   rclone delete sp-crypt: --include "._*" --include ".DS_Store"
    ```
 
 ### Preventing SharePoint Version Bloat (Critical)
