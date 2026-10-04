@@ -2,7 +2,7 @@
 title: "Daily Updates on Linux and macOS"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updateDate: 2026-08-06
+updateDate: 2026-10-04
 tags:
   - GNU/Linux
   - Docker
@@ -255,6 +255,12 @@ brew upgrade && brew autoremove && brew cleanup --prune=all
 - **brew upgrade**: Upgrades all packages.
 - **brew autoremove**: Removes orphan dependencies that are no longer needed.
 - **brew cleanup --prune=all**: Aggressively clears the cache to free up maximum disk space, I recommend using it with the 256 GB SSD MacBook Air (that is something only Apple can do).
+
+Also don't forget to disable the analysis:
+
+```bash
+brew analytics off
+```
 
 To make this even easier, add an alias for the terminal `~/.zshrc`:
 
