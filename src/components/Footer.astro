@@ -5,27 +5,41 @@
         class="mx-auto flex max-w-6xl xl:max-w-7xl 2xl:max-w-360 flex-col gap-3 px-4 md:flex-row md:items-center md:justify-between md:px-8"
     >
         <p>
-            2025{
+            2025
+            {
                 new Date().getFullYear() > 2025
                     ? `–${new Date().getFullYear()}`
                     : ""
-            } · Crafted with Astro
+            }{" "}
+            · Crafted with Astro
         </p>
         <p>
             <a
-                href="https://zaku.eu.org/"
-                class="text-gray-300 transition hover:text-accent">Blog</a
-            > by <a
+                href={Astro.site}
+                class="text-gray-300 transition hover:text-accent"
+            >
+                Blog
+            </a>{" "}
+            by{" "}
+            <a
                 href="https://github.com/Shawshank01"
-                class="text-gray-300 transition hover:text-accent">Michifumi</a
-            > is marked <a
+                class="text-gray-300 transition hover:text-accent"
+            >
+                Michifumi
+            </a>{" "}
+            is marked{" "}
+            <a
                 href="https://creativecommons.org/publicdomain/zero/1.0/"
-                class="text-gray-300 transition hover:text-accent">CC0 1.0</a
-            ><img
+                class="text-gray-300 transition hover:text-accent"
+            >
+                CC0 1.0
+            </a>
+            <img
                 src="https://mirrors.creativecommons.org/presskit/icons/cc.svg"
                 alt="Creative Commons"
                 style="max-width: 1em;max-height:1em;margin-left: .2em;display:inline;"
-            /><img
+            />
+            <img
                 src="https://mirrors.creativecommons.org/presskit/icons/zero.svg"
                 alt="CC0 1.0"
                 style="max-width: 1em;max-height:1em;margin-left: .2em;display:inline;"

@@ -593,7 +593,7 @@ stats.zaku.eu.org {
         }
 
         header {
-                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Origin "https://michifumi.de"
                 Access-Control-Allow-Methods "GET, POST, OPTIONS, HEAD"
                 Access-Control-Allow-Headers "Content-Type, Authorization"
                 Access-Control-Max-Age "86400"
@@ -766,7 +766,7 @@ stats.zaku.eu.org {
         }
 
         header {
-                Access-Control-Allow-Origin "https://zaku.eu.org"
+                Access-Control-Allow-Origin "https://michifumi.de"
                 Access-Control-Allow-Methods "GET, POST, OPTIONS, HEAD"
                 Access-Control-Allow-Headers "Content-Type, Authorization"
                 Access-Control-Max-Age "86400"

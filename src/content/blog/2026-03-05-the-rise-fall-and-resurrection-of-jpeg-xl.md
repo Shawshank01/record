@@ -10,7 +10,7 @@ tags:
   - Shortcuts
 ---
 
-If you've read my [previous blog post](https://zaku.eu.org/blog/2026-02-26-blucher-procedural-justice-or-bureaucracy/), you may have noticed something odd, namely, broken images. That's because I used the `.jxl` format, which most browsers don't support out of the box.
+If you've read my [previous blog post](/blog/2026-02-26-blucher-procedural-justice-or-bureaucracy/), you may have noticed something odd, namely, broken images. That's because I used the `.jxl` format, which most browsers don't support out of the box.
 
 [Go directly to the section on how to display JXL images in your browser](#how-to-enable-jpeg-xl-in-your-browser)
 

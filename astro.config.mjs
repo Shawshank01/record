@@ -5,7 +5,7 @@ import { remarkAlert } from "remark-github-blockquote-alert";
 import remarkJxlHint from "./remark-jxl-hint.mjs";
 
 export default defineConfig({
-  site: "https://zaku.eu.org",
+  site: "https://michifumi.de",
 
   markdown: {
     processor: unified({

@@ -99,4 +99,4 @@ YT-DLP Downloader UI
 
 ---
 Thank you for visiting😃  
-You are most welcome to explore my [blog homepage](https://zaku.eu.org/) to find more things that might interest you.
+You are most welcome to explore my [blog homepage](/) to find more things that might interest you.

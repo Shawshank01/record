@@ -1,6 +1,6 @@
 {
   "origins": [
-    "https://zaku.eu.org"
+    "https://michifumi.de"
   ],
   "originsRegex": [
     "http://localhost:[0-9]+"

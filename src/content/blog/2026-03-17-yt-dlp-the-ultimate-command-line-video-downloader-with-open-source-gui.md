@@ -16,7 +16,7 @@ tags:
   - YouTube
 ---
 
-In [this previous blog](https://zaku.eu.org/blog/2026-02-19-ffmpeg-the-ultimate-cross-platform-video-tool/), I introduced you to FFmpeg, and now I'm going to introduce you to another excellent open-source tool: [yt-dlp](https://github.com/yt-dlp/yt-dlp).
+In [this previous blog](/blog/2026-02-19-ffmpeg-the-ultimate-cross-platform-video-tool/), I introduced you to FFmpeg, and now I'm going to introduce you to another excellent open-source tool: [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 > yt-dlp is a feature-rich command-line audio/video downloader with support for thousands of sites.
 

@@ -2,7 +2,7 @@
 
 A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com), and TypeScript. Designed as a fast, fully static site with a dark-mode aesthetic, deployed to GitHub Pages.
 
-**Live site:** [zaku.eu.org](https://zaku.eu.org)
+**Live site:** [michifumi.de](https://michifumi.de)
 
 ## Features
 
