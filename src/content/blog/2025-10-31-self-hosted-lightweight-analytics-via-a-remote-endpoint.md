@@ -1058,15 +1058,18 @@ mkdir -p ~/backups
 nano ~/backups/backup-stats.sh
 ```
 
-Add the following content (replace `YOUR_PASSWORD` with your actual password — it will be read from the environment variable `STATS_PASSWORD` so it never appears in the log file):
+Add the following content. The script never contains your password: it reads it from the `STATS_PASSWORD` environment variable, which you provide through cron or systemd (see below), so it never appears in the log file.
 
 ```bash
 #!/bin/bash
+# Stop at the first error, so a failed export is not reported as a success
+set -euo pipefail
+
 BACKUP_DIR="$HOME/backups/analytics"
 mkdir -p "$BACKUP_DIR"
 
 # Export CSV from the analytics endpoint using basic_auth
-# Set STATS_PASSWORD in your environment or systemd unit
+# STATS_PASSWORD comes from cron or from a systemd EnvironmentFile
 curl -fsSL -u "admin:${STATS_PASSWORD}" "https://api.michifumi.de/export" \
   -o "$BACKUP_DIR/stats-$(date +%Y-%m-%d).csv"
 
@@ -1096,6 +1099,21 @@ Add this line:
 
 **Fedora CoreOS: Schedule with systemd timer (daily at 2 AM):**
 
+Store the password in a private file instead of the unit file, which is readable by other users. `read -s` also keeps it out of your shell history:
+
+```bash
+mkdir -p ~/.config/systemd/user
+read -rsp "Admin password: " P; echo
+( umask 077; printf 'STATS_PASSWORD=%s\n' "$P" > ~/.config/backup-stats.env )
+unset P
+ls -l ~/.config/backup-stats.env
+```
+
+The `ls` output should start with `-rw-------`.
+
+> [!NOTE]  
+> systemd treats backslashes and quotes in environment files specially. If your password contains `\`, `'` or `"`, quote it as described in `man systemd.exec`, or pick a password without them.
+
 Create the service unit:
 
 ```bash
@@ -1105,7 +1123,7 @@ Description=Backup analytics CSV
 
 [Service]
 Type=oneshot
-Environment=STATS_PASSWORD=YOUR_PASSWORD_HERE
+EnvironmentFile=%h/.config/backup-stats.env
 ExecStart=%h/backups/backup-stats.sh
 EOF
 ```
@@ -1139,6 +1157,20 @@ Verify the timer is active:
 systemctl --user list-timers
 ```
 
+Don't wait until 2 AM to find out whether it works. Run the backup once now:
+
+```bash
+systemctl --user start backup-stats.service
+journalctl --user -u backup-stats.service -n 15 --no-pager
+ls -l ~/backups/analytics/
+head -n 3 ~/backups/analytics/stats-*.csv
+```
+
+You should see `Backup completed` in the journal, a dated CSV file, and a header line `id,path,referrer,ua,ip,ts` followed by real rows. The CSV contains visitor IP addresses, so keep it off shared storage.
+
+> [!WARNING]  
+> A failing timer does not alert you. If the script is missing, for example, the unit fails every night and nothing tells you. Check `systemctl --user status backup-stats.service` after setting it up, and now and then afterwards.
+
 ### Fedora CoreOS: Backup the Database File
 
 On Fedora CoreOS, the database is stored directly at `~/page-stats/data/stats.db`. You can back it up with a simple copy:
@@ -1171,6 +1203,8 @@ sqlite3 ~/page-stats/data/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$
 - **TLS error (`tlsv1 alert internal error`)**: Caddy has no site block or certificate for that hostname yet. Check that the Caddyfile has the new block, that the `api` record resolves to your VM, and read `sudo journalctl -u caddy -f`.
 - **DNS check fails**: if your DNS is on Cloudflare, gray‑cloud the `api` record until the certificate is issued.
 - **No data appears**: test with a direct `curl -X POST .../v1/ping` (through Caddy) or `.../track` (straight to the app), and check `pm2 logs` or `journalctl --user -u page-stats.service`.
+- **Backup unit fails with `status=203/EXEC`**: systemd cannot run the script. It does not exist at `~/backups/backup-stats.sh`, it is not executable (`chmod +x`), or the path in `ExecStart=` is wrong. Read the reason with `journalctl --user -u backup-stats.service`.
+- **Backup fails with `curl: (22) ... 401`**: the password in `~/.config/backup-stats.env` (or in the crontab line) does not match the one behind your Caddy `basic_auth` hash.
 
 ### Test your endpoint manually
 
