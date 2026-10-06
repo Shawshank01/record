@@ -2,7 +2,7 @@
 title: "Bypass E5 OneDrive 10GB Limit: Mount SharePoint"
 description: "Bypass Microsoft 365 Developer E5 10GB OneDrive limits and macOS sync bugs using a dual-mount SharePoint setup with Rclone and FUSE-T."
 pubDate: 2026-09-21
-updateDate: 2026-09-29
+updateDate: 2026-10-06
 tags:
   - macOS
   - MacPorts
@@ -16,7 +16,19 @@ tags:
 ![jxl hint](/2026-09-21/sharepoint-storage.jxl)
 [SharePoint Storage](https://admin.cloud.microsoft/?#/reportsUsage/SharePointStorage)
 
-This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 1.24TB tenant-wide SharePoint storage pool with a **Dual-Mount Architecture**:
+> [!IMPORTANT]
+> **Storage Quota Clarification & Misleading UI Reading**:
+> While the Microsoft 365 admin center frontend UI (shown above) reports **1.24TB** of pooled storage based on standard commercial E5 allocation formulas, **this frontend display is wrong and misleading for developer subscriptions**.
+>
+> According to the official [Microsoft 365 Developer Program FAQ](https://learn.microsoft.com/en-us/office/developer-program/microsoft-365-developer-program-faq#how-much-storage-does-the-microsoft-365-developer-subscription-provide-):
+>
+> - **Tenant Storage Cap**: Developer-only tenants are capped at **300 GB pooled storage** across SharePoint.
+> - **Zero Additional Storage**: The Developer SKU contributes 0 GB SharePoint storage in mixed-license tenants.
+> - **User OneDrive Limit**: **10 GB** per user for Developer SKU users' OneDrive storage.
+>
+> Do not be misled by the 1.24TB shown in the admin dashboard, your tenant enforces a hard 300GB pooled storage cap in the backend. Nevertheless, 300GB of pooled storage is still a 30-fold increase over the restrictive 10GB personal OneDrive limit.
+
+This guide resolves the 10GB personal OneDrive quota limitation on Microsoft 365 Developer E5 subscriptions by leveraging the 300GB tenant-wide SharePoint pooled storage with a **Dual-Mount Architecture**:
 
 - **`~/SharePoint` (Raw Mount)**: Dedicated to large video files and general media. Files remain unencrypted in the cloud so you can stream or download them anywhere (SharePoint web portal, OneDrive mobile app, Infuse or VLC on Apple TV) without requiring Rclone or decryption keys.
 - **`~/SharePointVault` (Encrypted Overlay Mount)**: Dedicated to sensitive records, personal documents, and private backups. Uses client-side zero-knowledge encryption via **Rclone Crypt** to protect data from cloud inspection and eliminate SharePoint metadata alteration loops.
@@ -35,7 +47,7 @@ Before installing tools and configuring Rclone, you must create a dedicated **Co
 
 Microsoft SharePoint treats Team sites and Communication sites fundamentally differently when it comes to document versioning:
 
-- **Team Sites (Do Not Use)**: Team sites are tied to Microsoft 365 Groups and Microsoft Teams. Microsoft mandates document version history on Team sites, enforcing a strict minimum of 100 to 500 major versions that **cannot be disabled**. If you store large files (such as 20GB–50GB video files, disk images, or encrypted vault chunks) in a Team site, any minor file modification or re-upload causes SharePoint to duplicate the entire multi-gigabyte payload into version history, silently exhausting your 1.24TB tenant storage pool within days.
+- **Team Sites (Do Not Use)**: Team sites are tied to Microsoft 365 Groups and Microsoft Teams. Microsoft mandates document version history on Team sites, enforcing a strict minimum of 100 to 500 major versions that **cannot be disabled**. If you store large files (such as 20GB–50GB video files, disk images, or encrypted vault chunks) in a Team site, any minor file modification or re-upload causes SharePoint to duplicate the entire multi-gigabyte payload into version history, silently exhausting your 300GB pooled tenant storage within days.
 - **Communication Sites (Essential)**: Only standalone Communication sites allow administrators to set Document Version History to **"No versioning"** in the classic library settings. Disabling versioning ensures that overwriting or modifying a file consumes exactly the size of the current file with zero hidden storage bloat.
 
 ### Creating the Site
@@ -560,7 +572,7 @@ Understanding how macOS and Rclone handle these companion files resolves common 
 ### Preventing SharePoint Version Bloat (Critical)
 
 > [!WARNING]
-> To prevent minor file modifications or metadata changes on large videos from consuming the 1.24TB pool through version history, adjust document versioning settings on your Communication site *(as noted in [Section 0](#0-create-a-communication-site-in-sharepoint), "No versioning" is only available on Communication sites)*:
+> To prevent minor file modifications or metadata changes on large videos from consuming the 300GB pool through version history, adjust document versioning settings on your Communication site *(as noted in [Section 0](#0-create-a-communication-site-in-sharepoint), "No versioning" is only available on Communication sites)*:
 
 1. Navigate to your Communication site document library in a web browser.
 2. Click the gear icon (**Settings**) → **Library settings** → **More library settings** → **Versioning settings**.
@@ -581,7 +593,7 @@ You've finally broken free from OneDrive's sickeningly broken behaviour of Share
 3. **Eliminating macOS Sync Deadlocks**:
    Bypasses Apple's `fileproviderd` architecture completely, eliminating circular upload freezes, 0% progress bugs, and high CPU lockups during large transfers.
 4. **True Cloud Capacity**:
-   Unlocks the tenant-wide SharePoint storage pool, bypassing Microsoft's strict 10GB personal OneDrive quota on Developer E5 accounts.
+   Unlocks the 300GB tenant-wide SharePoint pooled storage, bypassing Microsoft's strict 10GB personal OneDrive quota on Developer E5 accounts.
 5. **Elimination of Filename Character Restrictions in the Vault**:
    SharePoint strictly rejects characters like `" * : < > ? / \ |`, leading/trailing spaces, and periods at the end of filenames. Inside `~/SharePointVault`, `rclone crypt` encrypts all filenames into standard alphanumeric hashes, ensuring every valid macOS filename is supported without errors.
 
