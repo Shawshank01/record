@@ -2,7 +2,7 @@
 title: "Self‑Hosted Analytics for a Personal Blog"
 description: "How I added privacy‑friendly visitor statistics to a static Astro site using a tiny Node.js endpoint, SQLite, PM2, and Caddy."
 pubDate: 2025-11-01
-updateDate: 2026-08-19
+updateDate: 2026-10-06
 tags:
   - GNU/Linux
   - Fedora CoreOS
@@ -19,7 +19,7 @@ Instead of using third‑party analytics like Cloudflare, I'm running a tiny **s
 
 A tiny analytics API that:
 
-- Accepts page‑view pings from this blog (`/track`)
+- Accepts page‑view pings from this blog (`/v1/ping`, which Caddy maps to the app's internal `/track` route)
 - Provides comprehensive analytics via `/summary` and `/daily` endpoints
 - Lets me export raw visits as CSV (`/export`)
 - Stores data in a single `SQLite` file for easy backup/migration
@@ -32,7 +32,7 @@ You can adapt this for any static site (Astro, Hugo, etc.).
 ## 0) Prerequisites
 
 - A cloud VM with a public IP
-- A subdomain for the analytics endpoint
+- A subdomain of your **blog's own domain** for the analytics endpoint (for example `api.example.com` for a blog on `example.com`; see the note in section 5 for why this matters)
 - Basic DNS access (Cloudflare etc.)
 - Node.js 18+ and npm
 
@@ -583,9 +583,9 @@ Add the following:
 # Replace with your own domain and congratulations you have found my analytics domain ;-)
 # Feel free to block it by using uBlock Origin if you don't want me to know you are stalking me
 
-stats.zaku.eu.org {
+api.michifumi.de {
         log {
-                output file /var/log/caddy/stats-access.log {
+                output file /var/log/caddy/api-access.log {
                         roll_size 10MB
                         roll_keep 10
                         roll_keep_for 720h
@@ -608,13 +608,15 @@ stats.zaku.eu.org {
                 respond 204
         }
 
-        # /track is public — the blog sends beacons here without credentials
-        handle /track {
+        # The only public endpoint: the blog sends beacons to /v1/ping
+        # (no credentials) and Caddy rewrites it to the app's internal /track route
+        handle /v1/ping {
+                rewrite * /track
                 reverse_proxy localhost:8080
         }
 
         # All other endpoints (/summary, /daily, /export) require login
-        @protected not path /track
+        @protected not path /v1/ping
         handle @protected {
                 basic_auth {
                         # Replace with your own username and the hash from caddy hash-password
@@ -625,6 +627,7 @@ stats.zaku.eu.org {
 }
 ```
 
+> [!NOTE]
 > If ports 80/443 are already in use, you can run Caddy on alternate ports, and for a publicly trusted TLS cert on non-443, you typically need DNS-01 validation (see below optional).
 
 Safely updating Caddy configurations
@@ -650,7 +653,7 @@ sudo systemctl reload caddy
 
 ### Optional: DNS-01 with Cloudflare (when 80/443 are busy)
 
-If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. This requires a Caddy build with the Cloudflare DNS module.
+If you cannot free ports 80/443, use DNS-01 so Let's Encrypt validates via DNS. This requires a Caddy build with the Cloudflare DNS module, and your domain's DNS must be hosted on Cloudflare.
 
 #### Install Go (latest stable version)
 
@@ -752,13 +755,13 @@ sudo systemctl daemon-reload
         https_port 8443
 }
 
-stats.zaku.eu.org {
+api.michifumi.de {
         tls {
                 dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
 
         log {
-                output file /var/log/caddy/stats-access.log {
+                output file /var/log/caddy/api-access.log {
                         roll_size 10MB
                         roll_keep 10
                         roll_keep_for 720h
@@ -781,13 +784,15 @@ stats.zaku.eu.org {
                 respond 204
         }
 
-        # /track is public — the blog sends beacons here without credentials
-        handle /track {
+        # The only public endpoint: the blog sends beacons to /v1/ping
+        # (no credentials) and Caddy rewrites it to the app's internal /track route
+        handle /v1/ping {
+                rewrite * /track
                 reverse_proxy localhost:8080
         }
 
         # All other endpoints (/summary, /daily, /export) require login
-        @protected not path /track
+        @protected not path /v1/ping
         handle @protected {
                 basic_auth {
                         admin $2a$14$REPLACE_WITH_YOUR_HASH
@@ -797,7 +802,7 @@ stats.zaku.eu.org {
 }
 ```
 
-With `https_port 8443` set, access the API at `https://stats.zaku.eu.org:8443` and update your tracking endpoint to include `:8443`.
+With `https_port 8443` set, access the API at `https://api.michifumi.de:8443` and update your tracking endpoint to include `:8443`.
 
 #### Validate and reload
 
@@ -816,16 +821,18 @@ sudo journalctl -u caddy -f
 
 ---
 
-## 4) DNS (Cloudflare)
+## 4) DNS
 
-Add an **A** record:
+At your DNS provider (I use Dynadot for `michifumi.de`), add an **A** record:
 
-- Name: `stats`
+- Name: `api`
 - Target: your VM public IP
-- Proxy status: **DNS only** (gray cloud)
 
-Caddy will fetch a Let's Encrypt certificate automatically.  
-After issuance, HTTPS works at `https://stats.zaku.eu.org`.
+> [!NOTE]  
+> If your DNS is on Cloudflare, set the proxy status to **DNS only** (gray cloud) until the certificate has been issued.
+
+Make sure the record resolves **before** you reload Caddy, so the Let's Encrypt challenge can succeed. Caddy will then fetch the certificate automatically.  
+After issuance, HTTPS works at `https://api.michifumi.de`.
 
 ---
 
@@ -838,7 +845,7 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
   (() => {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
 
-    const endpoint = 'https://stats.zaku.eu.org/track';
+    const endpoint = 'https://api.michifumi.de/v1/ping';
     const payload = JSON.stringify({
       path: window.location.pathname,
       referrer: document.referrer || ''
@@ -864,8 +871,10 @@ Place this near the bottom of your frontend code, such as `BaseLayout.astro` (be
 </script>
 ```
 
-> [!NOTE]  
-> Privacy-focused browsers like **Mullvad Browser** and **Tor Browser** will block this tracking script by default. Users with ad blockers or privacy extensions will also not be tracked.
+> [!IMPORTANT]  
+> **Host the endpoint on a subdomain of your blog's own domain.** uBlock Origin's default EasyPrivacy list (also the default in Mullvad Browser) contains the rule `*$ping,third-party`. uBlock Origin documents the `ping` option as covering `navigator.sendBeacon()`, so a beacon sent to a *different* registrable domain than the page is blocked, whatever the hostname or path is. A beacon to `api.michifumi.de` from `michifumi.de` is first-party and is not affected by that rule.
+>
+> This is not a way around opting out: blockers and privacy extensions can still block this endpoint, and visitors who do are simply not counted. See the end of this post for how to block it yourself.
 
 ---
 
@@ -919,7 +928,7 @@ Returns a JSON array with daily stats for each path, sorted by the most recent a
 Query it with:
 
 ```bash
-curl -u admin "https://stats.zaku.eu.org/daily"
+curl -u admin "https://api.michifumi.de/daily"
 ```
 
 ### `/summary` endpoint
@@ -951,21 +960,21 @@ Returns top-level summary stats plus breakdowns:
 Query it with:
 
 ```bash
-curl -u admin "https://stats.zaku.eu.org/summary"
+curl -u admin "https://api.michifumi.de/summary"
 ```
 
 CSV export:
 
 ```bash
-curl -u admin -L -o stats.csv "https://stats.zaku.eu.org/export"
+curl -u admin -L -o stats.csv "https://api.michifumi.de/export"
 ```
 
 > [!TIP]  
 > All analytics endpoints can be accessed directly from your browser. Caddy will show a native login prompt — enter your `admin` username and password.
 >
-> - `https://stats.zaku.eu.org/daily`
-> - `https://stats.zaku.eu.org/summary`
-> - `https://stats.zaku.eu.org/export` (downloads CSV)
+> - `https://api.michifumi.de/daily`
+> - `https://api.michifumi.de/summary`
+> - `https://api.michifumi.de/export` (downloads CSV)
 
 ---
 
@@ -1055,7 +1064,7 @@ mkdir -p "$BACKUP_DIR"
 
 # Export CSV from the analytics endpoint using basic_auth
 # Set STATS_PASSWORD in your environment or systemd unit
-curl -fsSL -u "admin:${STATS_PASSWORD}" "https://stats.zaku.eu.org/export" \
+curl -fsSL -u "admin:${STATS_PASSWORD}" "https://api.michifumi.de/export" \
   -o "$BACKUP_DIR/stats-$(date +%Y-%m-%d).csv"
 
 # Keep only last 30 days of backups
@@ -1154,10 +1163,11 @@ sqlite3 ~/page-stats/data/stats.db ".backup '/home/YOUR_USERNAME/backups/stats-$
 
 ## 9) Troubleshooting
 
-- **"Cannot GET /"** when visiting the VM IP: normal — the API only responds to `/track`, `/summary`, `/daily`, and `/export`.
+- **"Cannot GET /"** when visiting the VM IP: normal — the app only responds to `/track`, `/summary`, `/daily`, and `/export`. Through Caddy, the public beacon path is `/v1/ping`, and everything else asks for a login.
 - **Mixed content blocked**: ensure the endpoint is **HTTPS** and CORS allows your blog origin.
-- **DNS check fails**: gray‑cloud the `stats` record until the certificate is issued.
-- **No data appears**: test with a direct `curl -X POST .../track` and check `pm2 logs`.
+- **TLS error (`tlsv1 alert internal error`)**: Caddy has no site block or certificate for that hostname yet. Check that the Caddyfile has the new block, that the `api` record resolves to your VM, and read `sudo journalctl -u caddy -f`.
+- **DNS check fails**: if your DNS is on Cloudflare, gray‑cloud the `api` record until the certificate is issued.
+- **No data appears**: test with a direct `curl -X POST .../v1/ping` (through Caddy) or `.../track` (straight to the app), and check `pm2 logs` or `journalctl --user -u page-stats.service`.
 
 ### Test your endpoint manually
 
@@ -1170,8 +1180,22 @@ curl -X POST http://localhost:8080/track \
 curl "http://localhost:8080/summary"
 ```
 
-A new entry appearing in `/summary` confirms your endpoint is working correctly.
+A new entry appearing in `/summary` confirms your app is working correctly. To test the public path through Caddy as well:
+
+```bash
+curl -i -X POST https://api.michifumi.de/v1/ping \
+  -H "Content-Type: text/plain" \
+  -d '{"path":"/caddy-test","referrer":""}'
+```
+
+A `204 No Content` response means the beacon was stored. Remember to remove the test row afterwards:
+
+```bash
+sqlite3 ~/page-stats/data/stats.db "DELETE FROM visits WHERE path = '/caddy-test';"
+```
+
+On Fedora CoreOS, run this inside `toolbox enter` after `sudo dnf install -y sqlite`, because the host has no `sqlite3` binary.
 
 ---
 
-This blog uses this as a **self‑hosted, portable, privacy‑friendly analytics** system. If you don't want me to know you've visited my blog (I'd be really sad 😢), you can simply use uBlock Origin to block the domain above. If you want to build your own, feel free to fork these snippets and adapt the endpoints to your domain.
+This blog uses this as a **self‑hosted, portable, privacy‑friendly analytics** system. If you don't want me to know you've visited my blog (I'd be really sad 😢), you can block it yourself: add `||api.michifumi.de^` under **My filters** in uBlock Origin, or block the hostname in your DNS or firewall. If you want to build your own, feel free to fork these snippets and adapt the endpoints to your domain.

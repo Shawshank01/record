@@ -1,5 +1,5 @@
 if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
-  const endpoint = "https://stats.zaku.eu.org/track";
+  const endpoint = "https://api.michifumi.de/v1/ping";
   const payload = JSON.stringify({
     path: window.location.pathname,
     referrer: document.referrer || "",
