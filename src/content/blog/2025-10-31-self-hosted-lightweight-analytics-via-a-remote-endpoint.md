@@ -634,8 +634,11 @@ Safely updating Caddy configurations
 
 ```bash
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
-sudo caddy validate --config /etc/caddy/Caddyfile
+sudo -u caddy caddy validate --config /etc/caddy/Caddyfile
 ```
+
+> [!IMPORTANT]  
+> Run `validate` as the `caddy` user, not with plain `sudo`. Validating opens the log files named in your Caddyfile, and if `root` does that first, it creates them as `root` with mode `0600`. The running service (which is the `caddy` user) then cannot open them, and the next `systemctl reload caddy` fails with `open /var/log/caddy/...: permission denied`. If that happens, fix the owner with `sudo chown caddy:caddy /var/log/caddy/*.log` and reload again.
 
 Start the service and check status:
 
@@ -808,7 +811,7 @@ With `https_port 8443` set, access the API at `https://api.michifumi.de:8443` an
 
 ```bash
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
-sudo caddy validate --config /etc/caddy/Caddyfile
+sudo -u caddy caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
 sudo systemctl status caddy -l --no-pager
 ```
