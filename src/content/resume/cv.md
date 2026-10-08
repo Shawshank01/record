@@ -5,7 +5,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 ## Contact
 
-📧 [lelouch@outlook.ie](mailto:lelouch@outlook.ie) | 📞 [087 693 0108](tel:+353876930108) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
+📧 [lelouch@outlook.ie](mailto:lelouch@outlook.ie) | 📞 [087 693 0108](tel:+353876930108) | 📜 [Blog](https://michifumi.de) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
 🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland🇮🇪)
 
 ---
@@ -96,7 +96,3 @@ YT-DLP Downloader UI
 [xAI-desktop](https://github.com/Shawshank01/xAI-desktop)
 
 **xAI Desktop** is a responsive full-stack web application interfacing with xAI’s API to deliver real-time conversational AI and image generation. Engineered a Node.js/Express backend to proxy API requests and stream chunked responses, paired with a lightweight Vanilla JavaScript frontend featuring live Markdown rendering, multi-turn session context preservation, dynamic model switching across Grok reasoning and image-generation models, and system-adaptive dark mode theming.
-
----
-Thank you for visiting😃  
-You are most welcome to explore my [blog homepage](/) to find more things that might interest you.
