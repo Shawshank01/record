@@ -7,7 +7,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 📧 [lelouch@outlook.ie](mailto:lelouch@outlook.ie) | 📞 [087 693 0108](tel:+353876930108) | 📜 [Blog](https://michifumi.de) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
 🌐 Languages: **Chinese** (Native), **English** (Fluent), **Japanese** (Intermediate)  
-🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland🇮🇪)
+🪪 **Stamp 1G Visa Holder** (Immediate Full-Time Right to Work in Ireland🇮🇪 &bull; Open to Relocation Nationwide)
 
 ---
 
@@ -40,7 +40,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 ---
 
-## Final Year Team Project <sup>as Team Leader</sup>
+## MSc Final Year Team Project <sup>as Team Leader</sup>
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
 
