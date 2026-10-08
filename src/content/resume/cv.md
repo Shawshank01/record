@@ -44,7 +44,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
 
-This is a real-time AI platform to detect, monitor, and visualise online toxicity and coordinated harassment campaigns across social networks. Built a high-throughput streaming pipeline using Apache Kafka, PySpark Structured Streaming, and Delta Lake, executing distributed inference with a fine-tuned DistilBERT NLP model optimized via ONNX Runtime for low-latency threat classification. Persisted enriched telemetry into an Oracle Autonomous Database, orchestrated real-time alerts and WebSocket feeds via Node.js/Express, and delivered an interactive React/TypeScript dashboard featuring dynamic sentiment indices and graph-based harassment network mapping.
+Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise online toxicity and coordinated harassment campaigns across decentralised social networks (Bluesky & Mastodon). Engineered an end-to-end event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time WebSocket and Web Push (VAPID) notification services via Node.js/Express, delivering an interactive React/TypeScript dashboard continuously deployed to Vercel.
 
 ![Homepage0](/cv/UI-Walkthrough-00.jpeg)
 Homepage Top
@@ -52,15 +52,13 @@ Homepage Top
 ![Homepage1](/cv/UI-Walkthrough-01.jpeg)
 Homepage Bottom
 
-- Served as Team Lead for 3 developers using Agile (Scrum) methodologies, facilitating daily stand-ups, sprint planning, and code retrospectives. Fostered a collaborative, transparent team culture by balancing task allocations, mitigating burnout, and mediating technical conflicts to deliver all sprint goals on schedule.
-- Designed a survey questionnaire, and based on the feedback received, user interface mock-ups were created and refined using **Figma**.
-- Architected a high-performance Full-Stack application, utilising **React, TypeScript, Tailwind CSS, and Vite** for a highly visual frontend, alongside an **Express/Node.js** backend utilising WebSockets for sub-second real-time threat alerts.
-- Engineered a scalable Data Pipeline, employing **Apache Kafka and Spark** to ingest and stream live event data from social media APIs (e.g., Bluesky) for continuous downstream analysis.
-- Integrated advanced NLP model **DistilBERT** and leveraged an **Oracle 23ai Database** for in-database machine learning, achieving over 85% accuracy in threat classification, sentiment analysis, and entity recognition.
-- Developed complex, interactive data visualisations, integrating **Cytoscape** and **Louvain** community detection algorithms to map coordinated harassment networks, empowering security analysts to identify emerging threats.
-- Designed intuitive dashboard analytics using **ApexCharts** to deliver a global threat index and sentiment history, translating complex AI insights into accessible UI components for end-users.
-- Implemented secure user workflows utilising **JSON Web Tokens (JWT)** and **Bcrypt**, managing customisable keyword tracking, real-time alert preferences, and GDPR-compliant data handling.
-- Conducted a pilot test of the early version with a small group of users from different demographics and carried out face-to-face interviews to gather feedback on their user experience, with a view to improving the platform.
+- **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles—facilitating sprint planning, daily stand-ups, backlog grooming, and retrospectives. Actively mediated technical friction across frontend and data tiers, balancing task allocation to consistently deliver working increments on schedule.
+- **Stakeholder Feedback & User-Centric Iteration:** Drove end-to-end user research by conducting target demographic surveys and designing interactive **Figma** prototypes. Executed usability testing and face-to-face pilot interviews, translating qualitative user feedback into prioritised product backlog features (e.g., customizable threat thresholds, keyword filters, and dark mode).
+- **Decoupled System Architecture & Real-Time Services:** Designed a resilient, multi-tier architecture with clean interface contracts. Engineered an **Express/Node.js** backend integrating bidirectional **WebSockets** for live gauge telemetry and an automated background monitoring engine with intelligent cooldown throttling to prevent alert fatigue.
+- **CI/CD Pipeline & Cloud Deployment:** Established production-like CI/CD workflows, deploying the **React, TypeScript, and Vite** frontend via **Vercel** with Git-driven automated builds and preview environments. Configured cloud infrastructure with environment isolation, CORS whitelisting, TLS/SSL termination, and secure Oracle Cloud Wallet credentials.
+- **Distributed Data Pipeline & AI Inference:** Engineered an event-driven data pipeline using **Apache Kafka** and **PySpark Structured Streaming** to ingest live feeds from Bluesky and Mastodon. Executed distributed NLP inference using **Vectorized Pandas UDFs** and ONNX Runtime with a fine-tuned **DistilBERT** model, achieving over 85% threat classification accuracy.
+- **Graph Analytics & Interactive Dashboards:** Developed complex, interactive data visualisations integrating **Cytoscape.js** (`cytoscape-fcose` force-directed layout) and the **Louvain** community detection algorithm to map coordinated harassment networks, complemented by **ApexCharts** for real-time sentiment trends.
+- **Enterprise Security, RBAC & Data Lineage:** Implemented **JWT** authentication and **Bcrypt** hashing, established database **Role-Based Access Control (RBAC)** in Oracle 23ai, and enforced an audit-compliant **data lineage** model (retaining raw posts alongside inferences) to support GDPR compliance and traceability.
 
 [Social Threat Guardian UI Walkthrough Video](https://youtu.be/svm_mfvKZiM)
 
