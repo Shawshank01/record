@@ -5,19 +5,19 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 ## Contact
 
-📧 [Email](mailto:lelouch@outlook.ie) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
+📧 [lelouch@outlook.ie](mailto:lelouch@outlook.ie) | 📞 [087 693 0108](tel:+353876930108) | 🧑‍💻 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
 🪪 **Stamp 1G Visa Holder** (Full Right to Work in Ireland🇮🇪)
 
 ---
 
 ## Tech Stack
 
-- **Languages:** TypeScript, JavaScript, Python, Java, Bash / Shell Script, HTML5, CSS3
+- **Languages:** TypeScript, JavaScript, Python, Java, Bash / Shell Script, HTML, CSS
 - **Frameworks & Runtimes:** React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS
 - **Data Engineering & AI:** Apache Kafka, Apache Spark, ONNX Runtime, DistilBERT
 - **Databases:** Oracle 23ai, PostgreSQL, MongoDB, YugabyteDB
-- **DevOps & Cloud:** Docker, Docker Compose, CI/CD (GitHub Actions), Git, Linux, Vercel, AWS, GCP, Azure
-- **Networking & Security:** REST / JSON-RPC APIs, WebSockets, TLS 1.3, HTTP/2, OpenSSL
+- **DevOps & Cloud:** Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP
+- **Networking & Security:** REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL
 
 ---
 
@@ -39,7 +39,7 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 
 ---
 
-## Group Project <sup>as Team Leader</sup>
+## Final Year Team Project <sup>as Team Leader</sup>
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
 
@@ -51,7 +51,7 @@ Homepage Top
 ![Homepage1](/cv/UI-Walkthrough-01.jpeg)
 Homepage Bottom
 
-- Acted as Team Leader, coordinating a group of 3 developers using Agile methodologies (Scrum) to build an AI-powered platform for detecting and monitoring online harassment networks in real time.
+- Served as Team Lead for 3 developers using Agile (Scrum) methodologies, facilitating daily stand-ups, sprint planning, and code retrospectives. Fostered a collaborative, transparent team culture by balancing task allocations, mitigating burnout, and mediating technical conflicts to deliver all sprint goals on schedule.
 - Designed a survey questionnaire, and based on the feedback received, user interface mock-ups were created and refined using **Figma**.
 - Architected a high-performance Full-Stack application, utilising **React, TypeScript, Tailwind CSS, and Vite** for a highly visual frontend, alongside an **Express/Node.js** backend utilising WebSockets for sub-second real-time threat alerts.
 - Engineered a scalable Data Pipeline, employing **Apache Kafka and Spark** to ingest and stream live event data from social media APIs (e.g., Bluesky) for continuous downstream analysis.
