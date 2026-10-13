@@ -29,14 +29,14 @@ description: "A passionate Software Engineer / Full-Stack Developer with a stron
 <div style="display: flex; justify-content: space-between;"><strong>Computer Science (Advanced Software Development)</strong><span><em>2024 - 2026</em></span></div>
 
 > Second Class Honours, First Division
->> **Module:** Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
+>> **Modules:** Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
 
 ### <img src="/cv/nci-logo.png" style="height: 3rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem; background-color: white; padding: 0.2rem; border-radius: 0.25rem;" alt="NCI Logo" /> Higher Diploma - National College of Ireland
 
 <div style="display: flex; justify-content: space-between;"><strong>Science in Computing</strong><span><em>2023 - 2024</em></span></div>
 
 > Second Class Honours, Grade One
->> **Module:** Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
+>> **Modules:** Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
 
 ---
 
@@ -68,7 +68,7 @@ Homepage Bottom
 
 [Signal Media Bot](https://github.com/Shawshank01/signal-media-bot)
 
-**Signal Media Bot** is a containerised asynchronous Python microservice built with FastAPI, asyncio, and Docker that extracts, sanitises, and delivers multimedia from platforms like YouTube and X directly into Signal chats as native playable attachments. Interfacing with Signal via JSON-RPC webhooks, the service features an automated URL privacy sanitiser and an adaptive FFmpeg / yt-dlp transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee compliance with Signal's strict 100 MB file limit.
+**Signal Media Bot** is a containerised asynchronous Python microservice built with FastAPI, asyncio, and Docker that extracts, sanitises, and delivers multimedia from platforms like YouTube and X directly into Signal chats as native playable attachments. Interfacing with Signal via signal-cli JSON-RPC, the service features an automated URL privacy sanitiser and an adaptive FFmpeg / yt-dlp transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee compliance with Signal's strict 100 MB file limit.
 
 While developing the integration, I discovered and responsibly disclosed a confirmed security and UI-masking vulnerability across official Signal clients (Desktop, Android, and iOS). I identified a protocol-to-UI disconnect where messages bundling an audio track with secondary binary files rendered only the audio waveform, completely concealing the secondary payload, while Desktop’s export handler silently dropped all bundled files onto the recipient’s local disk without visual indication. I conducted root-cause analysis isolating the discrepancy between the underlying Signal Protocol schema and client-side message renderers, verified behaviour across macOS, Android, and iOS with proof-of-concept exploits (uncovering additional media-parsing edge cases on iOS), and collaborated directly with Signal’s Security Team to validate the flaw.
 
@@ -88,7 +88,7 @@ YT-DLP Downloader UI
 
 [Proxy_sh](https://github.com/Shawshank01/proxy_sh)
 
-**proxy_sh** is an automated Linux infrastructure and proxy orchestration tool built in Bash that provisions, hardens, and manages containerised Xray (VLESS-XHTTP-REALITY) and Shadowsocks-rust (2022) services via Docker and Docker Compose. It features automated cross-distribution environment setup, TLS 1.3/HTTP-2 pre-flight domain validation, and loopback fallback hardening to resist active network probing and traffic hijacking. The tool implements a multi-tenant bandwidth governance engine that interfaces with Xray’s internal stats API to enforce per-user data quotas and anniversary billing cycles through automated systemd timers or cron jobs. It incorporates OpenSSL cryptographic signature verification for secure self-updates, non-destructive user lifecycle management, and dynamic configuration generation across dual-stack IPv4/IPv6 networks.
+**proxy_sh** is an automated Linux infrastructure and proxy orchestration tool built in Bash that provisions, hardens, and manages containerised Xray (VLESS-XHTTP-REALITY) and Shadowsocks-rust (2022) services via Docker and Docker Compose. It features automated cross-distribution environment setup, TLS 1.3 / HTTP/2 pre-flight domain validation, and loopback fallback hardening to resist active network probing and traffic hijacking. The tool implements a multi-tenant bandwidth governance engine that interfaces with Xray’s internal stats API to enforce per-user data quotas and anniversary billing cycles through automated systemd timers or cron jobs. It incorporates OpenSSL cryptographic signature verification for secure self-updates, non-destructive user lifecycle management, and dynamic configuration generation across dual-stack IPv4/IPv6 networks.
 
 ---
 
