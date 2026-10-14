@@ -19,6 +19,7 @@ const resume = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
+    image: z.string().optional(),
   }),
 });
 

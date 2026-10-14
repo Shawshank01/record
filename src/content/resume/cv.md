@@ -1,6 +1,7 @@
 ---
 title: "Diwen Xiao's CV"
 description: "A passionate Software Engineer / Full-Stack Developer with a strong academic foundation in advanced software development and practical experience architecting modern, highly scalable full-stack applications"
+image: "/cv/persona.jpeg"
 ---
 
 ## Contact
