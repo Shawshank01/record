@@ -2,7 +2,7 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updateDate: 2026-04-17
+updateDate: 2026-10-15
 tags:
   - macOS
   - iOS
@@ -117,3 +117,21 @@ Secondly, if you feel you have waited long enough after opening a YouTube page, 
 ![UBOL Settings](/2026-01-17/ubol-settings.png)
 
 Then change it back to `Optimal`. The webpage will refresh automatically and the ads and shorts will have disappeared!
+
+---
+
+## Bonus
+
+To avoid being tracked by this blog, enable `Developer mode` in uBOL and add the following to the **Custom DNR rules**:
+
+```text
+---
+# ||api.michifumi.de^
+action:
+  type: block
+condition:
+  requestDomains:
+    - api.michifumi.de
+priority: 10
+---
+```
