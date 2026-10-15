@@ -17,7 +17,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.8",
     "remark-github-blockquote-alert": "^2.1.0",
-    "sanitize-html": "^2.18.0",
+    "sanitize-html": "^2.18.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

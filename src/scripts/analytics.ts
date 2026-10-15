@@ -1,4 +1,5 @@
-if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+// Only track visits on the public production domain (prevents recording pn dev / localhost / LAN IPs)
+if (location.hostname === "michifumi.de" || location.hostname === "www.michifumi.de") {
   const endpoint = "https://api.michifumi.de/v1/ping";
   const payload = JSON.stringify({
     path: window.location.pathname,

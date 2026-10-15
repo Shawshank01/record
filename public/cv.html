@@ -846,7 +846,8 @@
           <ul class="project-bullets">
             <li>
               <strong>Microservice Architecture &amp; Media Pipeline:</strong> Built a containerized asynchronous Python
-              microservice using <strong>FastAPI, asyncio, and Docker</strong> that interfaces with Signal via signal-cli
+              microservice using <strong>FastAPI, asyncio, and Docker</strong> that interfaces with Signal via
+              signal-cli
               JSON-RPC. Implemented an automated URL privacy sanitizer and an adaptive <strong>FFmpeg / yt-dlp</strong>
               transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee strict
               compliance with Signal's 100 MB payload limit.
@@ -1010,6 +1011,33 @@
 
   </div>
 
+  <script>
+    if (location.hostname === "michifumi.de" || location.hostname === "www.michifumi.de") {
+      const endpoint = "https://api.michifumi.de/v1/ping";
+      const payload = JSON.stringify({
+        path: window.location.pathname,
+        referrer: document.referrer || "",
+      });
+
+      try {
+        if (navigator.sendBeacon) {
+          const blob = new Blob([payload], { type: "text/plain" });
+          const ok = navigator.sendBeacon(endpoint, blob);
+          if (!ok) throw new Error("sendBeacon returned false");
+        } else {
+          throw new Error("sendBeacon not available");
+        }
+      } catch {
+        fetch(endpoint, {
+          method: "POST",
+          body: payload,
+          keepalive: true,
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
+        }).catch((err) => console.warn("[analytics] fetch failed", err));
+      }
+    }
+  </script>
 </body>
 
 </html>
