@@ -109,7 +109,10 @@ YT-DLP Downloader UI
 
 [Proxy_sh](https://github.com/Shawshank01/proxy_sh)
 
-**proxy_sh** is an automated Linux infrastructure and proxy orchestration tool built in Bash that provisions, hardens, and manages containerised Xray (VLESS-XHTTP-REALITY) and Shadowsocks-rust (2022) services via Docker and Docker Compose. It features automated cross-distribution environment setup, TLS 1.3 / HTTP/2 pre-flight domain validation, and loopback fallback hardening to resist active network probing and traffic hijacking. The tool implements a multi-tenant bandwidth governance engine that interfaces with Xray’s internal stats API to enforce per-user data quotas and anniversary billing cycles through automated systemd timers or cron jobs. It incorporates OpenSSL cryptographic signature verification for secure self-updates, non-destructive user lifecycle management, and dynamic configuration generation across dual-stack IPv4/IPv6 networks.
+- **Linux Infrastructure Automation:** Engineered a 4,400+ line automated Linux deployment and orchestration engine in Bash, provisioning hardened, containerised Xray (VLESS-XHTTP-REALITY) and Shadowsocks-rust (2022) services via Docker Compose across 6+ distributions (Debian, Ubuntu, RHEL, Fedora).
+- **Cryptographic Validation & Network Defense:** Designed TLS 1.3 / HTTP/2 pre-flight domain validation and loopback fallback isolation (dokodemo-door routing to 127.0.0.1:10086) to neutralize active network probing, SNI spoofing, and DPI traffic fingerprinting.
+- **Bandwidth Governance & Concurrency:** Built a multi-tenant bandwidth accounting engine querying Xray's gRPC telemetry API, enforcing per-user quotas and anniversary billing cycles via a low-overhead systemd daemon with re-entrant file locking and automated configuration rollbacks on failure.
+- **Supply Chain Security & Lifecycle Automation:** Implemented a zero-trust self-updating pipeline with detached OpenSSL RSA signature verification and SHA256 integrity checks, supporting non-destructive user lifecycle provisioning and dual-stack IPv4/IPv6 networking.
 
 ---
 

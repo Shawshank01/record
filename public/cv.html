@@ -1050,7 +1050,7 @@
         <div class="project-card">
           <div class="project-header">
             <div class="project-title-group">
-              <span class="project-title">proxy_sh &ndash; Infrastructure Automation &amp; Network Hardening</span>
+              <span class="project-title">proxy_sh</span>
             </div>
             <div class="project-links">
               <a href="https://github.com/Shawshank01/proxy_sh" target="_blank">
@@ -1064,24 +1064,25 @@
           </div>
           <ul class="project-bullets">
             <li>
-              <strong>Linux Infrastructure Automation:</strong> Engineered an automated Linux deployment and
-              orchestration tool in <strong>Bash</strong> that provisions, hardens, and manages containerised Xray
-              (VLESS-XHTTP-REALITY) and Shadowsocks-rust (2022) services via <strong>Docker and Docker Compose</strong>.
+              <strong>Linux Infrastructure Automation:</strong> Engineered a 4,400+ line automated Linux deployment and
+              orchestration engine in Bash, provisioning hardened, containerised Xray (VLESS-XHTTP-REALITY) and
+              Shadowsocks-rust (2022) services via Docker Compose across 6+ distributions (Debian, Ubuntu, RHEL,
+              Fedora).
             </li>
             <li>
-              <strong>Cryptographic Validation &amp; Network Defense:</strong> Configured TLS 1.3 / HTTP/2 pre-flight
-              domain validation and loopback fallback hardening to resist active network probing and deep packet
-              inspection (DPI) traffic hijacking.
+              <strong>Cryptographic Validation &amp; Network Defense:</strong> Designed TLS 1.3 / HTTP/2 pre-flight
+              domain validation and loopback fallback isolation (dokodemo-door routing to 127.0.0.1:10086) to neutralize
+              active network probing, SNI spoofing, and DPI traffic fingerprinting.
             </li>
             <li>
-              <strong>Bandwidth Governance &amp; Quotas:</strong> Implemented a multi-tenant bandwidth governance engine
-              interfacing with Xray's internal stats API to enforce per-user data quotas and billing cycles through
-              automated <strong>systemd timers</strong> and cron jobs.
+              <strong>Bandwidth Governance &amp; Concurrency:</strong> Built a multi-tenant bandwidth accounting engine
+              querying Xray's gRPC telemetry API, enforcing per-user quotas and anniversary billing cycles via a
+              low-overhead systemd daemon with re-entrant file locking and automated configuration rollbacks on failure.
             </li>
             <li>
-              <strong>Automated Lifecycle &amp; Dual-Stack Support:</strong> Built tamper-proof self-updating via
-              OpenSSL cryptographic signature verification, non-destructive user lifecycle management, and dynamic
-              configuration generation across dual-stack IPv4/IPv6 networks.
+              <strong>Supply Chain Security &amp; Lifecycle Automation:</strong> Implemented a zero-trust self-updating
+              pipeline with detached OpenSSL RSA signature verification and SHA256 integrity checks, supporting
+              non-destructive user lifecycle provisioning and dual-stack IPv4/IPv6 networking.
             </li>
           </ul>
         </div>
