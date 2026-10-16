@@ -14,10 +14,11 @@ image: "/cv/persona.jpeg"
 
 ## Tech Stack
 
-- **Languages:** TypeScript, JavaScript, Python, Java, Bash / Shell Script, HTML, CSS
+- **Languages:** TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++
 - **Frameworks & Runtimes:** React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS
-- **Data Engineering & AI:** Apache Kafka, Apache Spark, ONNX Runtime, DistilBERT
-- **Databases:** Oracle 23ai, PostgreSQL, MongoDB, YugabyteDB
+- **AI & Natural Language Processing:** Open-source AI model (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration
+- **Data Engineering & Streaming:** Apache Kafka, Apache Spark, WebSockets
+- **Databases:** Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB
 - **DevOps & Cloud:** Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP
 - **Networking & Security:** REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL
 
@@ -65,7 +66,7 @@ image: "/cv/persona.jpeg"
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
 
-Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise online toxicity and coordinated harassment campaigns across decentralised social networks (Bluesky & Mastodon). Engineered an end-to-end event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time WebSocket and Web Push (VAPID) notification services via Node.js/Express, delivering an interactive React/TypeScript dashboard continuously deployed to Vercel.
+Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise online toxicity and coordinated harassment campaigns across social networks. Engineered an end-to-end event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time WebSocket and Web Push (VAPID) notification services via Node.js/Express, delivering an interactive React/TypeScript dashboard continuously deployed to Vercel.
 
 ![Homepage0](/cv/UI-Walkthrough-00.jpeg)
 Homepage Top
@@ -73,13 +74,13 @@ Homepage Top
 ![Homepage1](/cv/UI-Walkthrough-01.jpeg)
 Homepage Bottom
 
-- **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles—facilitating sprint planning, daily stand-ups, backlog grooming, and retrospectives. Actively mediated technical friction across frontend and data tiers, balancing task allocation to consistently deliver working increments on schedule.
+- **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles, facilitating sprint planning, daily stand-ups, backlog grooming, and retrospectives. Actively mediated technical friction across frontend, backend and data tiers, balancing task allocation to consistently deliver working increments on schedule.
 - **Stakeholder Feedback & User-Centric Iteration:** Drove end-to-end user research by conducting target demographic surveys and designing interactive **Figma** prototypes. Executed usability testing and face-to-face pilot interviews, translating qualitative user feedback into prioritised product backlog features (e.g., customizable threat thresholds, keyword filters, and dark mode).
 - **Decoupled System Architecture & Real-Time Services:** Designed a resilient, multi-tier architecture with clean interface contracts. Engineered an **Express/Node.js** backend integrating bidirectional **WebSockets** for live gauge telemetry and an automated background monitoring engine with intelligent cooldown throttling to prevent alert fatigue.
 - **CI/CD Pipeline & Cloud Deployment:** Established production-like CI/CD workflows, deploying the **React, TypeScript, and Vite** frontend via **Vercel** with Git-driven automated builds and preview environments. Configured cloud infrastructure with environment isolation, CORS whitelisting, TLS/SSL termination, and secure Oracle Cloud Wallet credentials.
-- **Distributed Data Pipeline & AI Inference:** Engineered an event-driven data pipeline using **Apache Kafka** and **PySpark Structured Streaming** to ingest live feeds from Bluesky and Mastodon. Executed distributed NLP inference using **Vectorized Pandas UDFs** and ONNX Runtime with a fine-tuned **DistilBERT** model, achieving over 85% threat classification accuracy.
+- **Distributed Data Pipeline & AI Inference:** Engineered an event-driven data pipeline using **Apache Kafka** and **PySpark Structured Streaming** to ingest live feeds from social media platforms. Executed distributed NLP inference using **Vectorized Pandas UDFs** and **ONNX Runtime** with a fine-tuned **DistilBERT** model, achieving over 85% threat classification accuracy.
 - **Graph Analytics & Interactive Dashboards:** Developed complex, interactive data visualisations integrating **Cytoscape.js** and the **Louvain** community detection algorithm to map coordinated harassment networks, complemented by **ApexCharts** for real-time sentiment trends.
-- **Enterprise Security, RBAC & Data Lineage:** Implemented **JWT** authentication and **Bcrypt** hashing, established database **Role-Based Access Control (RBAC)** in Oracle 23ai, and enforced an audit-compliant **data lineage** model (retaining raw posts alongside inferences) to support GDPR compliance and traceability.
+- **Enterprise Security, RBAC & Data Lineage:** Implemented **JWT** authentication and **Bcrypt** hashing, established database **Role-Based Access Control (RBAC)** in Oracle 26ai, and enforced an audit-compliant data lineage model (retaining raw posts alongside inferences) to support GDPR compliance and traceability.
 
 [Social Threat Guardian UI Walkthrough Video](https://youtu.be/svm_mfvKZiM)
 
