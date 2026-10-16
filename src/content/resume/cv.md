@@ -41,6 +41,26 @@ image: "/cv/persona.jpeg"
 
 ---
 
+## Work Experience
+
+### International Trader (Data, ERP & IT Operations)
+
+Shenzhen Zhaokang Investment Co., Ltd. 2016 - 2022
+
+> Bridged global commercial trade operations across **Japan, Switzerland, Brazil, and Russia** with internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating large-scale trade data processing, and administering office network architecture.
+
+- **Trade Data Processing & ETL Automation:** Processed, cleaned, and reconciled large volumes of multi-currency international trade, customs, and logistics datasets. Transitioned legacy manual spreadsheet workflows into automated **Python** and **SQL** data-cleaning pipelines to eliminate formatting discrepancies and accelerate monthly financial reporting.
+
+- **ERP Administration & Inventory Governance:** Managed end-to-end inventory lifecycles, SKU tracking, and supply-chain data synchronization within the enterprise **ERP system**. Configured custom database queries, validation rules, and automated data imports/exports to maintain real-time stock accuracy across global suppliers and warehouses.
+
+- **Network & IT Infrastructure Management:** Served as the primary on-site IT administrator for office network infrastructure, configuring and maintaining routers, switches, firewalls, VLANs, and secure VPN/proxy tunnels to ensure stable, low-latency international connectivity and reliable access to global trade platforms such as LME and Bloomberg.
+
+- **Cross-Functional Stakeholder & Global Partner Coordination:** Directed multilingual commercial and operational communications with international counterparties across **Japan, Switzerland, Brazil, and Russia**, while acting as the internal technical liaison to external ERP/software vendors to translate business bottlenecks into system workflow improvements.
+
+- **Key Achievement - Cross-Border Factory Relocation (Shenzhen to the Philippines):** Spearheaded the end-to-end project management and execution of a full-scale factory relocation from Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the seamless migration of **ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity** to bring the overseas facility into full operational readiness on schedule.
+
+---
+
 ## MSc Final Year Team Project <sup>as Team Leader</sup>
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
