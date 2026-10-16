@@ -46,8 +46,8 @@
       font-family: var(--font-family);
       color: var(--text);
       background-color: #334155;
-      line-height: 1.42;
-      font-size: 9.1pt;
+      line-height: 1.35;
+      font-size: 8.6pt;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -100,8 +100,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 0 48px;
-      gap: 24px;
+      padding: 20px 0 40px;
+      gap: 20px;
     }
 
     .page {
@@ -111,7 +111,7 @@
       min-height: 297mm;
       background: #ffffff;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      padding: 10mm 13mm 9mm;
+      padding: 8mm 12mm 7mm;
       box-sizing: border-box;
       overflow: hidden;
       position: relative;
@@ -143,26 +143,26 @@
 
     .header {
       border-bottom: 2px solid var(--secondary);
-      padding-bottom: 7px;
-      margin-bottom: 8px;
+      padding-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     .header-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: 3px;
+      margin-bottom: 1.5px;
     }
 
     .name {
-      font-size: 21pt;
+      font-size: 19pt;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: var(--primary);
     }
 
     .title-role {
-      font-size: 10.5pt;
+      font-size: 9.8pt;
       font-weight: 700;
       color: var(--secondary);
       letter-spacing: -0.01em;
@@ -172,28 +172,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      font-size: 8.4pt;
+      gap: 10px;
+      font-size: 8.05pt;
       color: var(--text-muted);
-      margin-top: 3px;
+      margin-top: 1.5px;
     }
 
     .contact-group {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 4px 12px;
+      gap: 2px 10px;
     }
 
     .contact-item {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3.5px;
     }
 
     .contact-item svg {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       fill: currentColor;
       color: var(--accent);
       flex-shrink: 0;
@@ -203,16 +203,16 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
-      margin-top: 5px;
-      font-size: 8.2pt;
+      gap: 7px;
+      margin-top: 3.5px;
+      font-size: 7.85pt;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 7px;
+      padding: 1.2px 6px;
       border-radius: 4px;
       font-weight: 600;
     }
@@ -231,55 +231,45 @@
 
     /* Section Component */
     .section {
-      margin-bottom: 8px;
+      margin-bottom: 4.5px;
     }
 
     .section-title {
-      font-size: 9.8pt;
+      font-size: 9.2pt;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--secondary);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      margin-bottom: 5px;
+      padding-bottom: 1.5px;
+      margin-bottom: 3px;
     }
 
     .section-title svg {
-      width: 13px;
-      height: 13px;
+      width: 11.5px;
+      height: 11.5px;
       fill: currentColor;
     }
 
-    /* Profile Summary */
-    .summary-text {
-      font-size: 8.65pt;
-      color: var(--text);
-      line-height: 1.38;
-      text-align: justify;
-    }
-
-    /* Skills Grid */
+    /* Tech Stack Grid */
     .skills-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 3.5px 14px;
-      font-size: 8.4pt;
+      gap: 1.8px 14px;
+      font-size: 8.05pt;
     }
 
     .skill-category {
-      display: flex;
-      line-height: 1.32;
+      line-height: 1.26;
     }
 
     .skill-label {
       font-weight: 700;
       color: var(--primary);
-      width: 125px;
-      flex-shrink: 0;
+      margin-right: 3px;
     }
 
     .skill-list {
@@ -288,7 +278,7 @@
 
     /* Education */
     .edu-item {
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
 
     .edu-item:last-child {
@@ -299,7 +289,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 8.9pt;
+      font-size: 8.5pt;
     }
 
     .edu-institution {
@@ -308,7 +298,7 @@
     }
 
     .edu-date {
-      font-size: 8.3pt;
+      font-size: 7.95pt;
       color: var(--text-muted);
       font-style: italic;
     }
@@ -316,28 +306,73 @@
     .edu-degree {
       display: flex;
       justify-content: space-between;
-      font-size: 8.6pt;
+      font-size: 8.2pt;
       font-weight: 600;
       color: var(--secondary);
-      margin-top: 1px;
+      margin-top: 0.5px;
     }
 
     .edu-grade {
       font-weight: 700;
       color: #047857;
-      font-size: 8.3pt;
+      font-size: 7.95pt;
     }
 
     .edu-modules {
-      font-size: 8.05pt;
+      font-size: 7.75pt;
       color: var(--text-muted);
-      line-height: 1.28;
-      margin-top: 1.5px;
+      line-height: 1.22;
+      margin-top: 0.5px;
+    }
+
+    /* Work Experience */
+    .work-item {
+      margin-bottom: 3px;
+    }
+
+    .work-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .work-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 8.5pt;
+    }
+
+    .work-company {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .work-date {
+      font-size: 7.95pt;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .work-role {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.2pt;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-top: 0.5px;
+    }
+
+    .work-summary {
+      font-size: 8.05pt;
+      color: var(--text);
+      line-height: 1.30;
+      margin-top: 1px;
+      margin-bottom: 2.5px;
+      text-align: justify;
     }
 
     /* Projects */
     .project-card {
-      margin-bottom: 7px;
+      margin-bottom: 4px;
     }
 
     .project-card:last-child {
@@ -348,57 +383,57 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 1.5px;
     }
 
     .project-title-group {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
     .project-title {
-      font-size: 9.7pt;
+      font-size: 9.1pt;
       font-weight: 800;
       color: var(--primary);
     }
 
     .project-role-badge {
-      font-size: 7.5pt;
+      font-size: 7pt;
       font-weight: 700;
       background: #fef3c7;
       color: #92400e;
       border: 1px solid #fde68a;
-      padding: 1px 5px;
+      padding: 0.5px 4px;
       border-radius: 3px;
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
 
     .project-links {
-      font-size: 8.3pt;
+      font-size: 7.95pt;
       display: inline-flex;
-      gap: 8px;
+      gap: 7px;
     }
 
     .project-links a {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 2.5px;
     }
 
     .project-links svg {
-      width: 10px;
-      height: 10px;
+      width: 9.5px;
+      height: 9.5px;
       fill: currentColor;
     }
 
     .project-summary {
-      font-size: 8.65pt;
+      font-size: 8.05pt;
       color: var(--text);
-      line-height: 1.40;
-      margin-bottom: 6.5px;
+      line-height: 1.30;
+      margin-bottom: 2.5px;
       text-align: justify;
     }
 
@@ -409,10 +444,10 @@
 
     .project-bullets li {
       position: relative;
-      padding-left: 11px;
-      margin-bottom: 5.5px;
-      font-size: 8.5pt;
-      line-height: 1.38;
+      padding-left: 10px;
+      margin-bottom: 2.5px;
+      font-size: 8.05pt;
+      line-height: 1.30;
       color: var(--text);
       text-align: justify;
     }
@@ -426,7 +461,7 @@
       position: absolute;
       left: 0;
       color: var(--accent);
-      font-size: 8.5pt;
+      font-size: 8pt;
       line-height: 1.2;
     }
 
@@ -435,20 +470,64 @@
       font-weight: 700;
     }
 
+
+    /* Page 2 Specific Spacing & Typography */
+    .page-2 .section {
+      margin-bottom: 6px;
+    }
+
+    .page-2 .project-card {
+      margin-bottom: 11px;
+    }
+
+    .page-2 .project-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-2 .project-title {
+      font-size: 9.35pt;
+    }
+
+    .page-2 .project-links {
+      font-size: 8.15pt;
+    }
+
+    .page-2 .project-bullets li {
+      font-size: 8.4pt;
+      line-height: 1.37;
+      margin-bottom: 4.5px;
+    }
+
+    .page-2 .project-bullets li:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-2 .availability-banner {
+      margin-top: 12px;
+      padding: 7px 12px;
+      font-size: 8.2pt;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     /* Page Footer Info */
     .page-footer {
       margin-top: auto;
-      padding-top: 4px;
+      padding-top: 3px;
       border-top: 1px solid var(--border-light);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 7.7pt;
+      font-size: 7.3pt;
       color: var(--text-light);
     }
 
     /* =========================================================
-       PRINT STYLES (Strict 2-Page Guarantee)
+       PRINT STYLES
        ========================================================= */
     @page {
       size: A4 portrait;
@@ -484,7 +563,7 @@
         height: 296.5mm !important;
         max-height: 296.5mm !important;
         min-height: 296.5mm !important;
-        padding: 9.5mm 13mm 8.5mm !important;
+        padding: 7.5mm 12mm 6.5mm !important;
         box-shadow: none !important;
         margin: 0 !important;
         box-sizing: border-box !important;
@@ -533,9 +612,9 @@
   <div class="page-container">
 
     <!-- =========================================================
-         PAGE 1: Header, Summary, Skills, Education, Flagship Project
+         PAGE 1: Header, Skills, Education, Work Experience, MSc Project
          ========================================================= -->
-    <div class="page">
+    <div class="page page-1">
 
       <!-- Header -->
       <header class="header">
@@ -620,38 +699,43 @@
         </div>
       </header>
 
-      <!-- Technical Skills -->
+      <!-- Tech Stack -->
       <section class="section">
         <h2 class="section-title">
           <svg viewBox="0 0 24 24">
             <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
           </svg>
-          Technical Skills
+          Tech Stack
         </h2>
         <div class="skills-grid">
           <div class="skill-category">
             <span class="skill-label">Languages:</span>
-            <span class="skill-list">TypeScript, JavaScript, Python, Java, Bash / Shell Script, HTML, CSS</span>
+            <span class="skill-list">TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++</span>
           </div>
           <div class="skill-category">
-            <span class="skill-label">Frameworks &amp; Web:</span>
+            <span class="skill-label">Frameworks &amp; Runtimes:</span>
             <span class="skill-list">React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS</span>
           </div>
           <div class="skill-category">
-            <span class="skill-label">Data Engineering &amp; AI:</span>
-            <span class="skill-list">Apache Kafka, Apache Spark, ONNX Runtime, DistilBERT</span>
+            <span class="skill-label">AI &amp; Natural Language Processing:</span>
+            <span class="skill-list">Open-source AI model (Hugging Face), ONNX, PySpark ML, Prompt Engineering &amp; API
+              Integration</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">Data Engineering &amp; Streaming:</span>
+            <span class="skill-list">Apache Kafka, Apache Spark, WebSockets</span>
           </div>
           <div class="skill-category">
             <span class="skill-label">Databases:</span>
-            <span class="skill-list">Oracle 23ai (Autonomous DB), PostgreSQL, MongoDB, YugabyteDB</span>
+            <span class="skill-list">Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB</span>
           </div>
           <div class="skill-category">
             <span class="skill-label">DevOps &amp; Cloud:</span>
             <span class="skill-list">Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP</span>
           </div>
-          <div class="skill-category">
+          <div class="skill-category" style="grid-column: span 2;">
             <span class="skill-label">Networking &amp; Security:</span>
-            <span class="skill-list">REST / JSON-RPC APIs, WebSockets, Web Push (VAPID), TLS, HTTP/2, OpenSSL</span>
+            <span class="skill-list">REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL</span>
           </div>
         </div>
       </section>
@@ -674,9 +758,8 @@
             <span class="edu-grade">Second Class Honours, First Division (2.1)</span>
           </div>
           <div class="edu-modules">
-            <strong>Modules:</strong> Systems Architectures, Advanced Databases, Programming Paradigms, Software Design,
-            Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific
-            Research, Problem Solving
+            <strong>Key Modules:</strong> Systems Architectures, Advanced Databases, Secure Systems Development, Web
+            Applications Architectures, Data Management, Software Design, Scientific Research
           </div>
         </div>
 
@@ -690,15 +773,67 @@
             <span class="edu-grade">Second Class Honours, Grade One (2.1)</span>
           </div>
           <div class="edu-modules">
-            <strong>Modules:</strong> Web Design and Client Side Scripting, Software Development, Databases, Object
-            Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures,
-            Computer Architecture Operating Systems and Networks
+            <strong>Key Modules:</strong> Distributed Systems, Algorithms &amp; Advanced Programming, Object Oriented
+            Software Engineering, Databases, Web Design &amp; Client Side Scripting, Data Structures
           </div>
         </div>
       </section>
 
-      <!-- Flagship Project -->
-      <section class="section" style="flex: 1; margin-bottom: 0;">
+      <!-- Work Experience -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+          </svg>
+          Work Experience
+        </h2>
+
+        <div class="work-item">
+          <div class="work-header">
+            <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
+            <span class="work-date">2016 &ndash; 2022</span>
+          </div>
+          <div class="work-role">
+            <span>International Trader &ndash; Data, ERP &amp; IT Operations</span>
+          </div>
+          <div class="work-summary">
+            Bridged global commercial operations across <strong>Japan, Switzerland, Brazil, and Russia</strong> with
+            internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating trade data
+            processing, and administering office network systems.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Trade Data Processing &amp; ETL Automation:</strong> Automated multi-currency trade, customs, and
+              logistics datasets via <strong>Python</strong> and <strong>SQL</strong> data pipelines, replacing legacy
+              spreadsheets and accelerating monthly financial reporting.
+            </li>
+            <li>
+              <strong>ERP Administration &amp; Inventory Governance:</strong> Managed inventory lifecycles and SKU
+              tracking in the enterprise <strong>ERP system</strong>, configuring custom queries, validation rules, and
+              automated import/export routines for real-time stock accuracy.
+            </li>
+            <li>
+              <strong>Network &amp; IT Infrastructure Management:</strong> Administered office IT and network
+              architecture (routers, switches, firewalls, VLANs, secure VPN tunnels), ensuring stable, low-latency
+              connectivity to global trade platforms like LME and Bloomberg.
+            </li>
+            <li>
+              <strong>Cross-Functional Stakeholder Coordination:</strong> Directed multilingual commercial operations
+              across <strong>Japan, Switzerland, Brazil, and Russia</strong>, acting as technical liaison to software
+              vendors to streamline ERP system workflows.
+            </li>
+            <li>
+              <strong>Key Achievement &ndash; Factory Relocation (Shenzhen to Philippines):</strong> Spearheaded
+              technical execution of factory relocation from Shenzhen to Philippines, orchestrating equipment logistics,
+              customs, and migration of <strong>ERP ledgers, supply chains, and network connectivity</strong>.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- MSc Final Year Team Project -->
+      <section class="section">
         <h2 class="section-title">
           <svg viewBox="0 0 24 24">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -732,55 +867,52 @@
 
           <div class="project-summary">
             Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise
-            online toxicity and coordinated harassment campaigns across decentralised social networks (Bluesky AT
-            Protocol &amp; Mastodon Fediverse). Engineered an end-to-end event-driven architecture featuring
-            high-throughput Apache Kafka streaming, distributed PySpark and ONNX inference, and an Oracle Autonomous
-            Database with full data lineage preservation, deployed to Vercel.
+            online toxicity and coordinated harassment campaigns across social networks. Engineered an end-to-end
+            event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX
+            inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time
+            WebSocket and Web Push (VAPID) notification services via Node.js/Express, delivering an interactive
+            React/TypeScript dashboard continuously deployed to Vercel.
           </div>
 
           <ul class="project-bullets">
             <li>
               <strong>Agile Leadership &amp; Sprint Cadence:</strong> Served as Team Lead for 3 developers across weekly
-              Scrum sprint cycles—facilitating sprint planning, daily stand-ups, backlog grooming, and weekly
-              retrospectives. Actively mediated cross-tier integration friction between frontend and data engineers to
-              consistently deliver working increments on schedule.
+              Agile/Scrum sprint cycles, facilitating sprint planning, stand-ups, backlog grooming, and retrospectives
+              to consistently deliver on schedule.
             </li>
             <li>
-              <strong>Stakeholder Feedback &amp; User-Centric Iteration:</strong> Drove end-to-end user research via
-              demographic survey design and interactive <strong>Figma</strong> prototypes. Executed usability testing
-              and face-to-face pilot interviews, translating qualitative feedback into prioritized backlog features
-              (customizable threat thresholds, keyword filters, and dark mode).
+              <strong>Stakeholder Feedback &amp; User-Centric Iteration:</strong> Drove user research via surveys and
+              interactive <strong>Figma</strong> prototypes. Executed usability testing and pilot interviews,
+              translating user feedback into prioritised features (threat thresholds, keyword filters, dark mode).
             </li>
             <li>
-              <strong>Decoupled Architecture &amp; Real-Time Services:</strong> Designed a resilient multi-tier
-              architecture with clean interface contracts. Engineered an <strong>Express/Node.js</strong> backend
-              integrating bidirectional <strong>WebSockets</strong> for sub-second gauge telemetry and an automated
-              background monitor with intelligent cooldown throttling to prevent alert fatigue.
+              <strong>Decoupled System Architecture &amp; Real-Time Services:</strong> Designed a resilient multi-tier
+              architecture with clean interface contracts. Engineered an <strong>Express/Node.js</strong> backend with
+              bidirectional <strong>WebSockets</strong> for live gauge telemetry and an automated background monitoring
+              engine with cooldown throttling.
             </li>
             <li>
               <strong>CI/CD Pipeline &amp; Cloud Deployment:</strong> Established production-like CI/CD workflows,
               deploying the <strong>React, TypeScript, and Vite</strong> frontend via <strong>Vercel</strong> with
-              Git-driven automated builds and preview environments. Configured cloud environment isolation, CORS
-              whitelisting, TLS/SSL termination, and secure Oracle Cloud Wallet credentials.
+              Git-driven automated builds, preview environments, and Oracle Cloud Wallet credentials.
             </li>
             <li>
               <strong>Distributed Data Pipeline &amp; AI Inference:</strong> Engineered an event-driven data pipeline
-              using <strong>Apache Kafka</strong> and <strong>PySpark Structured Streaming</strong> to ingest live feeds
-              from Bluesky and Mastodon. Executed distributed NLP inference using <strong>Vectorized Pandas
-                UDFs</strong> and ONNX Runtime with a fine-tuned <strong>DistilBERT</strong> model, achieving &gt;85%
-              classification accuracy.
+              using <strong>Apache Kafka</strong> and <strong>PySpark Structured Streaming</strong> to ingest live
+              feeds. Executed distributed NLP inference with fine-tuned <strong>DistilBERT</strong> via <strong>ONNX
+                Runtime</strong> (&gt;85% accuracy).
             </li>
             <li>
-              <strong>Graph Analytics &amp; Visualisations:</strong> Developed complex, interactive visualisations
-              integrating <strong>Cytoscape.js</strong> (force-directed layout) and the <strong>Louvain</strong>
-              community detection algorithm to map coordinated harassment networks, complemented by
-              <strong>ApexCharts</strong> for real-time sentiment trends.
+              <strong>Graph Analytics &amp; Interactive Dashboards:</strong> Developed complex, interactive
+              visualisations integrating <strong>Cytoscape.js</strong> and the <strong>Louvain</strong> community
+              detection algorithm to map coordinated harassment networks, complemented by <strong>ApexCharts</strong>
+              for real-time sentiment trends.
             </li>
             <li>
               <strong>Enterprise Security, RBAC &amp; Data Lineage:</strong> Implemented <strong>JWT</strong>
               authentication and <strong>Bcrypt</strong> hashing, established database <strong>Role-Based Access Control
-                (RBAC)</strong> in Oracle 23ai, and enforced an audit-compliant <strong>data lineage</strong> model
-              (retaining raw posts alongside inferences) ensuring GDPR compliance and complete traceability.
+                (RBAC)</strong> in Oracle 26ai, and enforced an audit-compliant <strong>data lineage</strong> model for
+              GDPR compliance and complete traceability.
             </li>
           </ul>
         </div>
@@ -796,21 +928,21 @@
 
 
     <!-- =========================================================
-         PAGE 2: Personal Projects & Engineering Highlights
+         PAGE 2: Technical Projects & Security Engineering
          ========================================================= -->
-    <div class="page">
+    <div class="page page-2">
 
       <!-- Page 2 Header Sub-bar -->
       <div
-        style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--secondary); padding-bottom: 5px; margin-bottom: 8px;">
-        <span style="font-size: 11.5pt; font-weight: 800; color: var(--primary);">DIWEN XIAO</span>
-        <span style="font-size: 8.5pt; color: var(--text-muted);">
-          Software Engineering Projects &bull; Security Research &bull; Open Source
+        style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--secondary); padding-bottom: 4.5px; margin-bottom: 6.5px;">
+        <span style="font-size: 11.2pt; font-weight: 800; color: var(--primary);">DIWEN XIAO</span>
+        <span style="font-size: 8.25pt; color: var(--text-muted);">
+          Technical Projects &bull; Security Engineering &bull; Open Source
         </span>
       </div>
 
       <!-- Personal Projects Section -->
-      <section class="section" style="margin-bottom: 6px;">
+      <section class="section" style="margin-bottom: 4px;">
         <h2 class="section-title">
           <svg viewBox="0 0 24 24">
             <path
@@ -854,8 +986,10 @@
             </li>
             <li>
               <strong>Zero-Day UI Vulnerability Discovery:</strong> Discovered and responsibly disclosed a confirmed
-              UI-masking vulnerability across official Signal clients (Desktop, Android, iOS). Identified a
-              protocol-to-UI disconnect where messages bundling an audio track with secondary binary files rendered only
+              security and UI-masking <strong>0-day</strong> vulnerability across official Signal clients (Desktop,
+              Android, and iOS).
+              Identified a protocol-to-UI disconnect where messages bundling an audio track with secondary binary files
+              rendered only
               the audio waveform, completely concealing the secondary payload while Desktop's export handler silently
               dropped all bundled files onto the recipient's local disk without visual prompt.
             </li>
@@ -989,8 +1123,7 @@
         </div>
 
         <!-- Availability & Relocation Banner -->
-        <div
-          style="background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 8.3pt;">
+        <div class="availability-banner">
           <div>
             <strong style="color: var(--primary);">Availability:</strong> Immediate &bull; Open to On-site, Hybrid &amp;
             Remote roles across Ireland
