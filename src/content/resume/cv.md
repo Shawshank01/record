@@ -16,9 +16,8 @@ image: "/cv/persona.jpeg"
 
 - **Languages:** TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++
 - **Frameworks & Runtimes:** React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS
-- **AI & Natural Language Processing:** Open-source AI model (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration
-- **Data Engineering & Streaming:** Apache Kafka, Apache Spark, WebSockets
-- **Databases:** Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB
+- **AI & Natural Language Processing:** Open-source AI models (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration
+- **Data Engineering & Databases:** Apache Kafka, Apache Spark, Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB
 - **DevOps & Cloud:** Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP
 - **Networking & Security:** REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL
 
@@ -92,7 +91,7 @@ Homepage Bottom
 
 **Signal Media Bot** is a containerised asynchronous Python microservice built with FastAPI, asyncio, and Docker that extracts, sanitises, and delivers multimedia from platforms like YouTube and X directly into Signal chats as native playable attachments. Interfacing with Signal via signal-cli JSON-RPC, the service features an automated URL privacy sanitiser and an adaptive FFmpeg / yt-dlp transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee compliance with Signal's strict 100 MB file limit.
 
-While developing the integration, I discovered and responsibly disclosed a confirmed security and UI-masking **0-day** vulnerability across official Signal clients (Desktop, Android, and iOS). I identified a protocol-to-UI disconnect where messages bundling an audio track with secondary binary files rendered only the audio waveform, completely concealing the secondary payload, while Desktop’s export handler silently dropped all bundled files onto the recipient’s local disk without visual indication. For example, a [installation package for my demo app](https://github.com/Shawshank01/test-apk) can be downloaded silently to the local disk of an Android user's phone and installed easily. I conducted root-cause analysis isolating the discrepancy between the underlying Signal Protocol schema and client-side message renderers, verified behaviour across macOS, Android, and iOS with proof-of-concept exploits (uncovering additional media-parsing edge cases on iOS), and collaborated directly with Signal’s Security Team to validate the flaw.
+While developing the integration, I discovered and responsibly disclosed a confirmed security and UI-masking **0-day** vulnerability across official Signal clients (Desktop, Android, and iOS). I identified a protocol-to-UI disconnect where messages bundling an audio track with secondary binary files rendered only the audio waveform, completely concealing the secondary payload, while Desktop’s export handler silently dropped all bundled files onto the recipient’s local disk without visual indication. For example, the [installation package for my demo app](https://github.com/Shawshank01/test-apk) can be downloaded silently to the local disk of an Android user's phone and installed easily. I conducted root-cause analysis isolating the discrepancy between the underlying Signal Protocol schema and client-side message renderers, verified behaviour across macOS, Android, and iOS with proof-of-concept exploits (uncovering additional media-parsing edge cases on iOS), and collaborated directly with Signal’s Security Team to validate the flaw.
 
 ![signal-security](/cv/signal-security.png)
 Email Correspondence with [Signal Officials](https://support.signal.org/hc/en-us/articles/360007320791-How-can-I-report-a-security-vulnerability)
