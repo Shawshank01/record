@@ -258,12 +258,24 @@
     .skills-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.8px 14px;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
       font-size: 8.05pt;
+      overflow: hidden;
     }
 
     .skill-category {
       line-height: 1.26;
+      padding: 2.2px 8px;
+      border-bottom: 1px solid #94a3b8;
+    }
+
+    .skill-category:nth-child(odd) {
+      border-right: 1px solid #94a3b8;
+    }
+
+    .skill-category:nth-last-child(-n+2) {
+      border-bottom: none;
     }
 
     .skill-label {

@@ -69,6 +69,23 @@ a:hover {
     word-break: break-word;
 }
 
+/* GitHub-style bordered tables */
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.prose th,
+.prose td {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.5rem 0.85rem !important;
+}
+
+.prose thead th {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
 /* Centre images in blog content */
 .prose img {
     display: block;

@@ -14,12 +14,14 @@ image: "/cv/persona.jpeg"
 
 ## Tech Stack
 
-- **Languages:** TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++
-- **Frameworks & Runtimes:** React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS
-- **AI & Natural Language Processing:** Open-source AI models (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration
-- **Data Engineering & Databases:** Apache Kafka, Apache Spark, Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB
-- **DevOps & Cloud:** Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP
-- **Networking & Security:** REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL
+| Category | Technologies |
+| :--- | :--- |
+| **Languages** | TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++ |
+| **Frameworks & Runtimes** | React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS |
+| **AI & Natural Language Processing** | Open-source AI models (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration |
+| **Data Engineering & Databases** | Apache Kafka, Apache Spark, Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB |
+| **DevOps & Cloud** | Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP |
+| **Networking & Security** | REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL |
 
 ---
 
