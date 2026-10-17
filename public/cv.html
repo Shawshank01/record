@@ -477,7 +477,7 @@
     }
 
     .page-2 .project-card {
-      margin-bottom: 5px;
+      margin-bottom: 4.5px;
     }
 
     .page-2 .project-card:last-child {
@@ -495,7 +495,7 @@
     .page-2 .project-bullets li {
       font-size: 8.05pt;
       line-height: 1.28;
-      margin-bottom: 2.2px;
+      margin-bottom: 2.0px;
     }
 
     .page-2 .project-bullets li:last-child {
@@ -503,7 +503,7 @@
     }
 
     .page-2 .availability-banner {
-      margin-top: 6px;
+      margin-top: 5px;
       padding: 6px 12px;
       font-size: 8.05pt;
       background: #f8fafc;
@@ -999,7 +999,8 @@
             <li>
               <strong>Multi-Architecture CI/CD &amp; Automation:</strong> Built an end-to-end workflow using GitHub
               Actions and Docker Buildx that automatically builds and publishes multi-architecture images (linux/amd64,
-              linux/arm64) to Docker Hub on every merge, paired with daily Dependabot scans to proactively patch upstream
+              linux/arm64) to Docker Hub on every merge, paired with daily Dependabot scans to proactively patch
+              upstream
               extractor dependencies.
             </li>
             <li>
@@ -1139,18 +1140,20 @@
           <ul class="project-bullets">
             <li>
               <strong>Full-Stack Architecture &amp; Streaming:</strong> Developed a responsive full-stack web
-              application interfacing with xAI's API to deliver real-time conversational AI and image generation.
-              Engineered a <strong>Node.js/Express</strong> backend proxying API requests and streaming chunked
-              Server-Sent Events (SSE).
+              application interfacing with xAI’s API to deliver real-time conversational AI and image generation.
+              Engineered a high-performance Deno 2 backend leveraging native Web APIs (Deno.serve, ReadableStream) to
+              proxy requests and stream token chunks with low latency.
             </li>
             <li>
-              <strong>Stateful Client &amp; Dynamic Models:</strong> Implemented a lightweight Vanilla JavaScript
-              frontend featuring live Markdown rendering, multi-turn session context preservation, and dynamic model
-              switching between Grok reasoning and image-generation models.
+              <strong>Stateful Client &amp; Security:</strong> Implemented a lightweight Vanilla JavaScript frontend
+              featuring live Markdown rendering sanitized against XSS attacks via DOMPurify, dynamic model switching
+              (Grok reasoning vs. image generation), and multi-turn session persistence via sessionStorage.
             </li>
             <li>
-              <strong>User Experience &amp; Performance:</strong> Designed an intuitive interface with system-adaptive
-              dark mode theming, persistent conversation history in local storage, and low-latency token streaming.
+              <strong>UX &amp; Reliability:</strong> Designed an intuitive interface with automatic OS-adaptive dark
+              mode
+              theming and built an automated test suite (deno test) validating CORS preflights, error boundaries, and
+              static routing.
             </li>
           </ul>
         </div>

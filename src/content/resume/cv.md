@@ -127,4 +127,6 @@ YT-DLP Downloader UI
 
 [xAI-desktop](https://github.com/Shawshank01/xAI-desktop)
 
-**xAI Desktop** is a responsive full-stack web application interfacing with xAI’s API to deliver real-time conversational AI and image generation. Engineered a Node.js/Express backend to proxy API requests and stream chunked responses, paired with a lightweight Vanilla JavaScript frontend featuring live Markdown rendering, multi-turn session context preservation, dynamic model switching across Grok reasoning and image-generation models, and system-adaptive dark mode theming.
+- **Full-Stack Architecture & Streaming:** Developed a responsive full-stack web application interfacing with xAI’s API to deliver real-time conversational AI and image generation. Engineered a high-performance Deno 2 backend leveraging native Web APIs (Deno.serve, ReadableStream) to proxy requests and stream token chunks with low latency.
+- **Stateful Client & Security:** Implemented a lightweight Vanilla JavaScript frontend featuring live Markdown rendering sanitized against XSS attacks via DOMPurify, dynamic model switching (Grok reasoning vs. image generation), and multi-turn session persistence via sessionStorage.
+- **UX & Reliability:** Designed an intuitive interface with automatic OS-adaptive dark mode theming and built an automated test suite (deno test) validating CORS preflights, error boundaries, and static routing.
