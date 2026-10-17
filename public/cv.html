@@ -997,9 +997,10 @@
               (UID 10001).
             </li>
             <li>
-              <strong>Multi-Architecture CI/CD Pipeline:</strong> Configured a multi-architecture CI/CD pipeline
-              (Docker Buildx) targeting amd64 and arm64 platforms for self-hosting on both x86 cloud instances and
-              Raspberry Pi clusters.
+              <strong>Multi-Architecture CI/CD &amp; Automation:</strong> Built an end-to-end workflow using GitHub
+              Actions and Docker Buildx that automatically builds and publishes multi-architecture images (linux/amd64,
+              linux/arm64) to Docker Hub on every merge, paired with daily Dependabot scans to proactively patch upstream
+              extractor dependencies.
             </li>
             <li>
               <strong>Zero-Day UI Vulnerability Discovery:</strong> Discovered and responsibly disclosed a confirmed
@@ -1050,7 +1051,7 @@
               <strong>Hardware Acceleration &amp; Media Pipeline:</strong> Developed an automated video pipeline
               supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive
               subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation
-              (aac_at =&gt; libfdk_aac =&gt; aac), and native MP4 container thumbnail embedding (attached_pic).
+              (aac_at -&gt; libfdk_aac -&gt; aac), and native MP4 container thumbnail embedding (attached_pic).
             </li>
             <li>
               <strong>Hardened Process Management &amp; IPC:</strong> Architected a secure multi-process IPC model
@@ -1123,7 +1124,7 @@
         <div class="project-card">
           <div class="project-header">
             <div class="project-title-group">
-              <span class="project-title">xAI Desktop &ndash; Full-Stack Conversational Client</span>
+              <span class="project-title">xAI Desktop</span>
             </div>
             <div class="project-links">
               <a href="https://github.com/Shawshank01/xAI-desktop" target="_blank">

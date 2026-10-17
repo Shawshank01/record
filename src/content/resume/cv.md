@@ -93,7 +93,7 @@ Homepage Bottom
 - **Adaptive Stream Multiplexer:** Built an adaptive FFmpeg / yt-dlp stream multiplexer that dynamically evaluates bitrates, prioritizes modern codecs (AV1/H.264/AAC), and downscales resolutions to strictly adhere to Signal’s 100 MB payload ceiling.
 - **Concurrency & Webhook Optimization:** Optimized webhook throughput by offloading blocking CPU and disk I/O to worker threads (asyncio.to_thread), maintaining sub-50 ms webhook response times during active downloads.
 - **Privacy Engine & Container Hardening:** Implemented a privacy engine that canonicalizes URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root container (UID 10001).
-- **Multi-Architecture CI/CD Pipeline:** Configured a multi-architecture CI/CD pipeline (Docker Buildx) targeting amd64 and arm64 platforms for self-hosting on both x86 cloud instances and Raspberry Pi clusters.
+- **Multi-Architecture CI/CD & Automation:** Built an end-to-end workflow using GitHub Actions and Docker Buildx that automatically builds and publishes multi-architecture images (linux/amd64, linux/arm64) to Docker Hub on every merge, paired with daily Dependabot scans to proactively patch upstream extractor dependencies.
 
 ![signal-security](/cv/signal-security.png)
 Email Correspondence with [Signal Officials](https://support.signal.org/hc/en-us/articles/360007320791-How-can-I-report-a-security-vulnerability)
@@ -108,7 +108,7 @@ While developing the integration, I discovered and responsibly disclosed a confi
 YT-DLP Downloader UI
 
 - **Cross-Platform Desktop Architecture:** Engineered a high-performance desktop media tool using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux, distributed via DMGs, NSIS installers, and AppImages.
-- **Hardware Acceleration & Media Pipeline:** Developed an automated video pipeline supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation (aac_at => libfdk_aac => aac), and native MP4 container thumbnail embedding (attached_pic).
+- **Hardware Acceleration & Media Pipeline:** Developed an automated video pipeline supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation (aac_at -> libfdk_aac -> aac), and native MP4 container thumbnail embedding (attached_pic).
 - **Hardened Process Management & IPC:** Architected a secure multi-process IPC model enforcing context isolation, command-injection prevention (CWE-78), mutual exclusion task locking, native process tree termination (taskkill /T /F on Windows, SIGKILL on POSIX), and automatic transactional temp-file cleanups.
 - **Stream Processing & Environment Resolution:** Built a custom stream chunk-reassembly buffer (LineStreamFilter) with regex-based log suppression for real-time telemetry streaming; implemented automated multi-tier PATH synthesis and runtime dependency capability inspection across major package managers (Homebrew, MacPorts, WinGet, Scoop).
 - **Authentication & Network Features:** Implemented multi-browser cookie extraction (Chrome, Firefox, Safari, Brave) with macOS Full Disk Access permission handling for authenticated media, and configurable SOCKS5 proxy routing for network restriction bypass.
