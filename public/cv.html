@@ -473,11 +473,11 @@
 
     /* Page 2 Specific Spacing & Typography */
     .page-2 .section {
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .page-2 .project-card {
-      margin-bottom: 11px;
+      margin-bottom: 5px;
     }
 
     .page-2 .project-card:last-child {
@@ -485,17 +485,17 @@
     }
 
     .page-2 .project-title {
-      font-size: 9.35pt;
+      font-size: 9.1pt;
     }
 
     .page-2 .project-links {
-      font-size: 8.15pt;
+      font-size: 7.95pt;
     }
 
     .page-2 .project-bullets li {
-      font-size: 8.4pt;
-      line-height: 1.37;
-      margin-bottom: 4.5px;
+      font-size: 8.05pt;
+      line-height: 1.28;
+      margin-bottom: 2.2px;
     }
 
     .page-2 .project-bullets li:last-child {
@@ -503,9 +503,9 @@
     }
 
     .page-2 .availability-banner {
-      margin-top: 12px;
-      padding: 7px 12px;
-      font-size: 8.2pt;
+      margin-top: 6px;
+      padding: 6px 12px;
+      font-size: 8.05pt;
       background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -976,21 +976,38 @@
           </div>
           <ul class="project-bullets">
             <li>
-              <strong>Microservice Architecture &amp; Media Pipeline:</strong> Built a containerized asynchronous Python
-              microservice using <strong>FastAPI, asyncio, and Docker</strong> that interfaces with Signal via
-              signal-cli
-              JSON-RPC. Implemented an automated URL privacy sanitizer and an adaptive <strong>FFmpeg / yt-dlp</strong>
-              transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee strict
-              compliance with Signal's 100 MB payload limit.
+              <strong>Asynchronous Microservice Architecture:</strong> Engineered an asynchronous microservice
+              interfacing with Signal via signal-cli JSON-RPC, delivering platform media (YouTube, X, Bluesky, TikTok)
+              as
+              native playable attachments.
+            </li>
+            <li>
+              <strong>Adaptive Stream Multiplexer:</strong> Built an adaptive FFmpeg / yt-dlp stream multiplexer that
+              dynamically evaluates bitrates, prioritizes modern codecs (AV1/H.264/AAC), and downscales resolutions to
+              strictly adhere to Signal's 100 MB payload ceiling.
+            </li>
+            <li>
+              <strong>Concurrency &amp; Webhook Optimization:</strong> Optimized webhook throughput by offloading
+              blocking CPU and disk I/O to worker threads (asyncio.to_thread), maintaining sub-50 ms webhook response
+              times during active downloads.
+            </li>
+            <li>
+              <strong>Privacy Engine &amp; Container Hardening:</strong> Implemented a privacy engine that canonicalizes
+              URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root container
+              (UID 10001).
+            </li>
+            <li>
+              <strong>Multi-Architecture CI/CD Pipeline:</strong> Configured a multi-architecture CI/CD pipeline
+              (Docker Buildx) targeting amd64 and arm64 platforms for self-hosting on both x86 cloud instances and
+              Raspberry Pi clusters.
             </li>
             <li>
               <strong>Zero-Day UI Vulnerability Discovery:</strong> Discovered and responsibly disclosed a confirmed
               security and UI-masking <strong>0-day</strong> vulnerability across official Signal clients (Desktop,
-              Android, and iOS).
-              Identified a protocol-to-UI disconnect where messages bundling an audio track with secondary binary files
-              rendered only
-              the audio waveform, completely concealing the secondary payload while Desktop's export handler silently
-              dropped all bundled files onto the recipient's local disk without visual prompt.
+              Android, and iOS). Identified a protocol-to-UI disconnect where messages bundling an audio track with
+              secondary binary files rendered only the audio waveform, completely concealing the secondary payload while
+              Desktop's export handler silently dropped all bundled files onto the recipient's local disk without visual
+              prompt.
             </li>
             <li>
               <strong>Root-Cause Analysis &amp; Exploit Verification:</strong> Conducted root-cause analysis isolating
@@ -1025,7 +1042,8 @@
           <ul class="project-bullets">
             <li>
               <strong>Cross-Platform Desktop Architecture:</strong> Engineered a high-performance desktop media tool
-              using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux, distributed
+              using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux,
+              distributed
               via DMGs, NSIS installers, and AppImages.
             </li>
             <li>

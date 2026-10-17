@@ -89,7 +89,11 @@ Homepage Bottom
 
 [Signal Media Bot](https://github.com/Shawshank01/signal-media-bot)
 
-**Signal Media Bot** is a containerised asynchronous Python microservice built with FastAPI, asyncio, and Docker that extracts, sanitises, and delivers multimedia from platforms like YouTube and X directly into Signal chats as native playable attachments. Interfacing with Signal via signal-cli JSON-RPC, the service features an automated URL privacy sanitiser and an adaptive FFmpeg / yt-dlp transcoding pipeline that dynamically downscales resolutions and multiplexes streams to guarantee compliance with Signal's strict 100 MB file limit.
+- **Asynchronous Microservice Architecture:** Engineered an asynchronous microservice interfacing with Signal via signal-cli JSON-RPC, delivering platform media (YouTube, X, Bluesky, TikTok) as native playable attachments.
+- **Adaptive Stream Multiplexer:** Built an adaptive FFmpeg / yt-dlp stream multiplexer that dynamically evaluates bitrates, prioritizes modern codecs (AV1/H.264/AAC), and downscales resolutions to strictly adhere to Signal’s 100 MB payload ceiling.
+- **Concurrency & Webhook Optimization:** Optimized webhook throughput by offloading blocking CPU and disk I/O to worker threads (asyncio.to_thread), maintaining sub-50 ms webhook response times during active downloads.
+- **Privacy Engine & Container Hardening:** Implemented a privacy engine that canonicalizes URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root container (UID 10001).
+- **Multi-Architecture CI/CD Pipeline:** Configured a multi-architecture CI/CD pipeline (Docker Buildx) targeting amd64 and arm64 platforms for self-hosting on both x86 cloud instances and Raspberry Pi clusters.
 
 ![signal-security](/cv/signal-security.png)
 Email Correspondence with [Signal Officials](https://support.signal.org/hc/en-us/articles/360007320791-How-can-I-report-a-security-vulnerability)
