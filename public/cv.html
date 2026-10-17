@@ -1024,24 +1024,38 @@
           </div>
           <ul class="project-bullets">
             <li>
-              <strong>Cross-Platform Desktop Application:</strong> Developed a high-performance desktop application
-              built with <strong>Electron and Node.js</strong> that interfaces with yt-dlp and FFmpeg to provide
-              seamless media downloading, transcoding, and subtitle processing across macOS, Windows, and Linux.
+              <strong>Cross-Platform Desktop Architecture:</strong> Engineered a high-performance desktop media tool
+              using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux, distributed
+              via DMGs, NSIS installers, and AppImages.
             </li>
             <li>
-              <strong>Media Processing &amp; Hardware Acceleration:</strong> Engineered hardware-accelerated video
-              encoding (H.264/HEVC), platform-adaptive subtitle burn-in (<code>libass</code>), dynamic audio codec
-              negotiation, and native container thumbnail embedding.
+              <strong>Hardware Acceleration &amp; Media Pipeline:</strong> Developed an automated video pipeline
+              supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive
+              subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation
+              (aac_at =&gt; libfdk_aac =&gt; aac), and native MP4 container thumbnail embedding (attached_pic).
             </li>
             <li>
-              <strong>Secure IPC Architecture:</strong> Architected a multi-process IPC model with child process
-              management, real-time download/transcode streaming, atomic task cancellation, and automated system
-              dependency resolution for external binaries.
+              <strong>Hardened Process Management &amp; IPC:</strong> Architected a secure multi-process IPC model
+              enforcing context isolation, command-injection prevention (CWE-78), mutual exclusion task locking, native
+              process tree termination (taskkill /T /F on Windows, SIGKILL on POSIX), and automatic transactional
+              temp-file cleanups.
             </li>
             <li>
-              <strong>Authentication &amp; Network Features:</strong> Implemented multi-browser cookie extraction for
-              authenticated downloads, configurable SOCKS5 proxy routing, playlist batch processing, and custom output
-              formatting.
+              <strong>Stream Processing &amp; Environment Resolution:</strong> Built a custom stream chunk-reassembly
+              buffer (LineStreamFilter) with regex-based log suppression for real-time telemetry streaming; implemented
+              automated multi-tier PATH synthesis and runtime dependency capability inspection across major package
+              managers (Homebrew, MacPorts, WinGet, Scoop).
+            </li>
+            <li>
+              <strong>Authentication &amp; Network Features:</strong> Implemented multi-browser cookie extraction
+              (Chrome, Firefox, Safari, Brave) with macOS Full Disk Access permission handling for authenticated media,
+              and configurable SOCKS5 proxy routing for network restriction bypass.
+            </li>
+            <li>
+              <strong>Automated Multi-OS CI/CD Pipeline:</strong> Built a multi-runner GitHub Actions release matrix
+              targeting macOS, Windows, and Linux across x64 and ARM64 architectures; automated lint verification, build
+              aggregation, PGP-sanitized release notes generation, and binary deployment to GitHub Releases and GitLab
+              mirrors upon tag push.
             </li>
           </ul>
         </div>
