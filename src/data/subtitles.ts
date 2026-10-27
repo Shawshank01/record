@@ -19,4 +19,5 @@ export const headerSubtitleOptions: string[] = [
   "Be honest about what you don't know. You only have to do a very few things right in your life so long as you don't do too many things wrong.\n\u2014 Warren Buffett",
   "Those who would give up essential Liberty, to purchase a little temporary Safety, deserve neither Liberty nor Safety.\n\u2014 Benjamin Franklin",
   "The free man will ask neither what his country can do for him nor what he can do for his country.\nHe will ask rather “What can I and my compatriots do through government” to help us discharge our individual responsibilities, to achieve our several goals and purposes, and above all, to protect our freedom?\n\u2014 Milton Friedman, Capitalism and Freedom (1962)",
+  "Il faut imaginer Sisyphe heureux.\n\u2014 Albert Camus, Le Mythe de Sisyphe",
 ];
