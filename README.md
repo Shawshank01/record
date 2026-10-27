@@ -54,7 +54,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 | --- | --- |
 | Framework | [Astro 7](https://astro.build) (static-site generation) |
 | Styling | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` + `@tailwindcss/typography` |
-| Typography | [Inter](https://fonts.google.com/specimen/Inter), [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) via Google Fonts, and self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) |
+| Typography | 100% self-hosted [Inter](https://rsms.me/inter/) (body, subtitle), [Uncial Antiqua](https://github.com/google/fonts/tree/main/ofl/uncialantiqua) (title), and [Google Sans Code](https://github.com/googlefonts/googlesans-code) (code) |
 | Language | TypeScript, JavaScript, HTML, CSS |
 | Deployment | GitHub Pages via GitHub Actions |
 

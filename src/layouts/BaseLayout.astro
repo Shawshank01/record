@@ -67,7 +67,7 @@ const jsonLd = article
         <link rel="me" href="https://mastodon.social/@haruhayuku" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://mirrors.creativecommons.org https://raw.githubusercontent.com; connect-src 'self' https://api.michifumi.de; frame-src https://giscus.app; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://mirrors.creativecommons.org https://raw.githubusercontent.com; connect-src 'self' https://api.michifumi.de; frame-src https://giscus.app; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
         />
 
         <link rel="canonical" href={canonicalURL} />
@@ -96,11 +96,19 @@ const jsonLd = article
                 />
             )
         }
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Uncial+Antiqua&display=swap"
-            rel="stylesheet"
+            rel="preload"
+            href="/fonts/inter/InterVariable.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="/fonts/uncial-antiqua/UncialAntiqua-Regular.ttf"
+            as="font"
+            type="font/ttf"
+            crossorigin
         />
         <link rel="sitemap" href="/sitemap.xml" />
         <link
