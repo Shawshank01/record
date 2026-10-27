@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Diwen Xiao - Curriculum Vitae (OpenShift &amp; Linux Infrastructure)</title>
+  <style>
+    /* =========================================================
+       RESET & BASE SETUP
+       ========================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #0f172a;
+      /* Slate 900 */
+      --secondary: #1e3a8a;
+      /* Blue 900 */
+      --accent: #2563eb;
+      /* Blue 600 */
+      --accent-light: #eff6ff;
+      /* Blue 50 */
+      --text: #1e293b;
+      /* Slate 800 */
+      --text-muted: #475569;
+      /* Slate 600 */
+      --text-light: #64748b;
+      /* Slate 500 */
+      --border: #cbd5e1;
+      /* Slate 300 */
+      --border-light: #e2e8f0;
+      /* Slate 200 */
+      --bg-tag: #f1f5f9;
+      /* Slate 100 */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--text);
+      background-color: #334155;
+      line-height: 1.36;
+      font-size: 8.65pt;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      hyphens: none;
+      -webkit-hyphens: none;
+    }
+
+    /* Screen Toolbar */
+    .screen-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 11px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-size: 13px;
+    }
+
+    .screen-toolbar .btn-print {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .screen-toolbar .btn-print:hover {
+      background: #1d4ed8;
+    }
+
+    .screen-toolbar .tips {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .screen-toolbar .tips strong {
+      color: #f1f5f9;
+    }
+
+    /* Page Container (A4 Dimension: 210mm x 297mm) */
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 40px;
+      gap: 20px;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      padding: 7mm 12mm 6mm;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Links */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+
+    a:hover {
+      color: var(--secondary);
+      text-decoration: underline;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .header {
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1px;
+    }
+
+    .name {
+      font-size: 18.5pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+    }
+
+    .title-role {
+      font-size: 9.6pt;
+      font-weight: 700;
+      color: var(--secondary);
+      letter-spacing: -0.01em;
+    }
+
+    .contact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 8.0pt;
+      color: var(--text-muted);
+      margin-top: 1.5px;
+    }
+
+    .contact-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px 10px;
+    }
+
+    .contact-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5px;
+      white-space: nowrap;
+    }
+
+    .contact-item svg {
+      width: 10.5px;
+      height: 10.5px;
+      fill: currentColor;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .meta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+      margin-top: 2.5px;
+      font-size: 7.8pt;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1.0px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-visa {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-reloc {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .badge-lang {
+      background: #f8fafc;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Section Component */
+    .section {
+      margin-bottom: 4.5px;
+    }
+
+    .section-title {
+      font-size: 9.15pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5px;
+      margin-bottom: 2.8px;
+    }
+
+    .section-title svg {
+      width: 11.5px;
+      height: 11.5px;
+      fill: currentColor;
+      flex-shrink: 0;
+      vertical-align: -1px;
+    }
+
+    /* Tech Stack Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      font-size: 8.05pt;
+      overflow: hidden;
+    }
+
+    .skill-category {
+      line-height: 1.26;
+      padding: 2.0px 7.5px;
+      border-bottom: 1px solid #94a3b8;
+    }
+
+    .skill-category:nth-child(odd) {
+      border-right: 1px solid #94a3b8;
+    }
+
+    .skill-category:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+
+    .skill-label {
+      font-weight: 700;
+      color: var(--primary);
+      margin-right: 3px;
+    }
+
+    .skill-list {
+      color: var(--text);
+    }
+
+    /* Education */
+    .edu-item {
+      margin-bottom: 2.5px;
+    }
+
+    .edu-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .edu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 8.45pt;
+    }
+
+    .edu-institution {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .edu-date {
+      font-size: 7.9pt;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .edu-degree {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.15pt;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-top: 0.5px;
+    }
+
+    .edu-grade {
+      font-weight: 700;
+      color: #047857;
+      font-size: 7.9pt;
+    }
+
+    .edu-modules {
+      font-size: 7.75pt;
+      color: var(--text);
+      line-height: 1.22;
+      margin-top: 0.5px;
+    }
+
+    /* Projects */
+    .project-card {
+      margin-bottom: 4.0px;
+    }
+
+    .project-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5px;
+    }
+
+    .project-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .project-title {
+      font-size: 9.0pt;
+      font-weight: 800;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .project-role-badge {
+      font-size: 6.9pt;
+      font-weight: 700;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      padding: 0.5px 4px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .project-links {
+      font-size: 7.8pt;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      white-space: nowrap;
+    }
+
+    .project-links svg {
+      width: 9.0px;
+      height: 9.0px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .project-summary {
+      font-size: 8.05pt;
+      color: var(--text);
+      line-height: 1.28;
+      margin-bottom: 2.5px;
+      text-align: justify;
+    }
+
+    .project-bullets {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .project-bullets li {
+      position: relative;
+      padding-left: 10px;
+      margin-bottom: 2.4px;
+      font-size: 8.05pt;
+      line-height: 1.28;
+      color: var(--text);
+      text-align: justify;
+    }
+
+    .project-bullets li:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-bullets li::before {
+      content: "▪";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 8pt;
+      line-height: 1.2;
+    }
+
+    .project-bullets strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Work Experience */
+    .work-item {
+      margin-bottom: 2.5px;
+    }
+
+    .work-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .work-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 8.35pt;
+    }
+
+    .work-company {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .work-date {
+      font-size: 7.85pt;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .work-role {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.1pt;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-top: 0.5px;
+      margin-bottom: 1.5px;
+    }
+
+    .work-summary {
+      font-size: 8.05pt;
+      color: var(--text);
+      line-height: 1.28;
+      margin-top: 1px;
+      margin-bottom: 2.5px;
+      text-align: justify;
+    }
+
+    /* Page 2 Specific Spacing */
+    .page-2 .section {
+      margin-bottom: 4.5px;
+    }
+
+    .page-2 .project-card {
+      margin-bottom: 4.0px;
+    }
+
+    .page-2 .project-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-2 .availability-banner {
+      margin-top: 5px;
+      padding: 6px 12px;
+      font-size: 8.0pt;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Page Footer Info */
+    .page-footer {
+      margin-top: auto;
+      padding-top: 2.5px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7.2pt;
+      color: var(--text-light);
+    }
+
+    /* =========================================================
+       PRINT STYLES
+       ========================================================= */
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    @media print {
+
+      html,
+      body {
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .screen-toolbar {
+        display: none !important;
+      }
+
+      .page-container {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 0 !important;
+      }
+
+      .page {
+        width: 210mm !important;
+        height: 296.5mm !important;
+        max-height: 296.5mm !important;
+        min-height: 296.5mm !important;
+        padding: 6.8mm 12mm 5.8mm !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+      }
+
+      .page:not(:last-child) {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      .page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      a {
+        color: var(--secondary) !important;
+        text-decoration: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Screen Toolbar -->
+  <div class="screen-toolbar">
+    <div>
+      <strong>Diwen Xiao - 2-Page CV (IBM OpenShift &amp; Linux Infrastructure)</strong>
+      <span class="tips" style="margin-left: 12px;">Print Settings: Select <strong>Save as PDF</strong> &bull; Uncheck
+        <strong>Headers and footers</strong> &bull; Check <strong>Background graphics</strong></span>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      <svg style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+        <path
+          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z" />
+      </svg>
+      Print / Save as PDF (Cmd + P)
+    </button>
+  </div>
+
+  <div class="page-container">
+
+    <!-- =========================================================
+         PAGE 1: Header, Skills, Education, Featured Linux/Container Projects
+         ========================================================= -->
+    <div class="page page-1">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="header-top">
+          <div>
+            <h1 class="name">DIWEN XIAO</h1>
+            <div class="title-role">Software Engineer | Linux, Containers &amp; Cloud Infrastructure</div>
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <div class="contact-group">
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+              <a href="mailto:lelouch@outlook.ie">lelouch@outlook.ie</a>
+            </span>
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+              </svg>
+              <a href="tel:+353876930108">087 693 0108</a>
+            </span>
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+              </svg>
+              <a href="https://github.com/Shawshank01" target="_blank">github.com/Shawshank01</a>
+            </span>
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+              </svg>
+              <a href="https://michifumi.de" target="_blank">michifumi.de</a>
+            </span>
+          </div>
+          <div class="contact-group">
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
+              </svg>
+              <a href="https://michifumi.de/resume/cv/" target="_blank"
+                title="Real-time live web CV">Rolling CV ↗</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <div class="contact-group">
+            <span class="contact-item">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63z" />
+              </svg>
+              <a href="https://www.linkedin.com/in/diwen-xiao-01a1172b0/" target="_blank">https://www.linkedin.com/in/diwen-xiao-01a1172b0/</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="meta-badges">
+          <span class="badge badge-visa">
+            🪪 Stamp 1G Visa (Immediate Full-Time Right to Work in Ireland 🇮🇪)
+          </span>
+          <span class="badge badge-reloc">
+            📍 Ready to Relocate to Waterford &bull; Nationwide Welcome
+          </span>
+          <span class="badge badge-lang">
+            🌐 English (Fluent) &bull; Chinese (Native) &bull; Japanese (Intermediate)
+          </span>
+        </div>
+      </header>
+
+      <!-- Tech Stack -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+          </svg>
+          Tech Stack
+        </h2>
+        <div class="skills-grid">
+          <div class="skill-category">
+            <span class="skill-label">Languages:</span>
+            <span class="skill-list">Bash / Shell Script, Go (Golang), Python, C++, Java, TypeScript, JavaScript, SQL</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">Linux, Containers &amp; Virtualization:</span>
+            <span class="skill-list">Linux (RHEL, Fedora CoreOS, Debian, Ubuntu), Docker, Docker Compose, Kubernetes &amp; OpenShift concepts, KubeVirt, KVM / QEMU Virtualization, systemd, cgroups, namespaces</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">OS Interfaces, Storage &amp; Networking:</span>
+            <span class="skill-list">FUSE (Filesystem in Userspace), NFSv4, POSIX I/O, Network Interfaces (VLANs, Routing, Firewalls), gRPC Telemetry, TCP/IP, TLS 1.3, HTTP/2, REST / JSON-RPC, OpenSSL</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">CI/CD, Build &amp; Test Automation:</span>
+            <span class="skill-list">Git, GitHub Actions, Jenkins concepts, Docker Buildx (Multi-Arch: amd64/arm64/s390x-ready), Automated Testing, Dependabot, Linux Packaging</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">Distributed Systems &amp; Data:</span>
+            <span class="skill-list">Apache Kafka, Apache Spark (PySpark), Distributed Streaming, Oracle 26ai, PostgreSQL, MongoDB</span>
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">Frameworks &amp; Runtimes:</span>
+            <span class="skill-list">Node.js, Express, FastAPI, Electron, React, Vite, Tailwind CSS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
+          </svg>
+          Education
+        </h2>
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="edu-institution">Technological University Dublin</span>
+            <span class="edu-date">2024 &ndash; 2026</span>
+          </div>
+          <div class="edu-degree">
+            <span>Master of Science in Computer Science (Advanced Software Development)</span>
+            <span class="edu-grade">Second Class Honours, First Division (2.1)</span>
+          </div>
+          <div class="edu-modules">
+            <strong>Modules:</strong> Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
+          </div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="edu-institution">National College of Ireland</span>
+            <span class="edu-date">2023 &ndash; 2024</span>
+          </div>
+          <div class="edu-degree">
+            <span>Higher Diploma in Science in Computing</span>
+            <span class="edu-grade">Second Class Honours, Grade One (2.1)</span>
+          </div>
+          <div class="edu-modules">
+            <strong>Modules:</strong> Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Systems & Container Engineering Projects -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
+          </svg>
+          Featured Systems &amp; Container Infrastructure Projects
+        </h2>
+
+        <!-- Project 1: proxy_sh -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title-group">
+              <span class="project-title">proxy_sh: Linux Automation Engine</span>
+              <span class="project-role-badge">Bash &bull; Docker &bull; RHEL</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Shawshank01/proxy_sh" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                </svg>
+                GitHub Repo ↗
+              </a>
+            </div>
+          </div>
+          <div class="project-summary">
+            Architected an automated multi-distribution Linux infrastructure deployment and orchestration engine in Bash, provisioning hardened containerized proxy services via Docker Compose with real-time gRPC performance telemetry, custom systemd daemon supervision, and cryptographic integrity validation.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Linux Infrastructure Automation &amp; Multi-Distro Orchestration:</strong> Engineered an automated 4,400+ line infrastructure deployment and orchestration engine in <strong>Bash</strong>, provisioning hardened, containerized network services via <strong>Docker Compose</strong> across 6+ Linux distributions (<strong>RHEL, Fedora CoreOS, Debian, Ubuntu</strong>).
+            </li>
+            <li>
+              <strong>Performance Metrics Gathering &amp; Telemetry Governance:</strong> Built a multi-tenant telemetry and resource governance daemon querying service <strong>gRPC telemetry APIs</strong>; enforced dynamic bandwidth quotas and accounting cycles via a low-overhead <strong>systemd daemon</strong> with re-entrant file locking (<code style="font-size:7.8pt;">flock</code>) and automated configuration rollbacks on transaction failure.
+            </li>
+            <li>
+              <strong>OS Interfaces &amp; Cryptographic Network Defense:</strong> Programmed Linux network loopback isolation (dokodemo-door routing to 127.0.0.1:10086) and socket bindings to defeat active network probing, SNI spoofing, and DPI; designed pre-flight domain validation over <strong>TLS 1.3 / HTTP/2</strong>.
+            </li>
+            <li>
+              <strong>Supply Chain Security &amp; Lifecycle Automation:</strong> Designed a zero-trust automated update pipeline featuring detached <strong>OpenSSL RSA</strong> signature verification and SHA256 integrity checks, supporting automated service recovery, non-destructive user lifecycle provisioning, and dual-stack <strong>IPv4/IPv6</strong> networking.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Project 2: Signal Media Bot -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title-group">
+              <span class="project-title">Signal Media Bot &amp; Security Research</span>
+              <span class="project-role-badge">CI/CD &bull; Multi-Arch &bull; OpenShift SCC</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Shawshank01/signal-media-bot" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                </svg>
+                GitHub Repo ↗
+              </a>
+              &bull;
+              <a href="https://michifumi.de/cv/signal-security.png" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+                </svg>
+                Security Advisory ↗
+              </a>
+            </div>
+          </div>
+          <div class="project-summary">
+            Engineered an asynchronous media microservice interfacing with Signal via JSON-RPC, featuring multi-architecture container CI/CD (Docker Buildx) and responsible upstream 0-day vulnerability disclosure with official security acknowledgment.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Multi-Architecture CI/CD &amp; Automated Container Builds:</strong> Engineered an automated delivery pipeline using <strong>GitHub Actions</strong> and <strong>Docker Buildx</strong> to cross-compile, test, and publish multi-architecture container images (<strong>linux/amd64, linux/arm64</strong>, architecture-agnostic OCI specs) to Docker Hub on every merge, paired with automated Dependabot vulnerability audits.
+            </li>
+            <li>
+              <strong>Container Hardening &amp; Rootless Execution (OpenShift SCC-Aligned):</strong> Enforced container isolation adhering to rootless execution standards (<strong>non-root UID 10001</strong>) and stripped attack surfaces, directly aligned with enterprise <strong>OpenShift Security Context Constraints (SCC)</strong>.
+            </li>
+            <li>
+              <strong>Asynchronous Microservice Architecture:</strong> Built a resilient daemon interfacing with Signal via JSON-RPC, offloading CPU/disk I/O to worker threads (<code style="font-size:7.8pt;">asyncio.to_thread</code>) to sustain sub-50 ms response latencies under heavy media transcode workloads.
+            </li>
+            <li>
+              <strong>Adaptive Stream Multiplexer &amp; Media Pipeline:</strong> Built an adaptive FFmpeg / yt-dlp stream multiplexer dynamically evaluating bitrates, prioritizing modern codecs (AV1/H.264/AAC), and downscaling resolutions to strictly adhere to Signal's 100 MB payload ceiling.
+            </li>
+            <li>
+              <strong>Root-Cause Analysis &amp; Exploit Verification:</strong> Conducted root-cause analysis isolating discrepancies between the Signal Protocol schema and client-side message renderers; authored reproducible multi-platform PoC exploits across macOS, Android, and iOS to validate upstream patch remediation.
+            </li>
+            <li>
+              <strong>Upstream Open-Source Security Collaboration &amp; Disclosure:</strong> Discovered and responsibly disclosed a confirmed UI-masking 0-day vulnerability across official Signal clients, collaborating directly with upstream security maintainers to validate patches across multi-platform client releases.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Page 1 Footer -->
+      <footer class="page-footer">
+        <span>Diwen Xiao &bull; Curriculum Vitae (OpenShift &amp; Linux Infrastructure)</span>
+        <span>Page 1 of 2</span>
+      </footer>
+
+    </div>
+
+
+    <!-- =========================================================
+         PAGE 2: Distributed Systems, Systems Projects, Work Experience
+         ========================================================= -->
+    <div class="page page-2">
+
+      <!-- Page 2 Header Sub-bar -->
+      <div
+        style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--secondary); padding-bottom: 3.5px; margin-bottom: 5px;">
+        <span style="font-size: 11pt; font-weight: 800; color: var(--primary);">DIWEN XIAO</span>
+        <span style="font-size: 8.0pt; color: var(--text-muted); font-weight: 600;">Technical Projects (Cont.) &amp; Infrastructure Experience</span>
+      </div>
+
+      <!-- Distributed Systems & Technical Projects Section -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          Distributed Systems &amp; Engineering Projects
+        </h2>
+
+        <!-- Project 3: Social Threat Guardian -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title-group">
+              <span class="project-title">Social Threat Guardian: Distributed Telemetry Platform</span>
+              <span class="project-role-badge">MSc Project &bull; Team Lead</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Shawshank01/social-threat-guardian" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                </svg>
+                GitHub Repo ↗
+              </a>
+              &bull;
+              <a href="https://youtu.be/svm_mfvKZiM" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 22c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 2c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z" />
+                </svg>
+                Walkthrough ↗
+              </a>
+            </div>
+          </div>
+          <div class="project-summary">
+            Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise online toxicity and coordinated harassment campaigns across social networks. Engineered an end-to-end event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time WebSocket telemetry services via Node.js/Express, delivering an interactive React/TypeScript dashboard continuously deployed to Vercel.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Decoupled System Architecture &amp; Real-Time Services:</strong> Designed a resilient multi-tier architecture with clean interface contracts. Engineered an <strong>Express/Node.js</strong> backend with bidirectional <strong>WebSockets</strong> for live gauge telemetry and an automated background monitoring engine with cooldown throttling.
+            </li>
+            <li>
+              <strong>Distributed Data Pipeline &amp; AI Inference:</strong> Engineered an event-driven data pipeline using <strong>Apache Kafka</strong> and <strong>PySpark Structured Streaming</strong> to ingest live feeds. Executed distributed NLP inference with fine-tuned <strong>DistilBERT</strong> via <strong>ONNX Runtime</strong> (&gt;85% accuracy) with complete data lineage.
+            </li>
+            <li>
+              <strong>Interactive Telemetry Dashboards &amp; Visualization:</strong> Built real-time visual telemetry featuring an <strong>ApexCharts</strong>-powered Threat Index Gauge (live 5-zone hostility meter driven by WebSockets), a multi-resolution Threat Trend Chart (tracking minute, hourly, and daily toxicity surges), and interactive <strong>Cytoscape.js</strong> force-directed graphs.
+            </li>
+            <li>
+              <strong>Enterprise Security, RBAC &amp; Data Lineage:</strong> Implemented <strong>JWT</strong> authentication and <strong>Bcrypt</strong> hashing, established database <strong>Role-Based Access Control (RBAC)</strong> in Oracle 26ai, and enforced an audit-compliant data lineage model for GDPR compliance and complete traceability.
+            </li>
+            <li>
+              <strong>Agile Technical Leadership &amp; Sprint Cadence:</strong> Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles, facilitating sprint planning, stand-ups, backlog grooming, and retrospectives to consistently deliver on schedule.
+            </li>
+            <li>
+              <strong>User Research &amp; Stakeholder Iteration:</strong> Drove user research via surveys and interactive <strong>Figma</strong> prototypes. Executed usability testing and pilot interviews, translating user feedback into prioritised features (threat thresholds, keyword filters, dark mode).
+            </li>
+            <li>
+              <strong>CI/CD Pipeline &amp; Cloud Deployment:</strong> Established production-like CI/CD workflows, deploying the <strong>React, TypeScript, and Vite</strong> frontend via <strong>Vercel</strong> with Git-driven automated builds, preview environments, and Oracle Cloud Wallet credentials.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Project 4: YT Downloader Electron -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title-group">
+              <span class="project-title">YT Downloader Electron: Systems &amp; IPC Architecture</span>
+              <span class="project-role-badge">Node.js &bull; POSIX &bull; CI/CD</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Shawshank01/yt-downloader-electron" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                </svg>
+                GitHub Repo ↗
+              </a>
+            </div>
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>OS Process Management &amp; Hardened IPC:</strong> Engineered a secure multi-process desktop system interfacing with underlying OS utilities across Linux, macOS, and Windows. Enforced strict context isolation, command-injection prevention (CWE-78), mutual exclusion task locking, and clean POSIX process tree termination (<code style="font-size:7.8pt;">SIGKILL</code> signal groups).
+            </li>
+            <li>
+              <strong>Stream Demuxing &amp; Environment Resolution:</strong> Built a custom stream reassembly buffer (<code style="font-size:7.8pt;">LineStreamFilter</code>) for real-time stdout/stderr log parsing; implemented dynamic PATH synthesis and runtime dependency capability inspection across Linux package managers (Homebrew, MacPorts, WinGet).
+            </li>
+            <li>
+              <strong>Hardware Acceleration &amp; Media Pipeline:</strong> Implemented hardware-accelerated video transcode pipelines supporting Apple VideoToolbox with CPU fallbacks, platform-adaptive subtitle burn-in (libass), and three-tier dynamic audio codec negotiation.
+            </li>
+            <li>
+              <strong>Automated Multi-OS CI/CD Pipeline:</strong> Built a multi-runner <strong>GitHub Actions</strong> release matrix targeting Linux (AppImages), macOS, and Windows across x64 and ARM64 architectures with automated test verification and artifact signing.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Project 5: xAI Desktop -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title-group">
+              <span class="project-title">xAI Desktop: Streaming &amp; Systems API Proxy</span>
+              <span class="project-role-badge">Deno 2 &bull; Streaming &bull; Security</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Shawshank01/xAI-desktop" target="_blank">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                </svg>
+                GitHub Repo ↗
+              </a>
+            </div>
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Full-Stack Architecture &amp; Token Streaming:</strong> Engineered a high-performance backend using <strong>Deno 2</strong> leveraging native Web APIs (<code style="font-size:7.8pt;">Deno.serve</code>, <code style="font-size:7.8pt;">ReadableStream</code>) to proxy requests and stream token chunks with sub-millisecond dispatch latency.
+            </li>
+            <li>
+              <strong>Client Security &amp; State Management:</strong> Implemented a responsive frontend sanitized against XSS via DOMPurify, supporting dynamic model switching and multi-turn session persistence via sessionStorage.
+            </li>
+            <li>
+              <strong>UX &amp; Reliability:</strong> Designed an intuitive interface with automatic OS-adaptive dark mode theming and built an automated test suite (<code style="font-size:7.8pt;">deno test</code>) validating CORS preflights, error boundaries, and static routing.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Work & Infrastructure Experience -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.1-.89-2-2-2zm-6 0h-4V4h4v2z" />
+          </svg>
+          Work &amp; Infrastructure Experience
+        </h2>
+
+        <div class="work-item">
+          <div class="work-header">
+            <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
+            <span class="work-date">2016 &ndash; 2022</span>
+          </div>
+          <div class="work-role">
+            <span>IT Infrastructure, Network Operations &amp; Data Automation</span>
+          </div>
+          <div class="work-summary">
+            Bridged global commercial operations across <strong>Japan, Switzerland, Brazil, and Russia</strong> with internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating trade data processing, and administering office network systems.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Enterprise Network &amp; IT Infrastructure Administration:</strong> Administered office IT and network architecture (switches, enterprise firewalls, <strong>VLAN segmentation</strong>, routing tables, and secure IPsec/SSL VPN tunnels), ensuring stable, low-latency connectivity to mission-critical global financial and trading networks.
+            </li>
+            <li>
+              <strong>Automation &amp; Data Pipeline Engineering:</strong> Developed automated data processing workflows using <strong>Python</strong> and <strong>SQL</strong>, streamlining multi-currency trade datasets, replacing manual spreadsheets, and enhancing monthly reporting accuracy and turnaround.
+            </li>
+            <li>
+              <strong>ERP Administration &amp; Inventory Governance:</strong> Managed inventory lifecycles and SKU tracking in the enterprise <strong>ERP system</strong>, configuring custom database queries, validation rules, and automated import/export routines for real-time stock accuracy across international supply chains.
+            </li>
+            <li>
+              <strong>Cross-Border Infrastructure Relocation (Shenzhen to Philippines):</strong> Managed end-to-end technical execution of a full facility migration: oversaw equipment logistics, customs compliance, ERP database cutover, on-site network/server rack provisioning, and switch configuration to establish full operational readiness.
+            </li>
+            <li>
+              <strong>Cross-Functional Stakeholder Coordination:</strong> Directed commercial and IT operations across Switzerland, Japan, Brazil, and Russia, serving as lead technical liaison with enterprise software vendors to streamline system workflows.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Page 2 Footer -->
+      <footer class="page-footer">
+        <span>Diwen Xiao &bull; Curriculum Vitae (OpenShift &amp; Linux Infrastructure)</span>
+        <span>Page 2 of 2</span>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <script>
+    if (location.hostname === "michifumi.de" || location.hostname === "www.michifumi.de") {
+      const endpoint = "https://api.michifumi.de/v1/ping";
+      const payload = JSON.stringify({
+        path: window.location.pathname,
+        referrer: document.referrer || "",
+      });
+
+      try {
+        if (navigator.sendBeacon) {
+          const blob = new Blob([payload], { type: "text/plain" });
+          const ok = navigator.sendBeacon(endpoint, blob);
+          if (!ok) throw new Error("sendBeacon returned false");
+        } else {
+          throw new Error("sendBeacon not available");
+        }
+      } catch {
+        fetch(endpoint, {
+          method: "POST",
+          body: payload,
+          keepalive: true,
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
+        }).catch((err) => console.warn("[analytics] fetch failed", err));
+      }
+    }
+  </script>
+</body>
+
+</html>
