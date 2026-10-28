@@ -43,26 +43,6 @@ image: "/cv/persona.jpeg"
 
 ---
 
-## Work Experience
-
-### International Trader - Shenzhen Zhaokang Investment Co., Ltd.
-
-<div style="display: flex; justify-content: space-between;"><strong>Data, ERP & IT Operations</strong><span><em>2016 - 2022</em></span></div>
-
-> Bridged global commercial trade operations across **Japan, Switzerland, Brazil, and Russia** with internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating large-scale trade data processing, and administering office network systems.
-
-- **Trade Data Processing & ETL Automation:** Processed, cleaned, and reconciled large volumes of multi-currency international trade, customs, and logistics datasets. Transitioned legacy manual spreadsheet workflows into automated **Python** and **SQL** data-cleaning pipelines to eliminate formatting discrepancies and accelerate monthly financial reporting.
-
-- **ERP Administration & Inventory Governance:** Managed end-to-end inventory lifecycles, SKU tracking, and supply-chain data synchronization within the enterprise **ERP system**. Configured custom database queries, validation rules, and automated data imports/exports to maintain real-time stock accuracy across global suppliers and warehouses.
-
-- **Network & IT Infrastructure Management:** Served as the primary IT administrator for office network infrastructure, configuring and maintaining routers, switches, firewalls, VLANs, and secure VPN/proxy tunnels to ensure stable, low-latency international connectivity and reliable access to global trade platforms such as LME and Bloomberg.
-
-- **Cross-Functional Stakeholder & Global Partner Coordination:** Directed multilingual commercial and operational communications with international counterparties across Japan, Switzerland, Brazil, and Russia, while acting as the internal technical liaison to software vendors to streamline ERP system workflows.
-
-- **Key Achievement - Cross-Border Factory Relocation (Shenzhen to the Philippines):** Spearheaded the end-to-end project management and execution of a full-scale factory relocation from Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the seamless migration of ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity to bring the overseas facility into full operational readiness on schedule.
-
----
-
 ## MSc Final Year Team Project <sup>as Team Leader</sup>
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
@@ -132,3 +112,23 @@ YT-DLP Downloader UI
 - **Full-Stack Architecture & Streaming:** Developed a responsive full-stack web application interfacing with xAI’s API to deliver real-time conversational AI and image generation. Engineered a high-performance Deno 2 backend leveraging native Web APIs (Deno.serve, ReadableStream) to proxy requests and stream token chunks with low latency.
 - **Stateful Client & Security:** Implemented a lightweight Vanilla JavaScript frontend featuring live Markdown rendering sanitized against XSS attacks via DOMPurify, dynamic model switching (Grok reasoning vs. image generation), and multi-turn session persistence via sessionStorage.
 - **UX & Reliability:** Designed an intuitive interface with automatic OS-adaptive dark mode theming and built an automated test suite (deno test) validating CORS preflights, error boundaries, and static routing.
+
+---
+
+## Work Experience
+
+### International Trader - Shenzhen Zhaokang Investment Co., Ltd.
+
+<div style="display: flex; justify-content: space-between;"><strong>Data, ERP & IT Operations</strong><span><em>2016 - 2022</em></span></div>
+
+> Bridged global commercial trade operations across **Japan, Switzerland, Brazil, and Russia** with internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating large-scale trade data processing, and administering office network systems.
+
+- **Trade Data Processing & ETL Automation:** Processed, cleaned, and reconciled large volumes of multi-currency international trade, customs, and logistics datasets. Transitioned legacy manual spreadsheet workflows into automated **Python** and **SQL** data-cleaning pipelines to eliminate formatting discrepancies and accelerate monthly financial reporting.
+
+- **ERP Administration & Inventory Governance:** Managed end-to-end inventory lifecycles, SKU tracking, and supply-chain data synchronization within the enterprise **ERP system**. Configured custom database queries, validation rules, and automated data imports/exports to maintain real-time stock accuracy across global suppliers and warehouses.
+
+- **Network & IT Infrastructure Management:** Served as the primary IT administrator for office network infrastructure, configuring and maintaining routers, switches, firewalls, VLANs, and secure VPN/proxy tunnels to ensure stable, low-latency international connectivity and reliable access to global trade platforms such as LME and Bloomberg.
+
+- **Cross-Functional Stakeholder & Global Partner Coordination:** Directed multilingual commercial and operational communications with international counterparties across Japan, Switzerland, Brazil, and Russia, while acting as the internal technical liaison to software vendors to streamline ERP system workflows.
+
+- **Key Achievement - Cross-Border Factory Relocation (Shenzhen to the Philippines):** Spearheaded the end-to-end project management and execution of a full-scale factory relocation from Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the seamless migration of ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity to bring the overseas facility into full operational readiness on schedule.
