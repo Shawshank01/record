@@ -1,6 +1,6 @@
 ---
 title: "Diwen Xiao's CV"
-description: "A passionate Software Developer & Full-Stack Engineer, committed to building and architecting AI-driven, secure, scalable, and streamlined applications"
+description: "A passionate Full-Stack Software Developer & System Engineer, committed to building and architecting AI-driven, secure, scalable, and streamlined applications"
 image: "/cv/persona.jpeg"
 ---
 
@@ -56,12 +56,12 @@ Homepage Top
 Homepage Bottom
 
 - **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles, facilitating sprint planning, daily stand-ups, backlog grooming, and retrospectives. Actively mediated technical friction across frontend, backend and data tiers, balancing task allocation to consistently deliver working increments on schedule.
-- **Stakeholder Feedback & User-Centric Iteration:** Drove end-to-end user research by conducting target demographic surveys and designing interactive **Figma** prototypes. Executed usability testing and face-to-face pilot interviews, translating qualitative user feedback into prioritised product backlog features (e.g., customizable threat thresholds, keyword filters, and dark mode).
-- **Decoupled System Architecture & Real-Time Services:** Designed a resilient, multi-tier architecture with clean interface contracts. Engineered an **Express/Node.js** backend integrating bidirectional **WebSockets** for live gauge telemetry and an automated background monitoring engine with intelligent cooldown throttling to prevent alert fatigue.
+- **User Needs Elicitation & Requirements Traceability:** Drove end-to-end user research by conducting target demographic surveys and designing interactive **Figma** prototypes. Executed usability testing and face-to-face pilot interviews, translating qualitative user feedback into prioritised product backlog features (e.g., customizable threat thresholds, keyword filters, and dark mode).
+- **System Architecture, Subsystem Interfaces & Integration:** Designed a resilient, multi-tier architecture with clean interface contracts. Engineered an **Express/Node.js** backend integrating bidirectional **WebSockets** for live gauge telemetry and an automated background monitoring engine with intelligent cooldown throttling to prevent alert fatigue.
 - **CI/CD Pipeline & Cloud Deployment:** Established production-like CI/CD workflows, deploying the **React, TypeScript, and Vite** frontend via **Vercel** with Git-driven automated builds and preview environments. Configured cloud infrastructure with environment isolation, CORS whitelisting, TLS/SSL termination, and secure Oracle Cloud Wallet credentials.
 - **Distributed Data Pipeline & AI Inference:** Engineered an event-driven data pipeline using **Apache Kafka** and **PySpark Structured Streaming** to ingest live feeds from social media platforms. Executed distributed NLP inference using **Vectorized Pandas UDFs** and **ONNX Runtime** with a fine-tuned **DistilBERT** model, achieving over 85% threat classification accuracy.
 - **Interactive Dashboards & Threat Visualisations:** Built real-time visual telemetry featuring an **ApexCharts**-powered Threat Index Gauge (live 5-zone hostility meter driven by **WebSockets**), a multi-resolution Threat Trend Chart (tracking minute, hourly, and daily toxicity surges), and interactive **Cytoscape.js** force-directed graphs to map user interaction and harassment dynamics.
-- **Enterprise Security, RBAC & Data Lineage:** Implemented **JWT** authentication and **Bcrypt** hashing, established database **Role-Based Access Control (RBAC)** in Oracle 26ai, and enforced an audit-compliant data lineage model (retaining raw posts alongside inferences) to support GDPR compliance and traceability.
+- **Risk Mitigation, Audit Traceability & Compliance Controls:** Implemented **JWT** authentication and **Bcrypt** hashing, established database **Role-Based Access Control (RBAC)** in Oracle 26ai, and enforced an audit-compliant data lineage model (retaining raw posts alongside inferences) to support GDPR compliance and traceability.
 
 [Social Threat Guardian UI Walkthrough Video](https://youtu.be/svm_mfvKZiM)
 
