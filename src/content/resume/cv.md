@@ -8,7 +8,7 @@ image: "/cv/persona.jpeg"
 
 📧 [lelouch@outlook.ie](mailto:lelouch@outlook.ie) | 📱 [087 693 0108](tel:+353876930108) | 📜 [Blog](https://michifumi.de) | 👨‍💼 [LinkedIn](https://www.linkedin.com/in/diwen-xiao-01a1172b0/)  
 🌐 Languages: **Chinese** (Native), **English** (Fluent), **Japanese** (Intermediate)  
-🪪 **Stamp 1G Visa Holder** (Immediate Full-Time Right to Work in Ireland🇮🇪 &bull; Open to Relocation Nationwide)
+🪪 **Stamp 1G Visa Holder** (Immediate Full-Time Right to Work in Ireland🇮🇪 &bull; On-site, Hybrid & Remote &bull; Open to Relocation Nationwide)
 
 ---
 
@@ -74,7 +74,7 @@ Homepage Bottom
 - **Asynchronous Microservice Architecture:** Engineered an asynchronous microservice interfacing with Signal via signal-cli JSON-RPC, delivering platform media (YouTube, X, Bluesky, TikTok) as native playable attachments.
 - **Adaptive Stream Multiplexer:** Built an adaptive FFmpeg / yt-dlp stream multiplexer that dynamically evaluates bitrates, prioritizes modern codecs (AV1/H.264/AAC), and downscales resolutions to strictly adhere to Signal’s 100 MB payload ceiling.
 - **Concurrency & Webhook Optimization:** Optimized webhook throughput by offloading blocking CPU and disk I/O to worker threads (asyncio.to_thread), maintaining sub-50 ms webhook response times during active downloads.
-- **Privacy Engine & Container Hardening:** Implemented a privacy engine that canonicalizes URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root container (UID 10001).
+- **Privacy Engine & Container Hardening:** Implemented a privacy engine that canonicalizes URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root **Docker** container (UID 10001).
 - **Multi-Architecture CI/CD & Automation:** Built an end-to-end workflow using GitHub Actions and Docker Buildx that automatically builds and publishes multi-architecture images (linux/amd64, linux/arm64) to Docker Hub on every merge, paired with daily Dependabot scans to proactively patch upstream extractor dependencies.
 
 ![signal-security](/cv/signal-security.png)

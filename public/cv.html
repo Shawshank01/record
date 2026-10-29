@@ -201,20 +201,21 @@
 
     .meta-badges {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      justify-content: space-between;
       align-items: center;
-      gap: 7px;
-      margin-top: 3.5px;
-      font-size: 7.85pt;
+      gap: 6px;
+      margin-top: 3px;
+      font-size: 7.6pt;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 1.2px 6px;
+      padding: 1.2px 5.5px;
       border-radius: 4px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .badge-visa {
@@ -231,7 +232,7 @@
 
     /* Section Component */
     .section {
-      margin-bottom: 4.5px;
+      margin-bottom: 3.5px;
     }
 
     .section-title {
@@ -457,9 +458,9 @@
     .project-bullets li {
       position: relative;
       padding-left: 10px;
-      margin-bottom: 2.5px;
+      margin-bottom: 1.8px;
       font-size: 8.05pt;
-      line-height: 1.30;
+      line-height: 1.26;
       color: var(--text);
       text-align: justify;
     }
@@ -514,17 +515,6 @@
       margin-bottom: 0;
     }
 
-    .page-2 .availability-banner {
-      margin-top: 5px;
-      padding: 6px 12px;
-      font-size: 8.05pt;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
 
     /* Page Footer Info */
     .page-footer {
@@ -624,7 +614,7 @@
   <div class="page-container">
 
     <!-- =========================================================
-         PAGE 1: Header, Skills, Education, Work Experience, MSc Project
+         PAGE 1: Header, Skills, Education, Projects (MSc & Signal Bot)
          ========================================================= -->
     <div class="page page-1">
 
@@ -686,7 +676,7 @@
                 <path
                   d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
               </svg>
-              Ireland (Open to Relocation Nationwide)
+              Ireland &bull; On-site, Hybrid &amp; Remote (Open to Relocation Nationwide)
             </span>
           </div>
           <div class="contact-group">
@@ -703,10 +693,10 @@
 
         <div class="meta-badges">
           <span class="badge badge-visa">
-            🪪 Stamp 1G Visa Holder (Immediate Full-Time Right to Work in Ireland 🇮🇪)
+            Stamp 1G Visa Holder (Full-Time Right to Work in Ireland)
           </span>
           <span class="badge badge-lang">
-            🌐 Languages: Chinese (Native) &bull; English (Fluent) &bull; Japanese (Intermediate)
+            Languages: Chinese (Native) &bull; English (Fluent) &bull; Japanese (Intermediate)
           </span>
         </div>
       </header>
@@ -790,61 +780,6 @@
         </div>
       </section>
 
-      <!-- Work Experience -->
-      <section class="section">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-          </svg>
-          Work Experience
-        </h2>
-
-        <div class="work-item">
-          <div class="work-header">
-            <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
-            <span class="work-date">2016 &ndash; 2022</span>
-          </div>
-          <div class="work-role">
-            <span>International Trader &ndash; Data, ERP &amp; IT Operations</span>
-          </div>
-          <div class="work-summary">
-            Bridged global commercial operations across <strong>Japan, Switzerland, Brazil, and Russia</strong> with
-            internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating trade data
-            processing, and administering office network systems.
-          </div>
-          <ul class="project-bullets">
-            <li>
-              <strong>Trade Data Processing &amp; ETL Automation:</strong> Automated multi-currency trade, customs, and
-              logistics datasets via <strong>Python</strong> and <strong>SQL</strong> data pipelines, replacing legacy
-              spreadsheets and accelerating monthly financial reporting.
-            </li>
-            <li>
-              <strong>ERP Administration &amp; Inventory Governance:</strong> Managed inventory lifecycles and SKU
-              tracking in the enterprise <strong>ERP system</strong>, configuring custom queries, validation rules, and
-              automated import/export routines for real-time stock accuracy.
-            </li>
-            <li>
-              <strong>Network &amp; IT Infrastructure Management:</strong> Administered office IT and network
-              architecture (routers, switches, firewalls, VLANs, secure VPN tunnels), ensuring stable, low-latency
-              connectivity to global trade platforms like LME and Bloomberg.
-            </li>
-            <li>
-              <strong>Cross-Functional Stakeholder Coordination:</strong> Directed multilingual commercial operations
-              across Japan, Switzerland, Brazil, and Russia, acting as technical liaison to software
-              vendors to streamline ERP system workflows.
-            </li>
-            <li>
-              <strong>Key Achievement &ndash; Cross-Border Factory Relocation (Shenzhen to the Philippines):</strong>
-              Spearheaded the end-to-end project management and execution of a full-scale factory relocation from
-              Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the
-              seamless migration of ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity
-              to bring the overseas facility into full operational readiness on schedule.
-            </li>
-          </ul>
-        </div>
-      </section>
-
       <!-- MSc Final Year Team Project -->
       <section class="section">
         <h2 class="section-title">
@@ -879,12 +814,8 @@
           </div>
 
           <div class="project-summary">
-            Architected and led the development of a real-time, multi-tier AI platform to detect, monitor, and visualise
-            online toxicity and coordinated harassment campaigns across social networks. Engineered an end-to-end
-            event-driven architecture featuring high-throughput Apache Kafka streaming, distributed PySpark and ONNX
-            inference, and an Oracle Autonomous Database with full data lineage preservation. Orchestrated real-time
-            WebSocket and Web Push (VAPID) notification services via Node.js/Express, delivering an interactive
-            React/TypeScript dashboard continuously deployed to Vercel.
+            Architected and led a real-time, multi-tier AI platform to detect, monitor, and visualise online toxicity
+            and coordinated harassment campaigns across social networks.
           </div>
 
           <ul class="project-bullets">
@@ -932,32 +863,12 @@
         </div>
       </section>
 
-      <!-- Page 1 Footer -->
-      <footer class="page-footer">
-        <span>Diwen Xiao &bull; Curriculum Vitae</span>
-        <span>Page 1 of 2</span>
-      </footer>
-
-    </div>
-
-
-    <!-- =========================================================
-         PAGE 2: Technical Projects & Security Engineering
-         ========================================================= -->
-    <div class="page page-2">
-
-      <!-- Page 2 Header Sub-bar -->
-      <div
-        style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--secondary); padding-bottom: 4.5px; margin-bottom: 6.5px;">
-        <span style="font-size: 11.2pt; font-weight: 800; color: var(--primary);">DIWEN XIAO</span>
-      </div>
-
-      <!-- Personal Projects Section -->
-      <section class="section" style="margin-bottom: 4px;">
+      <!-- Technical Projects & Security Engineering -->
+      <section class="section">
         <h2 class="section-title">
           <svg viewBox="0 0 24 24">
             <path
-              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
           </svg>
           Technical Projects &amp; Security Engineering
         </h2>
@@ -1005,8 +916,8 @@
             </li>
             <li>
               <strong>Privacy Engine &amp; Container Hardening:</strong> Implemented a privacy engine that canonicalizes
-              URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root container
-              (UID 10001).
+              URLs and strips ad/analytics telemetry (utm_*, fbclid, si) while running in a hardened non-root
+              <strong>Docker</strong> container (UID 10001).
             </li>
             <li>
               <strong>Multi-Architecture CI/CD &amp; Automation:</strong> Built an end-to-end workflow using GitHub
@@ -1036,6 +947,37 @@
             </li>
           </ul>
         </div>
+      </section>
+
+      <!-- Page 1 Footer -->
+      <footer class="page-footer">
+        <span>Diwen Xiao &bull; Curriculum Vitae</span>
+        <span>Page 1 of 2</span>
+      </footer>
+
+    </div>
+
+
+    <!-- =========================================================
+         PAGE 2: Technical Projects & Work Experience
+         ========================================================= -->
+    <div class="page page-2">
+
+      <!-- Page 2 Header Sub-bar -->
+      <div
+        style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--secondary); padding-bottom: 4.5px; margin-bottom: 6.5px;">
+        <span style="font-size: 11.2pt; font-weight: 800; color: var(--primary);">DIWEN XIAO</span>
+      </div>
+
+      <!-- Technical Projects Section -->
+      <section class="section" style="margin-bottom: 4px;">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
+          </svg>
+          Technical Projects
+        </h2>
 
         <!-- Project 2: YT-DLP Downloader Electron -->
         <div class="project-card">
@@ -1170,15 +1112,60 @@
           </ul>
         </div>
 
-        <!-- Availability & Relocation Banner -->
-        <div class="availability-banner">
-          <div>
-            <strong style="color: var(--primary);">Availability:</strong> Immediate &bull; Open to On-site, Hybrid &amp;
-            Remote roles across Ireland
+      </section>
+
+      <!-- Work Experience -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
+          </svg>
+          Work Experience
+        </h2>
+
+        <div class="work-item">
+          <div class="work-header">
+            <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
+            <span class="work-date">2016 &ndash; 2022</span>
           </div>
-          <div style="color: var(--secondary); font-weight: 600;">
-            Relocation Nationwide Welcome
+          <div class="work-role">
+            <span>International Trader &ndash; Data, ERP &amp; IT Operations</span>
           </div>
+          <div class="work-summary">
+            Bridged global commercial operations across <strong>Japan, Switzerland, Brazil, and Russia</strong> with
+            internal IT infrastructure for 6 years, managing enterprise ERP data workflows, automating trade data
+            processing, and administering office network systems.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Trade Data Processing &amp; ETL Automation:</strong> Automated multi-currency trade, customs, and
+              logistics datasets via <strong>Python</strong> and <strong>SQL</strong> data pipelines, replacing legacy
+              spreadsheets and accelerating monthly financial reporting.
+            </li>
+            <li>
+              <strong>ERP Administration &amp; Inventory Governance:</strong> Managed inventory lifecycles and SKU
+              tracking in the enterprise <strong>ERP system</strong>, configuring custom queries, validation rules, and
+              automated import/export routines for real-time stock accuracy.
+            </li>
+            <li>
+              <strong>Network &amp; IT Infrastructure Management:</strong> Administered office IT and network
+              architecture (routers, switches, firewalls, VLANs, secure VPN tunnels), ensuring stable, low-latency
+              connectivity to global trade platforms like LME and Bloomberg.
+            </li>
+            <li>
+              <strong>Cross-Functional Stakeholder Coordination:</strong> Directed multilingual commercial operations
+              across Japan, Switzerland, Brazil, and Russia, acting as technical liaison to software
+              vendors to streamline ERP system workflows.
+            </li>
+            <li>
+              <strong>Key Achievement &ndash; Cross-Border Factory Relocation (Shenzhen to the Philippines):</strong>
+              Spearheaded the end-to-end project management and execution of a full-scale factory relocation from
+              Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the
+              seamless migration of ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity
+              to bring the overseas facility into full operational readiness on schedule.
+            </li>
+          </ul>
         </div>
       </section>
 
