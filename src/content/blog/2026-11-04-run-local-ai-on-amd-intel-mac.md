@@ -1,5 +1,5 @@
 ---
-title: "Run Local AI on an Intel Mac AMD GPU via llama.cpp"
+title: "Run Local AI on an Intel Mac with AMD GPU via llama.cpp"
 description: "Unlock 4× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
 pubDate: 2026-11-04
 tags:
