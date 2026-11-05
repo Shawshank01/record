@@ -189,10 +189,10 @@ To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose f
 | Model | Quantization | Size | Best Use Case |
 | :--- | :--- | :--- | :--- |
 | **Liquid AI LFM3 1.7B** | `Q4_K_M` | ~1.1 GB | Ultra-fast on-device reasoning and tool tasks |
-| **Qwen 2.5 3B Instruct** | `Q4_K_M` | ~2.0 GB | Multilingual support, coding, and concise reasoning |
-| **Llama 3.2 3B Instruct** | `Q4_K_M` | ~2.0 GB | General conversation, drafting, and writing |
-| **Phi-4 Mini (3.8B)** | `Q3_K_M` | ~2.2 GB | STEM, math, and structured logic |
-| **Llama 3.2 1B Instruct** | `Q8_0` | ~1.3 GB | Lightweight maximum throughput (>50 t/s) |
+| **NVIDIA Nemotron Labs Dory 1.0 4B** | `Q4_K_M` | ~2.0 GB | General conversation, drafting, and writing |
+| **Qwen3 1.7B** | `Q4_K_M` | ~2.0 GB | Multilingual support, coding, and concise reasoning |
+| **Qwen3.5 2B** | `Q8_0` | ~1.3 GB | Lightweight maximum throughput (>50 t/s) |
+| **Spark X2.6 1.7B** | `Q3_K_M` | ~2.2 GB | STEM, math, and structured logic |
 
 ---
 
