@@ -2,7 +2,7 @@
 title: "Daily Updates on Linux and macOS"
 description: "Satisfying the compulsion for daily system updates with a custom bash script for Linux and Docker."
 pubDate: 2026-01-07
-updateDate: 2026-10-04
+updateDate: 2026-11-06
 tags:
   - GNU/Linux
   - Docker
@@ -12,6 +12,7 @@ tags:
   - Fedora
   - Fedora CoreOS
   - Homebrew
+  - MacPorts
 ---
 
 There are two types of people: those who never update their software and those who do it every day.
@@ -244,7 +245,9 @@ podman rmi registry.fedoraproject.org/fedora-toolbox:43
 
 ---
 
-## Bonus: Daily Updates on macOS (Homebrew)
+## Bonus: Daily Updates on macOS
+
+### Homebrew
 
 If you are on macOS and want to satisfy your update craving with Homebrew, this single command is all you need for aggressive maintenance:
 
@@ -281,3 +284,48 @@ source ~/.zshrc
 ```
 
 Now you can simply type `up` to update everything that installed from homebrew!
+
+### MacPorts
+
+If you use MacPorts instead of Homebrew, start with these commands to update
+the package index, upgrade outdated ports, and remove files that are no longer
+needed:
+
+```bash
+sudo port selfupdate
+sudo port -p -b upgrade outdated
+sudo port reclaim
+```
+
+You can also inspect the ports installed on your Mac:
+
+```bash
+port installed requested
+port installed
+```
+
+### MacPorts shortcuts in `~/.zshrc`
+
+After trying the basic commands, you can add aliases to `~/.zshrc`:
+
+```bash
+nano ~/.zshrc
+```
+
+Add these lines:
+
+```bash
+alias mup='sudo port selfupdate && sudo port -p -b upgrade outdated; sudo port reclaim'
+alias mbuild='sudo port -v -s upgrade'
+alias mls='port installed requested'
+alias mla='port installed'
+```
+
+Reload your shell to make the aliases available:
+
+```bash
+source ~/.zshrc
+```
+
+You can now use `mup` for daily updates and cleanup, `mbuild` for a source
+upgrade, `mls` to list requested ports, and `mla` to list all installed ports.
