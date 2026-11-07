@@ -154,7 +154,7 @@ Here is the command to run **Liquid AI's LFM3 1.7B** (a lightweight hybrid convo
 ```bash
 VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   ./build/bin/llama-cli \
-  -hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M \
+  -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   -ngl 99 \
   -c 8192 \
   -fa 0 \
@@ -166,7 +166,7 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
 Command Breakdown:
 
 * `VK_ICD_FILENAMES=...`: Directs the Vulkan loader to MacPorts' MoltenVK ICD manifest.
-* `-hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M`: Automatically downloads and caches the 4-bit quantised GGUF file from Hugging Face into `~/.cache/llama.cpp/`.
+* `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the 4-bit quantised GGUF file from Hugging Face into `~/.cache/llama.cpp/`.
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
 * `-fa 0`: Disables flash attention to prevent shader translation faults.
@@ -228,7 +228,7 @@ source ~/.zshrc
 Once exported, you can invoke `llama-cli` directly:
 
 ```bash
-./build/bin/llama-cli -hf unsloth/Llama-3.2-3B-Instruct-GGUF:Q4_K_M -ngl 99 -c 4096 -fa 0
+./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 4096 -fa 0
 ```
 
 ---
@@ -246,7 +246,7 @@ From your `llama.cpp` repository directory:
 ```bash
 VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   ./build/bin/llama-server \
-  -hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M \
+  -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   --alias lfm-1.7b \
   --host 127.0.0.1 \
   --port 8080 \
@@ -308,7 +308,7 @@ To detach the server and run it silently in the background:
 ```bash
 nohup env VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   ./build/bin/llama-server \
-  -hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M \
+  -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   --alias lfm-1.7b \
   --port 8080 \
   -ngl 99 -c 8192 -fa 0 > server.log 2>&1 &
