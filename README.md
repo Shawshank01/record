@@ -9,6 +9,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 ### Content & Authoring
 
 - **Markdown blog posts**: Write posts in `.md` files with typed frontmatter (title, description, pubDate, tags, draft status, update date).
+- **GitHub-style callout alerts**: Native support for styled blockquote alerts (`> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]`) via `remark-github-blockquote-alert`.
 - **Draft support**: Set `draft: true` in frontmatter to hide a post from production without deleting it.
 - **Tag system**: Every post requires at least one tag. Tags are aggregated automatically and shown in a filterable sidebar.
 - **Language switcher**: Embed bilingual content blocks within a post; readers toggle between languages with a single click.
@@ -27,6 +28,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 
 - **Smooth in-page navigation**: Clicking anchor links or Table of Contents items smoothly glides to the target heading with automatic clearance beneath the sticky header. Respects `prefers-reduced-motion`.
 - **Image lightbox**: Click any image inside a blog post to view it full-screen in a lightbox overlay. Press `Escape` or click to dismiss.
+- **JPEG XL (JXL) image fallback**: A custom Remark plugin (`remark-jxl-hint.mjs`) automatically transforms images with `alt="jxl hint"` into helpful fallback links for browsers without native JXL support.
 - **Code block copy button**: Every `<pre>` code block gets a one-click copy button with visual feedback (copied ✓ / failed ✗).
 - **Customised code typography**: Code snippets and `<pre>` blocks are styled using a self-hosted [Google Sans Code](https://github.com/googlefonts/googlesans-code) variable font.
 - **External link handling**: Links to external domains automatically open in a new tab with `rel="noopener"`.
@@ -41,6 +43,7 @@ A personal blog built with [Astro](https://astro.build), [Tailwind CSS](https://
 - **Open Graph & Twitter cards**: Full social-media meta tags on every page.
 - **Canonical URLs**: Every page includes a `<link rel="canonical">` tag.
 - **Comprehensive favicons**: PNG, SVG, Apple Touch Icon, and `favicon.ico` for maximum compatibility across browsers and RSS clients.
+- **Automated SEO validation**: A pre-flight script (`scripts/check-title-length.mjs`) automatically audits blog titles (≤ 70 characters with site suffix) and descriptions (25–160 characters) during `pnpm dev` and `pnpm build`.
 
 ### Analytics & Infrastructure
 
@@ -78,10 +81,10 @@ Update the following to make the blog your own:
 | Blog title & meta | `src/layouts/BaseLayout.astro` → default props |
 | Header subtitles | `src/data/subtitles.ts` |
 | Custom domain (CNAME) | `CNAME` (delete if not using a custom domain) |
-| Analytics endpoint | `src/scripts/analytics.ts` → `endpoint` (or remove the script) |
+| Analytics endpoint & CSP | `src/scripts/analytics.ts` → `endpoint` & hostname guard; `src/layouts/BaseLayout.astro` → CSP `connect-src` (or remove script) |
 | Accent colour | `src/styles/global.css` → `@theme` block |
 | Background colours | `src/styles/global.css` → `@theme` block |
-| Social / OG image | `public/icon.svg` (replace with your own) |
+| Social / OG image | `public/icon.png` (replace with your own raster image; Open Graph requires PNG/JPEG) |
 | Giscus comments | `src/pages/blog/[slug].astro` → giscus `data-repo` and IDs |
 | Giscus config | `giscus.json` → origins, comment order |
 
