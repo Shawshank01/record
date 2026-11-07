@@ -208,11 +208,11 @@ To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose f
 
 | Model | Quantisation | Size | Best Use Case |
 | :--- | :--- | :--- | :--- |
-| [Liquid AI LFM3 1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF) | `Q5_K_M` | 1.26 GB | Designed for local agents, tool calling, structured outputs, and domain-specific fine-tuning |
-| [Qwen3 1.7B](https://huggingface.co/Qwen/Qwen3-1.7B-GGUF) | `Q8_0` | 1.83 GB | Delivers groundbreaking advancements in reasoning, instruction-following, agent capabilities, and multilingual support |
-| [SparkLLM Spark-X2.6 1.7B](https://huggingface.co/XHToken/Spark-X2.6-1.7B-GGUF) | `Q8_0` | 1.82 GB | Stronger coding, agentic, and long-context capabilities |
-| [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35 GB | Multimodal, handling text and image input and generating text output |
-| [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67 GB | General-purpose reasoning on a small footprint |
+| [Liquid AI LFM3 1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF) | `Q5_K_M` | 1.26&nbsp;GB | Designed for local agents, tool calling, structured outputs, and domain-specific fine-tuning |
+| [Qwen3 1.7B](https://huggingface.co/Qwen/Qwen3-1.7B-GGUF) | `Q8_0` | 1.83&nbsp;GB | Delivers groundbreaking advancements in reasoning, instruction-following, agent capabilities, and multilingual support |
+| [SparkLLM Spark-X2.6 1.7B](https://huggingface.co/XHToken/Spark-X2.6-1.7B-GGUF) | `Q8_0` | 1.82&nbsp;GB | Stronger coding, agentic, and long-context capabilities |
+| [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35&nbsp;GB | Multimodal, handling text and image input and generating text output |
+| [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67&nbsp;GB | General-purpose reasoning on a small footprint |
 
 ---
 

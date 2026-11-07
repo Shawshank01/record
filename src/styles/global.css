@@ -114,16 +114,23 @@ a:hover {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid rgba(255, 255, 255, 0.15);
+    word-break: normal;
 }
 
 .prose th,
 .prose td {
     border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 0.5rem 0.85rem !important;
+    padding: 0.55rem 0.85rem !important;
+    word-break: normal;
 }
 
 .prose thead th {
     background-color: rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
+}
+
+.prose table code {
+    white-space: nowrap;
 }
 
 /* Centre images in blog content */
