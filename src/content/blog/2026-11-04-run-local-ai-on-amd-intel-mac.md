@@ -2,6 +2,7 @@
 title: "Run Local AI on Intel Mac & AMD GPU via llama.cpp"
 description: "Unlock 4× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
 pubDate: 2026-11-04
+updateDate: 2026-11-07
 tags:
   - AI
   - macOS
@@ -10,11 +11,11 @@ tags:
   - CLI
 ---
 
-If you own an old Intel-based MacBook Pro (like me) equipped with a discrete AMD GPU (such as the Radeon Pro Vega 20 or Radeon Pro 5300M/5500M), running local Large Language Models (LLMs) can be an exercise in frustration. Popular, user-friendly inference runtimes like Ollama run strictly on the CPU on Intel macOS, leaving your discrete GPU completely idle while your fans scream at maximum RPM.
+If you own an older Intel-based MacBook Pro (as I do) equipped with a discrete AMD GPU (such as the Radeon Pro Vega 20 or Radeon Pro 5300M/5500M), running local Large Language Models (LLMs) can be an exercise in frustration. Popular, user-friendly inference runtimes like Ollama run strictly on the CPU on Intel macOS, leaving your discrete GPU completely idle while your fans scream at maximum RPM.
 
 By switching from Ollama to **`llama.cpp`** configured with **Vulkan over MoltenVK**, you can harness your AMD GPU's dedicated high-bandwidth memory and achieve token generation speeds **4× faster** than CPU execution.
 
-This guide walks through from scratch using **MacPorts**, compiling `llama.cpp` with Vulkan acceleration, and running optimised GGUF models both from the command line and as an OpenAI-compatible local API server.
+This guide walks you through the entire process from scratch: installing dependencies using **MacPorts**, compiling `llama.cpp` with Vulkan acceleration, and running optimised GGUF models both from the command line and as an OpenAI-compatible local API server.
 
 ---
 
@@ -41,7 +42,7 @@ Offloading model weights to the discrete GPU's memory allows it to stream weight
 Running AMD GPUs via `llama.cpp` on macOS requires navigating three critical constraints:
 
 1. **Do Not Use the Metal Backend (`-DGGML_METAL=OFF`):** Apple's Metal implementation in `llama.cpp` causes kernel timeouts, device resets, or corrupted tensor outputs on discrete AMD macOS cards. You must use the **Vulkan backend mapped through MoltenVK**.
-2. **Cap the Context Window (`-c 4096` or `-c 8192`):** Modern models default to 32k or 128k context windows. On a 4 GB VRAM card, allocating a massive KV cache quickly exhausts available memory. Once VRAM is oversubscribed, macOS silently pages memory over the PCIe bus, dropping token generation down to a crawling ~0.5 tokens/sec. Use `-c 4096` for ~3B models, while lightweight models under 2B can easily handle `-c 8192`.
+2. **Cap the Context Window (`-c 4096` or `-c 8192`):** Modern models default to 32k or 128k context windows. On a 4 GB VRAM card, allocating a massive KV cache quickly exhausts available memory. Once VRAM is oversubscribed, macOS silently pages memory over the PCIe bus, dropping token generation down to a crawl (~0.5 tokens/sec). Use `-c 4096` for ~3B models, while lightweight models under 2B can easily handle `-c 8192`.
 3. **Disable Flash Attention (`-fa 0`):** AMD GCN and Vega architectures can trigger MoltenVK shader translation faults when Flash Attention is active. Setting `-fa 0` ensures rock-solid stability.
 
 ---
@@ -70,7 +71,7 @@ Both files should exist without errors.
 
 ## Step 2: Clone and Compile llama.cpp with Vulkan
 
-Select a directory, clone the official `llama.cpp` repository from GitHub:
+Select a working directory and clone the official `llama.cpp` repository from GitHub:
 
 ```bash
 git clone https://github.com/ggerganov/llama.cpp.git
@@ -93,7 +94,7 @@ During configuration, CMake should confirm Vulkan detection:
 ```
 
 > [!NOTE]
-> You may see a warning: `CMake Warning: OpenMP not found`. This is expected and harmless. Apple's default Clang compiler does not bundle OpenMP, CMake falls back to macOS's native Accelerate Framework (BLAS) for CPU routines while primary matrix math executes on Vulkan.
+> You may see a warning: `CMake Warning: OpenMP not found`. This is expected and harmless. Because Apple's default Clang compiler does not bundle OpenMP, CMake falls back to macOS's native Accelerate Framework (BLAS) for CPU routines while primary matrix math executes on Vulkan.
 
 ### Build the Binaries
 
@@ -109,7 +110,7 @@ Verify that the CLI binary was generated:
 ls -lh build/bin/llama-cli
 ```
 
-> A binary size around ~25 KB is normal, `llama.cpp` dynamically links against `libllama.dylib` and `libggml.dylib` in `build/bin/`.
+> A binary size around ~25 KB is normal, as `llama.cpp` dynamically links against `libllama.dylib` and `libggml.dylib` in `build/bin/`.
 
 ---
 
@@ -135,7 +136,18 @@ MoltenVK should report your discrete GPU and available VRAM. In my case, the res
 
 ## Step 4: Download and Run an LLM
 
-You can download GGUF models directly from Hugging Face using the `-hf` flag without needing to manually fetch files in your browser.
+You can download **GGUF models** directly from Hugging Face using the `-hf` flag without needing to manually fetch files in your browser.
+
+### Using GGUF
+
+**GGUF (GGML Unified Format)** is the binary format developed by the `llama.cpp` team to store and execute LLMs efficiently on consumer hardware.
+
+Standard PyTorch checkpoints (`.pt`) or raw Hugging Face weights (`.safetensors`) cannot be run directly by native runtimes. GGUF solves four key operational challenges:
+
+1. **Single-File Packaging:** Standard models split architecture definitions, tokenizer configs, vocabularies, and tensor weights across multiple files (`config.json`, `tokenizer.json`, weight shards). GGUF encapsulates all metadata, chat templates, and tensor data into a single `.gguf` binary.
+2. **Native Quantisation for Constrained VRAM:** Models are typically released at 16-bit precision (FP16/BF16), requiring 6–8 GB of memory for even a 3B model. GGUF provides pre-quantised lower-precision representations (such as `Q4_K_M` or `Q5_K_M`), shrinking model size by 70–75% so that 3B parameter models comfortably fit inside 4 GB VRAM.
+3. **Zero Python Overhead:** GGUF models are parsed directly by lightweight C/C++ runtimes without requiring PyTorch, CUDA, or Python environments.
+4. **Direct Memory Mapping (`mmap`):** GGUF aligns binary tensors so the operating system can memory-map (`mmap`) weights from SSD directly into memory in seconds.
 
 Here is the command to run **Liquid AI's LFM3 1.7B** (a lightweight hybrid convolution/attention model that runs exceptionally well on constrained hardware):
 
@@ -151,48 +163,56 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   --repeat-penalty 1.1
 ```
 
-### Command Breakdown
+Command Breakdown:
 
 * `VK_ICD_FILENAMES=...`: Directs the Vulkan loader to MacPorts' MoltenVK ICD manifest.
-* `-hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M`: Automatically downloads and caches the 4-bit quantized GGUF file from Hugging Face into `~/.cache/llama.cpp/`.
+* `-hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M`: Automatically downloads and caches the 4-bit quantised GGUF file from Hugging Face into `~/.cache/llama.cpp/`.
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
 * `-fa 0`: Disables flash attention to prevent shader translation faults.
 * `--temp 0.1 --top-k 50 --repeat-penalty 1.1`: Sampling parameters recommended for LFM3.
 
----
-
-## Performance and Benchmarks
+### Performance and Benchmarks on 2018 MacBook Pro (RAM 32 GB, Vega 20 4 GB)
 
 During startup, the loader confirms device initialisation:
 
 ```text
 [mvk-info] Created VkDevice to run on GPU AMD Radeon Pro Vega 20
-...
+```
+
+> [!NOTE]
+> Diagnostic notices such as `[mvk-warn] VK_ERROR_FEATURE_NOT_PRESENT: Non-Apple GPUs do not fully support robustness` are normal for AMD GPUs running under MoltenVK on macOS and do not affect inference stability or output quality.
+
+At the end of each generation, it prints performance statistics:
+
+```text
 [ Prompt: 4.7 t/s | Generation: 34.4 t/s ]
 ```
 
-### Results Comparison on 2018 MacBook Pro (RAM 32 GB, Vega 20 4 GB)
+GPU utilisation sits around 80%. Compared to Ollama (CPU-only), which only manages ~6 to 10 tokens/sec with loud fan noise and nearly 100% CPU usage, this is a substantial improvement.
 
-* **Ollama (CPU-only, Accelerate BLAS):** ~6 to 10 tokens/sec (loud fan noise, CPU thermal saturation).
-* **llama.cpp (Vulkan + MoltenVK on Vega 20):** **34.4 tokens/sec** (responsive generation, around 80% GPU usage).
+### Calculate Models You Can Run
 
-> [!NOTE]
-> Diagnostic info `[mvk-warn] VK_ERROR_FEATURE_NOT_PRESENT: Non-Apple GPUs do not fully support robustness` are normal for AMD GPUs running under MoltenVK on macOS and do not affect inference stability or output quality.
+According to this [video](https://youtu.be/rPGJhrunbxo?t=906), you can use this formula to calculate the maximum size of a model that can be run theoretically:
 
----
+Total RAM * 0.75 / 0.6 = Amount of Parameters of The Model
 
-## Best Models for 4 GB VRAM
+> [!TIP]
+> Note that while this formula uses "Total RAM" for unified-memory Macs (such as Apple Silicon) or pure CPU setups, on an Intel Mac with a discrete GPU you should substitute your dedicated **VRAM** instead.
 
-To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size remains under ~2.5 GB:
+So for me, it should be 4 * 0.75 / 0.6 = 5, which means ideally I should run LLM models with fewer than 5B parameters on my GPU.
 
-| Model | Quantization | Size | Best Use Case |
+### Best Models for 4 GB VRAM
+
+To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size fits comfortably within your 4 GB VRAM (ideally under ~2.5–3.7 GB, allowing sufficient headroom for the KV cache):
+
+| Model | Quantisation | Size | Best Use Case |
 | :--- | :--- | :--- | :--- |
-| **Liquid AI LFM3 1.7B** | `Q4_K_M` | ~1.1 GB | Ultra-fast on-device reasoning and tool tasks |
-| **NVIDIA Nemotron Labs Dory 1.0 4B** | `Q4_K_M` | ~2.0 GB | General conversation, drafting, and writing |
-| **Qwen3 1.7B** | `Q4_K_M` | ~2.0 GB | Multilingual support, coding, and concise reasoning |
-| **Qwen3.5 2B** | `Q8_0` | ~1.3 GB | Lightweight maximum throughput (>50 t/s) |
-| **Spark X2.6 1.7B** | `Q3_K_M` | ~2.2 GB | STEM, math, and structured logic |
+| [Liquid AI LFM3 1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF) | `Q5_K_M` | 1.26 GB | Designed for local agents, tool calling, structured outputs, and domain-specific fine-tuning |
+| [Qwen3 1.7B](https://huggingface.co/Qwen/Qwen3-1.7B-GGUF) | `Q8_0` | 1.83 GB | Delivers groundbreaking advancements in reasoning, instruction-following, agent capabilities, and multilingual support |
+| [SparkLLM Spark-X2.6 1.7B](https://huggingface.co/XHToken/Spark-X2.6-1.7B-GGUF) | `Q8_0` | 1.82 GB | Stronger coding, agentic, and long-context capabilities |
+| [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35 GB | Multimodal, handling text and image input and generating text output |
+| [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67 GB | General-purpose reasoning on a small footprint |
 
 ---
 
@@ -210,19 +230,6 @@ Once exported, you can invoke `llama-cli` directly:
 ```bash
 ./build/bin/llama-cli -hf unsloth/Llama-3.2-3B-Instruct-GGUF:Q4_K_M -ngl 99 -c 4096 -fa 0
 ```
-
----
-
-## Understanding GGUF: Why It Matters
-
-**GGUF (GGML Unified Format)** is the binary format developed by the `llama.cpp` team to store and execute LLMs efficiently on consumer hardware.
-
-Standard PyTorch checkpoints (`.pt`) or raw Hugging Face weights (`.safetensors`) cannot be run directly by native runtimes. GGUF solves four key operational challenges:
-
-1. **Single-File Packaging:** Standard models split architecture definitions, tokenizer configs, vocabularies, and tensor weights across multiple files (`config.json`, `tokenizer.json`, weight shards). GGUF encapsulates all metadata, chat templates, and tensor data into a single `.gguf` binary.
-2. **Native Quantization for Constrained VRAM:** Models typically release at 16-bit precision (FP16/BF16), requiring 6–8 GB of memory for even a 3B model. GGUF provides pre-quantized lower-precision representations (such as `Q4_K_M` or `Q5_K_M`), shrinking model size by 70–75% so that 3B parameter models comfortably fit inside 4 GB VRAM.
-3. **Zero Python Overhead:** GGUF models are parsed directly by lightweight C/C++ runtimes without requiring PyTorch, CUDA, or Python environments.
-4. **Direct Memory Mapping (`mmap`):** GGUF aligns binary tensors so the operating system can memory-map (`mmap`) weights from SSD directly into memory in seconds.
 
 ---
 
@@ -263,13 +270,13 @@ Any application supporting OpenAI-compatible endpoints can connect using these p
 | Configuration Setting | Value |
 | :--- | :--- |
 | **Base URL** | `http://127.0.0.1:8080/v1` |
-| **API Key** | Leave it blank |
+| **API Key** | Leave it blank (or enter a dummy key like `local`) |
 | **Model Name** | `lfm-1.7b` (matching the `--alias` value passed to `llama-server`) |
 
 ### Common Client Examples
 
 * **Web Frontends (Open WebUI, LibreChat, Chatbox):** Choose the OpenAI provider, point the endpoint to `http://127.0.0.1:8080/v1`, and set the model to `lfm-1.7b`.
-* **AI Assistants (apps):** Configure a custom OpenAI provider with `http://127.0.0.1:8080/v1` as the base address.
+* **AI Assistants & IDE Extensions (Continue, Cursor, Raycast):** Configure a custom OpenAI provider with `http://127.0.0.1:8080/v1` as the base address.
 * **Command Line (`curl`):**
 
   ```bash
@@ -299,7 +306,8 @@ Any application supporting OpenAI-compatible endpoints can connect using these p
 To detach the server and run it silently in the background:
 
 ```bash
-nohup ./build/bin/llama-server \
+nohup env VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
+  ./build/bin/llama-server \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q4_K_M \
   --alias lfm-1.7b \
   --port 8080 \
