@@ -166,7 +166,7 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
 Command Breakdown:
 
 * `VK_ICD_FILENAMES=...`: Directs the Vulkan loader to MacPorts' MoltenVK ICD manifest.
-* `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the 4-bit quantised GGUF file from Hugging Face into `~/.cache/llama.cpp/`.
+* `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the quantised GGUF file from Hugging Face into `~/Library/Caches/llama.cpp/` (or `~/.cache/llama.cpp/`).
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
 * `-fa 0`: Disables flash attention to prevent shader translation faults.
@@ -214,9 +214,7 @@ To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose f
 | [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35&nbsp;GB | Multimodal, handling text and image input and generating text output |
 | [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67&nbsp;GB | General-purpose reasoning on a small footprint |
 
----
-
-## Convenience Tip: Set Environment Variables Permanently
+### Set Environment Variables Permanently (Optional)
 
 To avoid prepending `VK_ICD_FILENAMES` before every command, export it in your shell configuration:
 
@@ -228,7 +226,7 @@ source ~/.zshrc
 Once exported, you can invoke `llama-cli` directly:
 
 ```bash
-./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 4096 -fa 0
+./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 8192 -fa 0
 ```
 
 ---
@@ -318,6 +316,44 @@ When you are done, terminate the background process with:
 
 ```bash
 killall llama-server
+```
+
+---
+
+## Delete Local Model
+
+When you download models using the `-hf` flag, `llama.cpp` caches them locally on macOS in `~/Library/Caches/llama.cpp/`.
+
+### Check Disk Space & List Models
+
+Inspect how much storage your cached models are consuming and view their file names:
+
+Check total size of cached models
+
+```bash
+du -sh ~/Library/Caches/llama.cpp/
+```
+
+List all downloaded GGUF files
+
+```bash
+ls -lh ~/Library/Caches/llama.cpp/
+```
+
+### Delete a Specific Model
+
+To remove an individual model that you no longer need:
+
+```bash
+rm ~/Library/Caches/llama.cpp/<model-filename>.gguf
+```
+
+### Delete All Cached Models
+
+To wipe the entire `llama.cpp` cache and reclaim all model storage:
+
+```bash
+rm -rf ~/Library/Caches/llama.cpp/*
 ```
 
 ---
