@@ -204,7 +204,7 @@ So for me, it should be 4 * 0.75 / 0.6 = 5, which means ideally I should run LLM
 
 ### Best Models for 4 GB VRAM
 
-To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size fits comfortably within your 4 GB VRAM (ideally under ~2.5–3.7 GB, allowing sufficient headroom for the KV cache):
+To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size fits comfortably within my 4 GB VRAM (ideally under 3.7 GB, allowing sufficient headroom for the KV cache):
 
 | Model | Quantisation | Size | Best Use Case |
 | :--- | :--- | :--- | :--- |
