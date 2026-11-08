@@ -2,7 +2,7 @@
 title: "Run Local AI on Intel Mac & AMD GPU via llama.cpp"
 description: "Unlock 4× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
 pubDate: 2026-11-04
-updateDate: 2026-11-07
+updateDate: 2026-11-08
 tags:
   - AI
   - macOS
@@ -166,7 +166,7 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
 Command Breakdown:
 
 * `VK_ICD_FILENAMES=...`: Directs the Vulkan loader to MacPorts' MoltenVK ICD manifest.
-* `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the quantised GGUF file from Hugging Face into `~/Library/Caches/llama.cpp/` (or `~/.cache/llama.cpp/`).
+* `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the quantised GGUF file from Hugging Face into `~/.cache/huggingface/hub/` (specifically under `models--LiquidAI--LFM3-1.7B-GGUF/`).
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
 * `-fa 0`: Disables flash attention to prevent shader translation faults.
@@ -322,38 +322,44 @@ killall llama-server
 
 ## Delete Local Model
 
-When you download models using the `-hf` flag, `llama.cpp` caches them locally on macOS in `~/Library/Caches/llama.cpp/`.
+When you download models using the `-hf` flag, `llama.cpp` adheres to Hugging Face Hub cache conventions, storing files in `~/.cache/huggingface/hub/` rather than macOS's native `~/Library/Caches/` directory.
 
 ### Check Disk Space & List Models
 
 Inspect how much storage your cached models are consuming and view their file names:
 
-Check total size of cached models
+Check total size of cached models:
 
 ```bash
-du -sh ~/Library/Caches/llama.cpp/
+du -sh ~/.cache/huggingface/hub/
 ```
 
-List all downloaded GGUF files
+List all downloaded model repositories:
 
 ```bash
-ls -lh ~/Library/Caches/llama.cpp/
+ls -lh ~/.cache/huggingface/hub/
+```
+
+Inspect specific downloaded GGUF files in snapshots:
+
+```bash
+ls -lh ~/.cache/huggingface/hub/models--*/snapshots/*
 ```
 
 ### Delete a Specific Model
 
-To remove an individual model that you no longer need:
+To remove an individual model repository (such as Liquid AI's LFM3):
 
 ```bash
-rm ~/Library/Caches/llama.cpp/<model-filename>.gguf
+rm -rf ~/.cache/huggingface/hub/models--LiquidAI--LFM3-1.7B-GGUF/
 ```
 
 ### Delete All Cached Models
 
-To wipe the entire `llama.cpp` cache and reclaim all model storage:
+To wipe all cached Hugging Face models and reclaim all model storage:
 
 ```bash
-rm -rf ~/Library/Caches/llama.cpp/*
+rm -rf ~/.cache/huggingface/hub/models--*
 ```
 
 ---
