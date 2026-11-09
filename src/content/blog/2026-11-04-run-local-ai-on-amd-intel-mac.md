@@ -186,7 +186,7 @@ During startup, the loader confirms device initialisation:
 At the end of each generation, it prints performance statistics:
 
 ```text
-[ Prompt: 11.4 t/s | Generation: 31.1 t/s ]
+[ Prompt: 14.2 t/s | Generation: 31.2 t/s ]
 ```
 
 GPU utilisation sits around 80%. Compared to Ollama (CPU-only), which only manages ~6 to 10 tokens/sec with loud fan noise and nearly 100% CPU usage, this is a substantial improvement.
@@ -411,12 +411,13 @@ cmake --build build --config Release -j
 
 ### Step 4: Verify the Update
 
-Verify that the newly compiled binary reports the expected version and successfully detects your AMD GPU via MoltenVK:
+Verify that the newly compiled binary reports the expected version:
 
 ```bash
-VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-cli --version
+./build/bin/llama-cli --version
 ```
+
+And confirm that MoltenVK successfully detects your AMD GPU:
 
 ```bash
 VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
