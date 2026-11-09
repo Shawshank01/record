@@ -207,7 +207,7 @@ During startup, the loader confirms device initialisation:
 | **Vulkan (`-fa on`)** | **43.4 t/s** | 21.4 t/s | ✅ Stable & coherent; **3.7× faster prompt ingestion** |
 | **Native Metal (`-fa off`)** | 11.4 t/s | 8.5 t/s | ❌ Broken; repetitive token loops (`选择 stran...`) |
 | **Native Metal (`-fa on`)** | 10.6 t/s | 7.2 t/s | ❌ Broken; tensor corruption (`-nlopyright gg...`) |
-| **Ollama v0.5.x (CPU-Only)** | ~10 t/s | ~6–10 t/s | ⚠️ 100% CPU, max fan noise; 3× to 5× slower |
+| **Ollama 0.40.15 (CPU-Only)** | ~10 t/s | ~6–10 t/s | ⚠️ 100% CPU, max fan noise |
 
 Under Vulkan, GPU utilisation sits around 80%. Compared to Ollama (CPU-only), which manages only ~6 to 10 tokens/sec with loud fan noise and near 100% CPU core saturation, Vulkan delivers a substantial **3× to 5× speedup** while keeping system responsiveness high.
 
@@ -232,7 +232,6 @@ To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose f
 | [Qwen3 1.7B](https://huggingface.co/Qwen/Qwen3-1.7B-GGUF) | `Q8_0` | 1.83&nbsp;GB | Delivers groundbreaking advancements in reasoning, instruction-following, agent capabilities, and multilingual support |
 | [SparkLLM Spark-X2.6 1.7B](https://huggingface.co/XHToken/Spark-X2.6-1.7B-GGUF) | `Q8_0` | 1.82&nbsp;GB | Stronger coding, agentic, and long-context capabilities |
 | [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35&nbsp;GB | Multimodal, handling text and image input and generating text output |
-| [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67&nbsp;GB | General-purpose reasoning on a small footprint |
 
 ### Troubleshooting: Driver Not Detected?
 
@@ -334,7 +333,7 @@ killall llama-server
 
 ## Delete Local Model
 
-When you download models using the `-hf` flag, `llama.cpp` adheres to Hugging Face Hub cache conventions. It resolves cache directories in priority order (`LLAMA_CACHE`, `HF_HUB_CACHE`, `HF_HOME`, `XDG_CACHE_HOME`), falling back by default to `~/.cache/huggingface/hub/` rather than macOS's native `~/Library/Caches/` directory.
+When you download models using the `-hf` flag, `llama.cpp` adheres to Hugging Face Hub cache conventions. It resolves cache directories in priority order (`LLAMA_CACHE`, `HF_HUB_CACHE`, `HUGGINGFACE_HUB_CACHE`, `HF_HOME`, `XDG_CACHE_HOME`), falling back by default to `~/.cache/huggingface/hub/` rather than macOS's native `~/Library/Caches/` directory.
 
 ### Check Disk Space & List Models
 
