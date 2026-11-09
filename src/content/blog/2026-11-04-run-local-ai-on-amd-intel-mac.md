@@ -69,6 +69,16 @@ ls -l /opt/local/lib/libvulkan.dylib /opt/local/share/vulkan/icd.d/MoltenVK_icd.
 
 Both files should exist without errors.
 
+> [!TIP]
+> **Automatic Driver Discovery:** Because `vulkan-loader` and `MoltenVK` are both installed through MacPorts, MacPorts' Vulkan loader automatically searches `/opt/local/share/vulkan/icd.d` for MoltenVK by default—meaning you do not need to prefix commands with `VK_ICD_FILENAMES`.
+>
+> If you want to ensure any standard or third-party macOS Vulkan loader finds MoltenVK globally, you can optionally symlink it to macOS's standard user Vulkan directory:
+>
+> ```bash
+> mkdir -p ~/Library/Application\ Support/vulkan/icd.d
+> ln -sf /opt/local/share/vulkan/icd.d/MoltenVK_icd.json ~/Library/Application\ Support/vulkan/icd.d/
+> ```
+
 ---
 
 ## Step 2: Clone and Compile llama.cpp with Vulkan
@@ -124,8 +134,7 @@ ls -lh build/bin/llama-cli
 Before running any models, verify that MoltenVK correctly enumerates your discrete AMD GPU:
 
 ```bash
-VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-cli --list-devices
+./build/bin/llama-cli --list-devices
 ```
 
 MoltenVK should report your discrete GPU and available VRAM. In my case, the results were:
@@ -157,8 +166,7 @@ While some specialised runtimes can load raw Hugging Face weights (`.safetensors
 Here is the command to run **Liquid AI's LFM3 1.7B** (a lightweight hybrid convolution/attention model that runs exceptionally well on constrained hardware):
 
 ```bash
-VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-cli \
+./build/bin/llama-cli \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   -ngl 99 \
   -c 8192 \
@@ -170,7 +178,6 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
 
 Command Breakdown:
 
-* `VK_ICD_FILENAMES=...`: Directs the Vulkan loader to MacPorts' MoltenVK ICD manifest.
 * `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the quantised GGUF file from Hugging Face into `~/.cache/huggingface/hub/` (specifically under `models--LiquidAI--LFM3-1.7B-GGUF/`).
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
@@ -227,19 +234,13 @@ To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose f
 | [Google Gemma 4 E2B it](https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf) | `Q4_0` | 3.35&nbsp;GB | Multimodal, handling text and image input and generating text output |
 | [NVIDIA Nemotron Labs Dory 1.0 4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-Dory1.0-4B-GGUF) | `Q5_K_M` | 3.67&nbsp;GB | General-purpose reasoning on a small footprint |
 
-### Set Environment Variables Permanently (Optional)
+### Troubleshooting: Driver Not Detected?
 
-To avoid prepending `VK_ICD_FILENAMES` before every command, export it in your shell configuration:
+While MacPorts' Vulkan loader discovers MoltenVK automatically, if `./build/bin/llama-cli --list-devices` does not display your AMD GPU (for instance, when using an alternative shell environment or a different loader), you can explicitly export the manifest path in your shell profile:
 
 ```bash
 echo 'export VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json' >> ~/.zshrc
 source ~/.zshrc
-```
-
-Once exported, you can invoke `llama-cli` directly:
-
-```bash
-./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 8192 -fa off
 ```
 
 ---
@@ -255,8 +256,7 @@ If you want external applications, IDE extensions, or web interfaces to connect 
 From your `llama.cpp` repository directory:
 
 ```bash
-VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-server \
+./build/bin/llama-server \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   --alias lfm-1.7b \
   --host 127.0.0.1 \
@@ -317,8 +317,7 @@ Any application supporting OpenAI-compatible endpoints can connect using these p
 To detach the server and run it silently in the background:
 
 ```bash
-nohup env VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-server \
+nohup ./build/bin/llama-server \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   --alias lfm-1.7b \
   --port 8080 \
@@ -436,8 +435,7 @@ Verify that the newly compiled binary reports the expected version:
 And confirm that MoltenVK successfully detects your AMD GPU:
 
 ```bash
-VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
-  ./build/bin/llama-cli --list-devices
+./build/bin/llama-cli --list-devices
 ```
 
 ---
