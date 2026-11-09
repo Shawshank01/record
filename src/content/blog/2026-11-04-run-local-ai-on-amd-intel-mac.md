@@ -366,7 +366,7 @@ rm -rf ~/.cache/huggingface/hub/models--*
 
 ## Update llama.cpp
 
-Check your currently installed build number and commit hash:
+Check your currently installed build number and commit hash in llama.cpp folder:
 
 ```bash
 ./build/bin/llama-cli --version
@@ -387,7 +387,6 @@ killall llama-server
 Navigate to your `llama.cpp` directory and pull the latest commits:
 
 ```bash
-cd llama.cpp
 git pull
 git submodule update --init --recursive
 ```
