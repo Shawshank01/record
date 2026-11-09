@@ -54,7 +54,7 @@ Because Homebrew has dropped active support and prebuilt bottles for older Intel
 Open your Terminal and install the required build tools, Vulkan headers, and MoltenVK:
 
 ```bash
-sudo port install cmake git libomp vulkan-headers vulkan-loader MoltenVK glslang shaderc
+sudo port install cmake git libomp vulkan-headers vulkan-loader MoltenVK glslang shaderc spirv-headers
 ```
 
 ### Verify the Installation
@@ -421,15 +421,6 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
 ```bash
 VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   ./build/bin/llama-cli --list-devices
-```
-
-### Optional: Update MacPorts Dependencies
-
-To ensure you have the latest MoltenVK runtime, Vulkan headers, and CMake fixes, update your MacPorts packages periodically:
-
-```bash
-sudo port selfupdate
-sudo port upgrade MoltenVK vulkan-headers vulkan-loader cmake
 ```
 
 ---
