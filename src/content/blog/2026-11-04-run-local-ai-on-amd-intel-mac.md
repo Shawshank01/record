@@ -1,6 +1,6 @@
 ---
 title: "Run Local AI on Intel Mac & AMD GPU via llama.cpp"
-description: "Unlock 4× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
+description: "Unlock up to 3–5× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
 pubDate: 2026-11-04
 updateDate: 2026-11-09
 tags:
@@ -13,7 +13,7 @@ tags:
 
 If you own an older Intel-based MacBook Pro (as I do) equipped with a discrete AMD GPU (such as the Radeon Pro Vega 20 or Radeon Pro 5300M/5500M), running local Large Language Models (LLMs) can be an exercise in frustration. Popular, user-friendly inference runtimes like Ollama run strictly on the CPU on Intel macOS, leaving your discrete GPU completely idle while your fans scream at maximum RPM.
 
-By switching from Ollama to **`llama.cpp`** configured with **Vulkan over MoltenVK**, you can harness your AMD GPU's dedicated high-bandwidth memory and achieve token generation speeds **4× faster** than CPU execution.
+By switching from Ollama to **`llama.cpp`** configured with **Vulkan over MoltenVK**, you can harness your AMD GPU's dedicated high-bandwidth memory and achieve token generation speeds roughly **3× to 5× faster** than CPU execution on this hardware.
 
 This guide walks you through the entire process from scratch: installing dependencies using **MacPorts**, compiling `llama.cpp` with Vulkan acceleration, and running optimised GGUF models both from the command line and as an OpenAI-compatible local API server.
 
@@ -23,8 +23,8 @@ This guide walks you through the entire process from scratch: installing depende
 
 When you launch an Ollama local model on an Intel Mac running macOS Sequoia (or earlier) and run `ollama ps`, the processor column invariably reports `100% CPU`.
 
-* **Metal is Apple Silicon-only:** Ollama's macOS acceleration specifically targets Apple Silicon's unified memory architecture (`arm64`). Upstream Ollama deliberately disables Metal compute on `x86_64` macOS.
-* **No macOS ROCm or Vulkan:** Ollama supports AMD GPUs via ROCm on Linux and Vulkan on Windows, but ships with neither backend for macOS.
+* **Ollama's GPU acceleration targets Apple Silicon:** While Intel Macs with compatible AMD GPUs support Apple's Metal framework (which MoltenVK itself runs on), upstream Ollama limits Metal compute acceleration strictly to Apple Silicon (`arm64`). On `x86_64` macOS, Ollama intentionally falls back to CPU-only execution (documented in [Ollama's GPU guide](https://github.com/ollama/ollama/blob/main/docs/gpu.mdx) and [Issue #1016](https://github.com/ollama/ollama/issues/1016)).
+* **No macOS ROCm or Vulkan in Ollama:** While Ollama supports AMD GPUs via ROCm on Linux and Vulkan on Windows, it ships with neither backend for macOS.
 
 ## Why Discrete GPU Matters: Memory Bandwidth
 
@@ -37,13 +37,13 @@ Offloading model weights to the discrete GPU's memory allows it to stream weight
 
 ---
 
-## Essential Technical Constraints Before You Start
+## Hardware Constraints & Recommended Settings
 
-Running AMD GPUs via `llama.cpp` on macOS requires navigating three critical constraints:
+On an Intel MacBook Pro equipped with a discrete AMD GPU (tested on a 2018 15-inch model with the Radeon Pro Vega 20 under macOS Sequoia), achieving stability required navigating three hardware-specific settings:
 
-1. **Do Not Use the Metal Backend (`-DGGML_METAL=OFF`):** Apple's Metal implementation in `llama.cpp` causes kernel timeouts, device resets, or corrupted tensor outputs on discrete AMD macOS cards. You must use the **Vulkan backend mapped through MoltenVK**.
-2. **Cap the Context Window (`-c 4096` or `-c 8192`):** Modern models default to 32k or 128k context windows. On a 4 GB VRAM card, allocating a massive KV cache quickly exhausts available memory. Once VRAM is oversubscribed, macOS silently pages memory over the PCIe bus, dropping token generation down to a crawl (~0.5 tokens/sec). Use `-c 4096` for ~3B models, while lightweight models under 2B can easily handle `-c 8192`.
-3. **Disable Flash Attention (`-fa 0`):** AMD GCN and Vega architectures can trigger MoltenVK shader translation faults when Flash Attention is active. Setting `-fa 0` ensures rock-solid stability.
+1. **Vulkan over MoltenVK instead of Metal (`-DGGML_METAL=OFF -DGGML_VULKAN=ON`):** While some Intel Mac configurations with external AMD GPUs report working Metal builds, running `llama.cpp`'s native Metal backend on older mobile discrete AMD GPUs (such as the Vega 20) frequently triggers kernel timeouts, GPU driver resets, or corrupted tensor outputs. Routing Vulkan calls through MoltenVK provided dependable stability on this machine.
+2. **Cap the Context Window (`-c 4096` or `-c 8192`):** Modern models often default to 32k or 128k context windows. On a 4 GB VRAM card, allocating an oversized KV cache rapidly exhausts available memory. When VRAM is exceeded, macOS may either silently thrash memory across the PCIe bus (crashing generation speeds down to ~0.5 tokens/sec) or fail outright with allocation errors. Use `-c 4096` for ~3B models, while sub-2B models can comfortably run `-c 8192`.
+3. **Disable Flash Attention (`-fa off`):** Although upstream `llama.cpp` lists Flash Attention as supported on Vulkan, older AMD architectures (GCN and Vega) can trigger MoltenVK shader translation faults and kernel stalls during Flash Attention operations. Using `-fa off` ensures stable execution on this card.
 
 ---
 
@@ -77,6 +77,9 @@ Select a working directory and clone the official `llama.cpp` repository from Gi
 git clone https://github.com/ggerganov/llama.cpp.git
 cd llama.cpp
 ```
+
+> [!NOTE]
+> This guide was tested against `llama.cpp` release builds (such as `0.9.0-dev` / `b4321`). If you require exact version reproducibility or want to pin to a specific verified release, check out a tagged release with `git checkout tags/<release-tag>` before compiling.
 
 ### Configure CMake
 
@@ -157,7 +160,7 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   -ngl 99 \
   -c 8192 \
-  -fa 0 \
+  -fa off \
   --temp 0.1 \
   --top-k 50 \
   --repeat-penalty 1.1
@@ -169,10 +172,12 @@ Command Breakdown:
 * `-hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M`: Automatically downloads and caches the quantised GGUF file from Hugging Face into `~/.cache/huggingface/hub/` (specifically under `models--LiquidAI--LFM3-1.7B-GGUF/`).
 * `-ngl 99`: Offloads all model layers to the GPU.
 * `-c 8192`: Caps context size to 8,192 tokens. For lightweight 1B–1.7B models, 8k context comfortably fits inside 4 GB VRAM alongside the weights (~1.85 GB total). For heavier 3B models, cap at `-c 4096`.
-* `-fa 0`: Disables flash attention to prevent shader translation faults.
+* `-fa off`: Disables flash attention (canonical options are `on`, `off`, or `auto`) to prevent MoltenVK shader translation faults on older AMD architectures.
 * `--temp 0.1 --top-k 50 --repeat-penalty 1.1`: Sampling parameters recommended for LFM3.
 
-### Performance and Benchmarks on 2018 MacBook Pro (RAM 32 GB, Vega 20 4 GB)
+### Performance and Benchmarks
+
+**Hardware:** 2018 15-inch MacBook Pro (2.6 GHz 6-Core Intel Core i7, 32 GB 2400 MHz DDR4, AMD Radeon Pro Vega 20 with 4 GB HBM2) running macOS 15 Sequoia.
 
 During startup, the loader confirms device initialisation:
 
@@ -183,7 +188,9 @@ During startup, the loader confirms device initialisation:
 > [!NOTE]
 > Diagnostic notices such as `[mvk-warn] VK_ERROR_FEATURE_NOT_PRESENT: Non-Apple GPUs do not fully support robustness` are normal for AMD GPUs running under MoltenVK on macOS and do not affect inference stability or output quality.
 
-At the end of each generation, it prints performance statistics:
+**Model Tested:** Liquid AI's LFM3 1.7B (`Q5_K_M` quantisation, 1.26 GB).
+
+At the end of each generation, `llama.cpp` prints performance statistics:
 
 ```text
 [ Prompt: 14.2 t/s | Generation: 31.2 t/s ]
@@ -204,7 +211,7 @@ So for me, it should be 4 * 0.75 / 0.6 = 5, which means ideally I should run LLM
 
 ### Best Models for 4 GB VRAM
 
-To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size fits comfortably within my 4 GB VRAM (ideally under 3.7 GB, allowing sufficient headroom for the KV cache):
+To prevent VRAM paging across the PCIe bus, choose quantised GGUF models whose file size fits comfortably within my 4 GB VRAM (ideally under 3 GB, allowing sufficient headroom for the KV cache):
 
 | Model | Quantisation | Size | Best Use Case |
 | :--- | :--- | :--- | :--- |
@@ -226,7 +233,7 @@ source ~/.zshrc
 Once exported, you can invoke `llama-cli` directly:
 
 ```bash
-./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 8192 -fa 0
+./build/bin/llama-cli -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M -ngl 99 -c 8192 -fa off
 ```
 
 ---
@@ -250,7 +257,7 @@ VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   --port 8080 \
   -ngl 99 \
   -c 8192 \
-  -fa 0 \
+  -fa off \
   --temp 0.1 \
   --top-k 50 \
   --repeat-penalty 1.1 \
@@ -309,7 +316,7 @@ nohup env VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
   -hf LiquidAI/LFM3-1.7B-GGUF:Q5_K_M \
   --alias lfm-1.7b \
   --port 8080 \
-  -ngl 99 -c 8192 -fa 0 > server.log 2>&1 &
+  -ngl 99 -c 8192 -fa off > server.log 2>&1 &
 ```
 
 When you are done, terminate the background process with:
