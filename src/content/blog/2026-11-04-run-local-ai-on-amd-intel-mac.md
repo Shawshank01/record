@@ -2,7 +2,7 @@
 title: "Run Local AI on Intel Mac & AMD GPU via llama.cpp"
 description: "Unlock 4× faster local AI inference on a Vega 20 Intel MacBook Pro by compiling llama.cpp with Vulkan and MoltenVK instead of CPU-bound Ollama."
 pubDate: 2026-11-04
-updateDate: 2026-11-08
+updateDate: 2026-11-09
 tags:
   - AI
   - macOS
@@ -186,7 +186,7 @@ During startup, the loader confirms device initialisation:
 At the end of each generation, it prints performance statistics:
 
 ```text
-[ Prompt: 4.7 t/s | Generation: 34.4 t/s ]
+[ Prompt: 11.4 t/s | Generation: 31.1 t/s ]
 ```
 
 GPU utilisation sits around 80%. Compared to Ollama (CPU-only), which only manages ~6 to 10 tokens/sec with loud fan noise and nearly 100% CPU usage, this is a substantial improvement.
@@ -360,6 +360,77 @@ To wipe all cached Hugging Face models and reclaim all model storage:
 
 ```bash
 rm -rf ~/.cache/huggingface/hub/models--*
+```
+
+---
+
+## Update llama.cpp
+
+Check your currently installed build number and commit hash:
+
+```bash
+./build/bin/llama-cli --version
+```
+
+To update `llama.cpp` while retaining the Vulkan and MoltenVK acceleration configuration for your AMD GPU, pull the latest changes from the upstream repository and recompile the binaries:
+
+### Step 1: Stop Any Running Server
+
+If you have `llama-server` running in the background, terminate the process first so the binaries can be overwritten cleanly:
+
+```bash
+killall llama-server
+```
+
+### Step 2: Pull the Latest Changes
+
+Navigate to your `llama.cpp` directory and pull the latest commits:
+
+```bash
+cd llama.cpp
+git pull
+git submodule update --init --recursive
+```
+
+### Step 3: Recompile with Vulkan Support
+
+Re-run CMake using the Vulkan configuration flags:
+
+```bash
+cmake -B build -DGGML_METAL=OFF -DGGML_VULKAN=ON
+cmake --build build --config Release -j
+```
+
+> [!TIP]
+> If a major upstream update introduces breaking build errors or stale CMake cache issues, perform a clean build by deleting the `build/` directory before compiling:
+>
+> ```bash
+> rm -rf build
+> cmake -B build -DGGML_METAL=OFF -DGGML_VULKAN=ON
+> cmake --build build --config Release -j
+> ```
+
+### Step 4: Verify the Update
+
+Verify that the newly compiled binary reports the expected version and successfully detects your AMD GPU via MoltenVK:
+
+```bash
+VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
+  ./build/bin/llama-cli --version
+```
+
+```bash
+VK_ICD_FILENAMES=/opt/local/share/vulkan/icd.d/MoltenVK_icd.json \
+  ./build/bin/llama-cli --list-devices
+```
+
+### Optional: Update MacPorts Dependencies
+
+To ensure you have the latest MoltenVK runtime, Vulkan headers, and CMake fixes, update your MacPorts packages periodically:
+
+```bash
+sudo port selfupdate
+sudo port upgrade MoltenVK vulkan-headers vulkan-loader cmake
 ```
 
 ---
