@@ -439,4 +439,4 @@ And confirm that MoltenVK successfully detects your AMD GPU:
 
 ---
 
-If you've managed to keep your older Mac out of retirement, you might want to check out my media downloader [YT Downloader](https://github.com/Shawshank01/yt-downloader-electron). It just got a major overhaul and now features a local or cloud AI assistant to make downloading, editing, and managing media completely hassle-free. Any and all feedback is welcome!
+If you've managed to keep your older Mac out of retirement, you might want to check out my media downloader [VidButler](https://github.com/Shawshank01/VidButler). It just got a major overhaul and now features a local or cloud AI assistant to make downloading, editing, and managing media completely hassle-free. Any and all feedback is welcome!
