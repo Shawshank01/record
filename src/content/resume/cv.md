@@ -84,17 +84,33 @@ While developing the integration, I discovered and responsibly disclosed a confi
 
 ---
 
-[YT-DLP Downloader](https://github.com/Shawshank01/yt-downloader-electron)
+[VidButler](https://github.com/Shawshank01/VidButler): AI-Powered Desktop Media Tool
 
-![YT-DLP-UI](https://raw.githubusercontent.com/Shawshank01/yt-downloader-electron/main/public/YT-Downloader-UI.png)
-YT-DLP Downloader UI
+Electron 45 · Node.js (ES modules) · yt-dlp · FFmpeg · LLM tool calling (Gemini, xAI, Ollama, OpenAI-compatible) · GitHub Actions
 
-- **Cross-Platform Desktop Architecture:** Engineered a high-performance desktop media tool using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux, distributed via DMGs, NSIS installers, and AppImages.
-- **Hardware Acceleration & Media Pipeline:** Developed an automated video pipeline supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation (aac_at -> libfdk_aac -> aac), and native MP4 container thumbnail embedding (attached_pic).
-- **Hardened Process Management & IPC:** Architected a secure multi-process IPC model enforcing context isolation, command-injection prevention (CWE-78), mutual exclusion task locking, native process tree termination (taskkill /T /F on Windows, SIGKILL on POSIX), and automatic transactional temp-file cleanups.
-- **Stream Processing & Environment Resolution:** Built a custom stream chunk-reassembly buffer (LineStreamFilter) with regex-based log suppression for real-time telemetry streaming; implemented automated multi-tier PATH synthesis and runtime dependency capability inspection across major package managers (Homebrew, MacPorts, WinGet, Scoop).
-- **Authentication & Network Features:** Implemented multi-browser cookie extraction (Chrome, Firefox, Safari, Brave) with macOS Full Disk Access permission handling for authenticated media, and configurable SOCKS5 proxy routing for network restriction bypass.
-- **Automated Multi-OS CI/CD Pipeline:** Built a multi-runner GitHub Actions release matrix targeting macOS, Windows, and Linux across x64 and ARM64 architectures; automated lint verification, build aggregation, PGP-sanitized release notes generation, and binary deployment to GitHub Releases and GitLab mirrors upon tag push.
+![VidButler-UI](https://raw.githubusercontent.com/Shawshank01/VidButler/main/public/VidButler-UI.png)
+*VidButler UI*
+
+- **Natural-language agent:** Built a chat interface where users type "Help me download this video `link`" and a tool-calling LLM agent plans and runs the job. It supports Gemini, xAI Grok, local Ollama models and any OpenAI-compatible endpoint, with streaming replies, retries and cancellation. The original form-based UI stays as a no-LLM fallback.
+
+- **Security-first AI design:**
+  - The model never gets a shell or raw flags. Each of its 13 typed tools validates input and builds argument arrays for yt-dlp and FFmpeg, which prevents command injection.
+  - Risky actions (re-encode, delete, playlists) need an Allow/Deny confirmation.
+  - Any URL the user didn't type is treated as high risk, as a defence against prompt injection through web content.
+  - API keys are encrypted with Electron `safeStorage` and never reach the renderer. Model output is rendered with DOM calls only, never `innerHTML`.
+
+- **Maintainable architecture:** Split a monolithic `main.js` into Electron-free `core/` and `llm/` modules, with a thin IPC layer and a context-isolated preload. Provider capabilities are declared in one place, so adding a provider needs no changes to the chat service. A `node:test` suite of 202 tests covers the agent loop with a scripted fake model, mocked provider adapters, validation, path-escape and injection cases, and the IPC contract. It runs in CI with ESLint.
+
+- **Media pipeline:** Automated download and processing with yt-dlp and FFmpeg:
+  - hardware-accelerated encoding (Apple VideoToolbox) with CPU fallback;
+  - subtitle burn-in with OS-specific CJK font fallback;
+  - audio codec negotiation (`aac_at` → `libfdk_aac` → `aac`);
+  - thumbnail embedding;
+  - multi-browser cookie import and SOCKS5 proxy support.
+
+- **Reliable process handling:** A single task lock stops Classic and AI jobs from running at once. Processes are terminated cleanly on every OS (`taskkill /T /F` on Windows, `SIGKILL` on POSIX). Temp files are cleaned up only after user confirmation. Streamed output is reassembled and filtered for real-time progress, and proxy credentials are redacted from logs.
+
+- **Cross-platform delivery:** Release builds for macOS (DMG), Windows (NSIS) and Linux (AppImage) on x64 and ARM64 bundle yt-dlp, FFmpeg and Deno, so users install nothing else. Packaged apps check GitHub Releases for updates, with silent install on Windows and Linux and a Homebrew-tap flow for unsigned macOS builds. A GitHub Actions matrix builds, lints and publishes releases on tag push and mirrors them to GitLab.
 
 ---
 
