@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -589,25 +590,87 @@
         text-decoration: none !important;
       }
     }
-  
+
     /* Support CV content uses the shared CV design with readable spacing. */
-    .section { margin-bottom: 8px; }
-    .project-summary, .work-summary { font-size: 9.5pt; line-height: 1.4; }
-    .project-bullets li, .page-2 .project-bullets li { font-size: 9.5pt; line-height: 1.38; margin-bottom: 4px; }
-    .project-card, .page-2 .project-card { margin-bottom: 12px; }
-    .skills-grid { font-size: 9pt; }
-    .section-title { font-size: 10pt; }
-    .project-title, .page-2 .project-title { font-size: 9.5pt; }
-    .edu-header, .work-header { font-size: 9pt; }
-    .edu-degree, .work-role { font-size: 8.7pt; }
-    .edu-modules { font-size: 8.5pt; line-height: 1.3; }
-    .skill-category { padding: 5px 8px; }
-    .skill-category:nth-last-child(2) { border-bottom: 1px solid #94a3b8; }
-    .skill-category-wide { grid-column: 1 / -1; border-right: none !important; }
-    .edu-item { margin-bottom: 6px; }
-    .page-header-mini { display: flex; justify-content: space-between; border-bottom: 2px solid var(--secondary); padding-bottom: 4.5px; margin-bottom: 10px; color: var(--primary); font-weight: 700; }
+    .section {
+      margin-bottom: 8px;
+    }
+
+    .project-summary,
+    .work-summary {
+      font-size: 9.5pt;
+      line-height: 1.4;
+    }
+
+    .project-bullets li,
+    .page-2 .project-bullets li {
+      font-size: 9.5pt;
+      line-height: 1.38;
+      margin-bottom: 4px;
+    }
+
+    .project-card,
+    .page-2 .project-card {
+      margin-bottom: 12px;
+    }
+
+    .skills-grid {
+      font-size: 9pt;
+    }
+
+    .section-title {
+      font-size: 10pt;
+    }
+
+    .project-title,
+    .page-2 .project-title {
+      font-size: 9.5pt;
+    }
+
+    .edu-header,
+    .work-header {
+      font-size: 9pt;
+    }
+
+    .edu-degree,
+    .work-role {
+      font-size: 8.7pt;
+    }
+
+    .edu-modules {
+      font-size: 8.5pt;
+      line-height: 1.3;
+    }
+
+    .skill-category {
+      padding: 5px 8px;
+    }
+
+    .skill-category:nth-last-child(2) {
+      border-bottom: 1px solid #94a3b8;
+    }
+
+    .skill-category-wide {
+      grid-column: 1 / -1;
+      border-right: none !important;
+    }
+
+    .edu-item {
+      margin-bottom: 6px;
+    }
+
+    .page-header-mini {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 4.5px;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-weight: 700;
+    }
   </style>
 </head>
+
 <body>
   <div class="screen-toolbar">
     <div>
@@ -625,7 +688,7 @@
   </div>
   <div class="page-container">
     <div class="page page-1">
-<header class="header">
+      <header class="header">
         <div class="header-top">
           <div>
             <h1 class="name">DIWEN XIAO</h1>
@@ -635,30 +698,31 @@
 
         <div class="contact-row">
           <div class="contact-group">
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
               </svg>
               <a href="mailto:lelouch@outlook.ie">lelouch@outlook.ie</a>
             </span>
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
               </svg>
               <a href="tel:+353876930108">087 693 0108</a>
             </span>
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63z" />
               </svg>
-              <a href="https://www.linkedin.com/in/diwen-xiao-01a1172b0/" target="_blank">https://www.linkedin.com/in/diwen-xiao-01a1172b0/</a>
+              <a href="https://www.linkedin.com/in/diwen-xiao-01a1172b0/"
+                target="_blank">https://www.linkedin.com/in/diwen-xiao-01a1172b0/</a>
             </span>
           </div>
           <div class="contact-group">
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
@@ -670,7 +734,7 @@
 
         <div class="contact-row">
           <div class="contact-group">
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
@@ -679,7 +743,7 @@
             </span>
           </div>
           <div class="contact-group">
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
@@ -692,12 +756,12 @@
 
         <div class="contact-row">
           <div class="contact-group">
-<span class="contact-item">
+            <span class="contact-item">
               <svg viewBox="0 0 24 24">
                 <path
                   d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
               </svg>
-              Dublin, Ireland &bull; Available Immediately &bull; Full-Time Onsite (Dublin 12)
+              Dublin, Ireland &bull; Available Immediately &bull; Full-Time Onsite
             </span>
           </div>
         </div>
@@ -712,209 +776,289 @@
         </div>
       </header>
 
-<section class="section">
-          <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>Professional Summary</h2>
-          <p class="project-summary">
-            IT operations professional with an MSc in Computer Science (TU Dublin) and 6 years of commercial experience supporting office IT infrastructure, networks (LAN/Wi-Fi/VPN), business applications, and end users. Hands-on administrator of a Microsoft 365 E5 Developer tenant with over 20 users, managing account creation and removal, permissions, passwords, multi-factor authentication, and license assignments. Resolves sign-in failures, cloud storage capacity issues, and network connectivity problems. Combines cross-platform troubleshooting skills with clear communication for non-technical users and a careful approach to security and operational procedures.
-          </p>
-        </section>
+      <section class="section">
+        <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>Professional Summary</h2>
+        <p class="project-summary">
+          IT operations professional with an MSc in Computer Science (TU Dublin) and 6 years of commercial experience
+          supporting office IT infrastructure, networks (LAN/Wi-Fi/VPN), business applications, and end users. Hands-on
+          administrator of a Microsoft 365 E5 Developer tenant with over 20 users, managing account creation and
+          removal, permissions, passwords, multi-factor authentication, and license assignments. Resolves sign-in
+          failures, cloud storage capacity issues, and network connectivity problems. Combines cross-platform
+          troubleshooting skills with clear communication for non-technical users and a careful approach to security and
+          operational procedures.
+        </p>
+      </section>
 
-<section class="section">
-          <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" /></svg>Technical &amp; IT Support Skills</h2>
-          <div class="skills-grid">
-            <div class="skill-category">
-              <span class="skill-label">Operating Systems &amp; Desktop:</span>
-              <span>Windows 10/11, macOS, Linux (Debian, Ubuntu, RHEL), Cross-Platform Troubleshooting, Desktop/Laptop Hardware &amp; Peripheral Diagnostics</span>
-            </div>
-            <div class="skill-category">
-              <span class="skill-label">Microsoft 365 &amp; Cloud Admin:</span>
-              <span>Microsoft 365 Admin Center, E5 Developer Tenant Administration (20+ Users), License Assignment, Exchange Online, Teams, OneDrive; Microsoft Entra ID (Azure AD), Intune &amp; Azure Lab Experience</span>
-            </div>
-            <div class="skill-category">
-              <span class="skill-label">Identity, Access &amp; Security:</span>
-              <span>User Creation &amp; Removal, Permissions Management, Password Administration, Multi-Factor Authentication (Two-Step Verification), RBAC, Conditional Access, TLS/SSL, OpenSSL, GDPR &amp; Audit Compliance</span>
-            </div>
-            <div class="skill-category">
-              <span class="skill-label">Networking &amp; Connectivity:</span>
-              <span>LAN / Wi-Fi Troubleshooting, TCP/IP, DNS, HTTP/2, VLANs, Firewalls, Routers &amp; Switches, Site-to-Site &amp; Client VPN Tunnels</span>
-            </div>
-            <div class="skill-category skill-category-wide">
-              <span class="skill-label">Development Tools &amp; Scripting:</span>
-              <span>Git &amp; GitHub (Issues, Pull Requests, Branch Management), Bash / Shell Scripting, Python, SQL, PowerShell (Basic)</span>
-            </div>
+      <section class="section">
+        <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+          </svg>Technical &amp; IT Support Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-category">
+            <span class="skill-label">Operating Systems &amp; Desktop:</span>
+            <span>Windows 10/11, macOS, Linux (Debian, Ubuntu, RHEL), Cross-Platform Troubleshooting, Desktop/Laptop
+              Hardware &amp; Peripheral Diagnostics</span>
           </div>
-        </section>
-
-<section class="section">
-          <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L21 10v7h2V9L12 3z" /></svg>Education</h2>
-          <div class="edu-item">
-            <div class="edu-header">
-              <span class="edu-institution">Technological University Dublin (TU Dublin)</span>
-              <span class="edu-date">2024 – 2026</span>
-            </div>
-            <div class="edu-degree">
-              <span>Master of Science in Computer Science (Advanced Software Development)</span>
-              <span class="edu-grade">Second Class Honours, First Division (2.1)</span>
-            </div>
-            <div class="edu-modules">
-              <strong>Modules:</strong> Systems Architectures, Advanced Databases, Programming Paradigms, Software Design, Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific Research, Problem Solving
-            </div>
+          <div class="skill-category">
+            <span class="skill-label">Microsoft 365 &amp; Cloud Admin:</span>
+            <span>Microsoft 365 Admin Center, E5 Developer Tenant Administration (20+ Users), License Assignment,
+              Exchange Online, Teams, OneDrive; Microsoft Entra ID (Azure AD), Intune &amp; Azure Lab Experience</span>
           </div>
-
-          <div class="edu-item">
-            <div class="edu-header">
-              <span class="edu-institution">National College of Ireland (NCI)</span>
-              <span class="edu-date">2023 – 2024</span>
-            </div>
-            <div class="edu-degree">
-              <span>Higher Diploma in Science in Computing</span>
-              <span class="edu-grade">Second Class Honours, Grade One (2.1)</span>
-            </div>
-            <div class="edu-modules">
-              <strong>Modules:</strong> Web Design and Client Side Scripting, Software Development, Databases, Object Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures, Computer Architecture Operating Systems and Networks
-            </div>
+          <div class="skill-category">
+            <span class="skill-label">Identity, Access &amp; Security:</span>
+            <span>User Creation &amp; Removal, Permissions Management, Password Administration, Multi-Factor
+              Authentication (Two-Step Verification), RBAC, Conditional Access, TLS/SSL, OpenSSL, GDPR &amp; Audit
+              Compliance</span>
           </div>
-        </section>
-
-<section class="section">
-          <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12h20V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4z" /></svg>Work Experience</h2>
-          <div class="work-item">
-            <div class="work-header">
-              <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
-              <span class="work-date">2016 – 2022</span>
-            </div>
-            <div class="work-role">
-              <span>IT Operations, ERP &amp; Commercial Systems Specialist</span>
-              <span>Shenzhen, China &amp; Philippines (Relocation Project)</span>
-            </div>
-            <div class="work-summary">
-              Managed internal office IT infrastructure, network connectivity, and enterprise business systems for 6 years while supporting cross-border operational teams across Japan, Switzerland, Brazil, and Russia.
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Office IT Infrastructure &amp; End-User Support:</strong> Administered daily workplace IT systems, desktop workstations, printers/peripherals, and network hardware (routers, switches, firewalls, VLANs, and encrypted VPN tunnels), resolving hardware, OS, and connectivity incidents to maintain uninterrupted access to mission-critical platforms (LME, Bloomberg).
-              </li>
-              <li>
-                <strong>Cross-Border Site Relocation &amp; Hardware Deployment:</strong> Spearheaded the end-to-end IT and operational execution of a full-scale facility relocation from Shenzhen to the Philippines. Coordinated hardware provisioning, on-site LAN/WAN network setup, and seamless migration of ERP inventory ledgers to bring the overseas office into full operational readiness on schedule.
-              </li>
-              <li>
-                <strong>Enterprise ERP Administration &amp; Access Governance:</strong> Managed user accounts, role permissions, custom queries, and data validation rules within the enterprise ERP system, acting as the primary internal IT liaison and escalating complex application bugs to external software vendors.
-              </li>
-              <li>
-                <strong>Process Automation &amp; Reporting Reliability:</strong> Built automated <strong>Python</strong> and <strong>SQL</strong> data routines to replace manual spreadsheet workflows, reducing data-entry errors and accelerating monthly financial reconciliation for non-technical finance and trade staff.
-              </li>
-            </ul>
+          <div class="skill-category">
+            <span class="skill-label">Networking &amp; Connectivity:</span>
+            <span>LAN / Wi-Fi Troubleshooting, TCP/IP, DNS, HTTP/2, VLANs, Firewalls, Routers &amp; Switches,
+              Site-to-Site &amp; Client VPN Tunnels</span>
           </div>
-        </section>
+          <div class="skill-category skill-category-wide">
+            <span class="skill-label">Development Tools &amp; Scripting:</span>
+            <span>Git &amp; GitHub (Issues, Pull Requests, Branch Management), Bash / Shell Scripting, Python, SQL,
+              PowerShell (Basic)</span>
+          </div>
+        </div>
+      </section>
 
-<footer class="page-footer">
+      <section class="section">
+        <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L21 10v7h2V9L12 3z" />
+          </svg>Education</h2>
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="edu-institution">Technological University Dublin (TU Dublin)</span>
+            <span class="edu-date">2024 – 2026</span>
+          </div>
+          <div class="edu-degree">
+            <span>Master of Science in Computer Science (Advanced Software Development)</span>
+            <span class="edu-grade">Second Class Honours, First Division (2.1)</span>
+          </div>
+          <div class="edu-modules">
+            <strong>Modules:</strong> Systems Architectures, Advanced Databases, Programming Paradigms, Software Design,
+            Secure Systems Development, Web Applications Architectures, Data Management, Research Design, Scientific
+            Research, Problem Solving
+          </div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="edu-institution">National College of Ireland (NCI)</span>
+            <span class="edu-date">2023 – 2024</span>
+          </div>
+          <div class="edu-degree">
+            <span>Higher Diploma in Science in Computing</span>
+            <span class="edu-grade">Second Class Honours, Grade One (2.1)</span>
+          </div>
+          <div class="edu-modules">
+            <strong>Modules:</strong> Web Design and Client Side Scripting, Software Development, Databases, Object
+            Oriented Software Engineering, Algorithms and Advanced Programming, Distributed Systems, Data Structures,
+            Computer Architecture Operating Systems and Networks
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12h20V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4z" />
+          </svg>Work Experience</h2>
+        <div class="work-item">
+          <div class="work-header">
+            <span class="work-company">Shenzhen Zhaokang Investment Co., Ltd.</span>
+            <span class="work-date">2016 – 2022</span>
+          </div>
+          <div class="work-role">
+            <span>IT Operations, ERP &amp; Commercial Systems Specialist</span>
+            <span>Shenzhen, China &amp; Philippines (Relocation Project)</span>
+          </div>
+          <div class="work-summary">
+            Managed internal office IT infrastructure, network connectivity, and enterprise business systems for 6 years
+            while supporting cross-border operational teams across Japan, Switzerland, Brazil, and Russia.
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Office IT Infrastructure &amp; End-User Support:</strong> Administered daily workplace IT systems,
+              desktop workstations, printers/peripherals, and network hardware (routers, switches, firewalls, VLANs, and
+              encrypted VPN tunnels), resolving hardware, OS, and connectivity incidents to maintain uninterrupted
+              access to mission-critical platforms (LME, Bloomberg).
+            </li>
+            <li>
+              <strong>Cross-Border Site Relocation &amp; Hardware Deployment:</strong> Spearheaded the end-to-end IT and
+              operational execution of a full-scale facility relocation from Shenzhen to the Philippines. Coordinated
+              hardware provisioning, on-site LAN/WAN network setup, and seamless migration of ERP inventory ledgers to
+              bring the overseas office into full operational readiness on schedule.
+            </li>
+            <li>
+              <strong>Enterprise ERP Administration &amp; Access Governance:</strong> Managed user accounts, role
+              permissions, custom queries, and data validation rules within the enterprise ERP system, acting as the
+              primary internal IT liaison and escalating complex application bugs to external software vendors.
+            </li>
+            <li>
+              <strong>Process Automation &amp; Reporting Reliability:</strong> Built automated <strong>Python</strong>
+              and <strong>SQL</strong> data routines to replace manual spreadsheet workflows, reducing data-entry errors
+              and accelerating monthly financial reconciliation for non-technical finance and trade staff.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer class="page-footer">
         <span>Diwen Xiao &bull; Curriculum Vitae</span>
         <span>Page 1 of 2</span>
       </footer>
     </div>
     <div class="page page-2">
-<div class="page-header-mini">
-          <span>DIWEN XIAO &bull; TECHNICAL SUPPORT &amp; SYSTEMS ENGINEER</span>
-          <span>lelouch@outlook.ie &bull; 087 693 0108</span>
+      <div class="page-header-mini">
+        <span>DIWEN XIAO &bull; TECHNICAL SUPPORT &amp; SYSTEMS ENGINEER</span>
+        <span>lelouch@outlook.ie &bull; 087 693 0108</span>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12V2z" />
+          </svg>Hands-On IT Infrastructure &amp; Technical Projects</h2>
+
+        <!-- Microsoft 365 E5 Developer Tenant & Azure Lab -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">Microsoft 365 E5 Developer &amp; Azure Administration</span>
+            <span class="project-links">Developer Tenant &amp; Cloud Lab</span>
+          </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Microsoft 365 Administration &amp; User Lifecycle:</strong> Administered over 20 users in a
+              Microsoft 365 E5 Developer tenant through an administrator account, creating and removing users, managing
+              user permissions, and assigning licenses through the Microsoft 365 Admin Center.
+            </li>
+            <li>
+              <strong>Sign-In Recovery &amp; Authentication Support:</strong> Restored user access after forgotten
+              passwords or lost two-factor authentication devices by managing password resets and MFA recovery.
+              Administered Entra ID security groups, Role-Based Access Control (RBAC), Self-Service Password Reset
+              (SSPR), and Conditional Access policies in the developer tenant.
+            </li>
+            <li>
+              <strong>Cloud Storage &amp; Connectivity Support:</strong> Resolved cloud storage capacity issues by
+              managing and reallocating available storage, and troubleshot poor network connectivity affecting users'
+              access to cloud services.
+            </li>
+            <li>
+              <strong>Endpoint Governance &amp; Azure Infrastructure:</strong> Tested device enrollment, baseline
+              security configuration profiles, and compliance policies in <strong>Microsoft Intune</strong>, alongside
+              managing virtual machines, virtual networks (VNets), and network security groups in <strong>Microsoft
+                Azure</strong>.
+            </li>
+          </ul>
         </div>
 
-<section class="section">
-          <h2 class="section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12V2z" /></svg>Hands-On IT Infrastructure &amp; Technical Projects</h2>
-
-          <!-- Microsoft 365 E5 Developer Tenant & Azure Lab -->
-          <div class="project-card">
-            <div class="project-header">
-              <span class="project-title">Microsoft 365 E5 Developer &amp; Azure Administration</span>
-              <span class="project-links">Developer Tenant &amp; Cloud Lab</span>
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Microsoft 365 Administration &amp; User Lifecycle:</strong> Administered over 20 users in a Microsoft 365 E5 Developer tenant through an administrator account, creating and removing users, managing user permissions, and assigning licenses through the Microsoft 365 Admin Center.
-              </li>
-              <li>
-                <strong>Sign-In Recovery &amp; Authentication Support:</strong> Restored user access after forgotten passwords or lost two-factor authentication devices by managing password resets and MFA recovery. Administered Entra ID security groups, Role-Based Access Control (RBAC), Self-Service Password Reset (SSPR), and Conditional Access policies in the developer tenant.
-              </li>
-              <li>
-                <strong>Cloud Storage &amp; Connectivity Support:</strong> Resolved cloud storage capacity issues by managing and reallocating available storage, and troubleshot poor network connectivity affecting users' access to cloud services.
-              </li>
-              <li>
-                <strong>Endpoint Governance &amp; Azure Infrastructure:</strong> Tested device enrollment, baseline security configuration profiles, and compliance policies in <strong>Microsoft Intune</strong>, alongside managing virtual machines, virtual networks (VNets), and network security groups in <strong>Microsoft Azure</strong>.
-              </li>
-            </ul>
+        <!-- Social Threat Guardian -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">Social Threat Guardian – MSc Final Year Team Project (Team Lead)</span>
+            <span class="project-links">
+              <a href="https://github.com/Shawshank01/social-threat-guardian" target="_blank">GitHub &#8599;</a> &bull;
+              <a href="https://youtu.be/svm_mfvKZiM" target="_blank">Walkthrough &#8599;</a>
+            </span>
           </div>
+          <p class="project-summary">
+            Led development of a real-time AI platform that detects and visualises online toxicity and coordinated
+            harassment, combining a React dashboard, Node.js services, and an Oracle database with live alerts.
+          </p>
+          <ul class="project-bullets">
+            <li>
+              <strong>Team Leadership &amp; User Requirements:</strong> Led a 3-person engineering team through weekly
+              Agile sprints, coordinating task allocation and resolving integration issues across frontend, backend, and
+              data components. Conducted user interviews and usability testing to translate non-technical feedback into
+              prioritised features.
+            </li>
+            <li>
+              <strong>GitHub Collaboration &amp; Automated Delivery:</strong> Used GitHub Issues, pull requests, and
+              branch management to coordinate team development. Configured Git-driven Vercel builds and preview
+              deployments, with environment isolation, CORS rules, and TLS for cloud deployment.
+            </li>
+            <li>
+              <strong>Access Control, Audit Logging &amp; GDPR Compliance:</strong> Enforced JWT authentication, Bcrypt
+              credential hashing, database Role-Based Access Control (RBAC) in Oracle 26ai, and complete audit lineage
+              to meet strict data-governance standards.
+            </li>
+          </ul>
+        </div>
 
-          <!-- Social Threat Guardian (Condensed & Reframed) -->
-          <div class="project-card">
-            <div class="project-header">
-              <span class="project-title">Social Threat Guardian – MSc Final Year Team Project (Team Lead)</span>
-              <span class="project-links">
-                <a href="https://github.com/Shawshank01/social-threat-guardian" target="_blank">GitHub &#8599;</a> &bull;
-                <a href="https://youtu.be/svm_mfvKZiM" target="_blank">Walkthrough &#8599;</a>
-              </span>
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Agile Coordination &amp; End-User Support:</strong> Led a 3-person engineering team through structured Agile sprints, running user interviews and usability testing to translate non-technical stakeholder feedback into clear operational features.
-              </li>
-              <li>
-                <strong>Access Control, Audit Logging &amp; GDPR Compliance:</strong> Enforced JWT authentication, Bcrypt credential hashing, database Role-Based Access Control (RBAC) in Oracle 26ai, and complete audit lineage to meet strict data-governance standards.
-              </li>
-            </ul>
+        <!-- proxy_sh -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">proxy_sh – Linux Proxy/VPN Deployment &amp; Diagnostics</span>
+            <span class="project-links"><a href="https://github.com/Shawshank01/proxy_sh"
+                target="_blank">github.com/Shawshank01/proxy_sh &#8599;</a></span>
           </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Linux Proxy/VPN Administration:</strong> Engineered a 4,400+ line Bash deployment and diagnostic
+              engine automating containerized Xray and Shadowsocks proxy services for secure connectivity across 6+
+              Linux distributions (Debian, Ubuntu, RHEL, Fedora), with dual-stack IPv4/IPv6 support.
+            </li>
+            <li>
+              <strong>Connectivity Diagnostics &amp; Automated Rollback:</strong> Implemented pre-flight TLS 1.3 /
+              HTTP/2 domain and certificate validation, loopback fallback isolation, and a systemd health-monitoring
+              daemon featuring re-entrant file locking and automated configuration rollbacks upon service failure.
+            </li>
+          </ul>
+        </div>
 
-          <!-- proxy_sh -->
-          <div class="project-card">
-            <div class="project-header">
-              <span class="project-title">proxy_sh – Linux Network &amp; Service Diagnostics Engine</span>
-              <span class="project-links"><a href="https://github.com/Shawshank01/proxy_sh" target="_blank">github.com/Shawshank01/proxy_sh &#8599;</a></span>
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Multi-Distro Linux Administration:</strong> Engineered a 4,400+ line Bash deployment and diagnostic engine automating containerized network services across 6+ Linux distributions (Debian, Ubuntu, RHEL, Fedora) with dual-stack IPv4/IPv6 support.
-              </li>
-              <li>
-                <strong>Connectivity Diagnostics &amp; Automated Rollback:</strong> Implemented pre-flight TLS 1.3 / HTTP/2 domain and certificate validation, loopback fallback isolation, and a systemd health-monitoring daemon featuring re-entrant file locking and automated configuration rollbacks upon service failure.
-              </li>
-            </ul>
+        <!-- VidButler -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">VidButler – Cross-Platform Desktop Utility &amp; OS Troubleshooting</span>
+            <span class="project-links"><a href="https://github.com/Shawshank01/VidButler"
+                target="_blank">github.com/Shawshank01/VidButler &#8599;</a></span>
           </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Cross-Platform Packaging &amp; Compatibility:</strong> Built and packaged desktop distributions
+              for <strong>Windows (NSIS installer)</strong>, <strong>macOS (DMG)</strong>, and <strong>Linux
+                (AppImage)</strong> across x64 and ARM64 architectures, resolving OS-specific driver, codec, and
+              permission edge cases.
+            </li>
+            <li>
+              <strong>AI-Assisted Media Tasks &amp; Device Security:</strong> Built a chat interface that translates
+              natural-language requests into download and processing tasks. To limit harm from incorrect AI actions,
+              restricted the model to 13 input-validated tools with no shell access or raw command-line flags; required
+              user confirmation for deletion, re-encoding, and playlists, and treated URLs not supplied by the user as
+              high risk.
+            </li>
+          </ul>
+        </div>
 
-          <!-- VidButler -->
-          <div class="project-card">
-            <div class="project-header">
-              <span class="project-title">VidButler – Cross-Platform Desktop Utility &amp; OS Troubleshooting</span>
-              <span class="project-links"><a href="https://github.com/Shawshank01/VidButler" target="_blank">github.com/Shawshank01/VidButler &#8599;</a></span>
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Cross-Platform Packaging &amp; Compatibility:</strong> Built and packaged desktop distributions for <strong>Windows (NSIS installer)</strong>, <strong>macOS (DMG)</strong>, and <strong>Linux (AppImage)</strong> across x64 and ARM64 architectures, resolving OS-specific driver, codec, and permission edge cases.
-              </li>
-              <li>
-                <strong>OS Process Management &amp; End-User UX:</strong> Implemented deterministic process termination across Windows (<code>taskkill /T /F</code>) and POSIX (<code>SIGKILL</code>), SOCKS5 proxy support with credential log redaction, and an intuitive fallback interface with clear error diagnostics for technical users.
-              </li>
-            </ul>
+        <!-- Signal Cross-Platform Root-Cause Analysis (Reframed safely for Financial Services) -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-title">Signal – Cross-Platform Client Root-Cause Analysis &amp; Remediation</span>
+            <span class="project-links">
+              <a href="https://michifumi.de/cv/signal-security.png" target="_blank">Vendor Acknowledgment &#8599;</a>
+            </span>
           </div>
+          <ul class="project-bullets">
+            <li>
+              <strong>Multi-OS Incident Investigation &amp; Vendor Escalation:</strong> Isolated a cross-platform
+              rendering and file-handling discrepancy in Signal across Windows/macOS Desktop, Android, and iOS clients;
+              documented reproducible steps, diagnostic logs, and verified patches directly with the upstream
+              engineering team.
+            </li>
+          </ul>
+        </div>
+      </section>
 
-          <!-- Signal Cross-Platform Root-Cause Analysis (Reframed safely for Financial Services) -->
-          <div class="project-card">
-            <div class="project-header">
-              <span class="project-title">Signal – Cross-Platform Client Root-Cause Analysis &amp; Remediation</span>
-              <span class="project-links">
-                <a href="https://michifumi.de/cv/signal-security.png" target="_blank">Vendor Acknowledgment &#8599;</a>
-              </span>
-            </div>
-            <ul class="project-bullets">
-              <li>
-                <strong>Multi-OS Incident Investigation &amp; Vendor Escalation:</strong> Isolated a cross-platform rendering and file-handling discrepancy in Signal across Windows/macOS Desktop, Android, and iOS clients; documented reproducible steps, diagnostic logs, and verified patches directly with the upstream engineering team.
-              </li>
-            </ul>
-          </div>
-        </section>
-
-<footer class="page-footer">
+      <footer class="page-footer">
         <span>Diwen Xiao &bull; Curriculum Vitae</span>
         <span>Page 2 of 2</span>
       </footer>
     </div>
   </div>
 </body>
+
 </html>
