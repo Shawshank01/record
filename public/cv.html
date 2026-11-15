@@ -979,14 +979,14 @@
           Technical Projects
         </h2>
 
-        <!-- Project 2: YT-DLP Downloader Electron -->
+        <!-- Project 2: VidButler -->
         <div class="project-card">
           <div class="project-header">
             <div class="project-title-group">
-              <span class="project-title">YT Downloader Electron</span>
+              <span class="project-title">VidButler: AI-Powered Desktop Media Tool</span>
             </div>
             <div class="project-links">
-              <a href="https://github.com/Shawshank01/yt-downloader-electron" target="_blank">
+              <a href="https://github.com/Shawshank01/VidButler" target="_blank">
                 <svg viewBox="0 0 24 24">
                   <path
                     d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
@@ -997,39 +997,41 @@
           </div>
           <ul class="project-bullets">
             <li>
-              <strong>Cross-Platform Desktop Architecture:</strong> Engineered a high-performance desktop media tool
-              using Electron and Node.js interfacing with yt-dlp and FFmpeg across macOS, Windows, and Linux,
-              distributed
-              via DMGs, NSIS installers, and AppImages.
+              <strong>Natural-Language Agent:</strong> Built an Electron 45 / Node.js (ES modules) chat interface
+              where a tool-calling LLM plans and runs media jobs from natural-language requests. Supports Gemini,
+              xAI Grok, local Ollama models, and OpenAI-compatible endpoints with streaming replies, retries, and
+              cancellation, alongside the original form-based UI as a no-LLM fallback.
             </li>
             <li>
-              <strong>Hardware Acceleration &amp; Media Pipeline:</strong> Developed an automated video pipeline
-              supporting Apple VideoToolbox (h264_videotoolbox/hevc_videotoolbox) with CPU fallbacks, platform-adaptive
-              subtitle burn-in (libass) with OS-specific CJK font fallback, three-tier dynamic audio codec negotiation
-              (aac_at -&gt; libfdk_aac -&gt; aac), and native MP4 container thumbnail embedding (attached_pic).
+              <strong>Security-First AI Design:</strong> Restricted the model to 13 typed tools that validate input
+              and build yt-dlp / FFmpeg argument arrays without shell access or raw flags. Re-encoding, deletion,
+              and playlists require Allow/Deny confirmation; URLs not supplied by the user are treated as high risk.
+              API keys are encrypted with Electron safeStorage and kept out of the renderer, while model output
+              is rendered through DOM calls without innerHTML.
             </li>
             <li>
-              <strong>Hardened Process Management &amp; IPC:</strong> Architected a secure multi-process IPC model
-              enforcing context isolation, command-injection prevention (CWE-78), mutual exclusion task locking, native
-              process tree termination (taskkill /T /F on Windows, SIGKILL on POSIX), and automatic transactional
-              temp-file cleanups.
+              <strong>Maintainable Architecture &amp; Testing:</strong> Split a monolithic main.js into Electron-free
+              core/ and llm/ modules with a thin IPC layer and context-isolated preload. Centralized provider
+              capabilities allow new providers without chat-service changes. A 202-test node:test suite covers the
+              agent loop, mocked providers, validation, path escapes, injection cases, and the IPC contract, running
+              alongside ESLint in CI.
             </li>
             <li>
-              <strong>Stream Processing &amp; Environment Resolution:</strong> Built a custom stream chunk-reassembly
-              buffer (LineStreamFilter) with regex-based log suppression for real-time telemetry streaming; implemented
-              automated multi-tier PATH synthesis and runtime dependency capability inspection across major package
-              managers (Homebrew, MacPorts, WinGet, Scoop).
+              <strong>Media Pipeline:</strong> Automated yt-dlp / FFmpeg processing with Apple VideoToolbox hardware
+              encoding and CPU fallback, subtitle burn-in with OS-specific CJK font fallback, audio codec negotiation
+              (aac_at &rarr; libfdk_aac &rarr; aac), thumbnail embedding, multi-browser cookie import, and SOCKS5 proxies.
             </li>
             <li>
-              <strong>Authentication &amp; Network Features:</strong> Implemented multi-browser cookie extraction
-              (Chrome, Firefox, Safari, Brave) with macOS Full Disk Access permission handling for authenticated media,
-              and configurable SOCKS5 proxy routing for network restriction bypass.
+              <strong>Reliable Process Handling:</strong> Enforced a shared task lock across Classic and AI jobs,
+              clean process termination on Windows (taskkill /T /F) and POSIX (SIGKILL), and temp-file cleanup only
+              after user confirmation. Reassembled and filtered streamed output for real-time progress, with proxy
+              credentials redacted from logs.
             </li>
             <li>
-              <strong>Automated Multi-OS CI/CD Pipeline:</strong> Built a multi-runner GitHub Actions release matrix
-              targeting macOS, Windows, and Linux across x64 and ARM64 architectures; automated lint verification, build
-              aggregation, PGP-sanitized release notes generation, and binary deployment to GitHub Releases and GitLab
-              mirrors upon tag push.
+              <strong>Cross-Platform Delivery:</strong> Shipped macOS DMG, Windows NSIS, and Linux AppImage builds
+              for x64 and ARM64, bundling yt-dlp, FFmpeg, and Deno. Packaged apps check GitHub Releases for updates,
+              with silent installation on Windows and Linux and a Homebrew-tap flow for unsigned macOS builds.
+              A GitHub Actions matrix builds, lints, and publishes tagged releases and mirrors them to GitLab.
             </li>
           </ul>
         </div>
