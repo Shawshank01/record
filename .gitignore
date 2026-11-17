@@ -17,18 +17,6 @@ dist/
 .DS_Store
 .AppleDouble
 
-# AI assistant instructions & configs
-AGENTS.md
-CLAUDE.md
-GEMINI.md
-.github/copilot-instructions.md
-.cursorrules
-.cursor/
-.windsurfrules
-.agents/
-.gemini/
-.claude/
-
 # Environment variables & secrets
 .env
 .env.*

@@ -1,6 +1,4 @@
-const button = document.querySelector(
-  "[data-back-to-top]",
-) as HTMLButtonElement | null;
+const button = document.querySelector<HTMLButtonElement>("[data-header-jump]");
 if (button) {
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
