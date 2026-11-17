@@ -21,12 +21,11 @@ A personal static blog and portfolio website deployed to GitHub Pages at [michif
 
 ```text
 ├── .github/
-│   ├── workflows/deploy.yml       # GitHub Pages deployment workflow
-│   └── copilot-instructions.md    # Instructions bridge for GitHub Copilot
+│   └── workflows/deploy.yml       # GitHub Pages deployment workflow
 ├── dist/                          # Generated production build (do not edit directly)
-├── public/                        # Static assets (favicons, fonts, post media)
+├── public/                        # Static assets (favicons, self-hosted fonts, YYYY-MM-DD/ post media, standalone HTML CVs)
 ├── scripts/
-│   └── check-title-length.mjs     # Build pre-check for post title length (< 70 chars)
+│   └── check-title-length.mjs     # SEO pre-check for post title (≤ 70 chars) and description (25–160 chars)
 ├── src/
 │   ├── components/                # Astro UI components (Header, Footer, PostCard, TagSidebar, etc.)
 │   ├── content/
@@ -69,10 +68,13 @@ A personal static blog and portfolio website deployed to GitHub Pages at [michif
 
 ## 3. Common Development Commands
 
-- `pnpm dev`: Start local development server (`http://localhost:4321`)
+- `pnpm dev`: Run `predev` check (`check-title-length.mjs`) and start local development server (`http://localhost:4321`)
 - `pnpm build`: Run `prebuild` check (`check-title-length.mjs`) and build the static site into `dist/`
 - `pnpm preview`: Preview the production build locally
-- `node scripts/check-title-length.mjs`: Manually run the post title length validator
+- `node scripts/check-title-length.mjs`: Manually run the post title and description length validator
+
+> [!NOTE]
+> `@astrojs/check` is not installed in this repository, so `pnpm build` is the canonical end-to-end verification command after code or content changes (covering `check-title-length.mjs`, Zod content collection schemas, RSS `sanitize-html` rendering, and Vite/Rolldown bundling).
 
 ---
 
@@ -93,9 +95,16 @@ A personal static blog and portfolio website deployed to GitHub Pages at [michif
   updateDate: 2026-01-02        # Optional; updates sitemap <lastmod>
   ---
   ```
-  
-- **Title Length Limit**: The total rendered title (`title + " · Michifumi's Blog"`) should stay under **70 characters** to pass `scripts/check-title-length.mjs` and optimize search engine snippets.
+
+- **Title & Description Length Limits**: Keep the total rendered title (`title + " · Michifumi's Blog"`) at **70 characters or fewer** and `description` between **25 and 160 characters** to pass `scripts/check-title-length.mjs` and optimize search engine snippets.
+- **Post Media**: Store post images and media in `public/YYYY-MM-DD/<filename>` and reference them as `/YYYY-MM-DD/<filename>` (do not place post media in `src/assets/`).
+- **Spelling**: Use **British English** (`normalise`, `centre`, `customised`, `civilisation`) across UI copy and English prose.
 - **Alerts**: Use GitHub-style blockquote alerts (`> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]`).
+
+### Resume / CV Files
+
+- This repository contains two separate CV formats: the Astro Markdown collection entry (`src/content/resume/cv.md`, rendered at `/resume/cv/` with `noindex`) and standalone HTML CVs in `public/` (`public/cv.html`, `public/cv-*.html`).
+- Always confirm which target(s) to update when asked to edit the CV or resume.
 
 ### Markdown & Linting Standards (`markdownlint`)
 
@@ -148,6 +157,7 @@ All generated or edited Markdown files (`*.md`) must strictly adhere to [markdow
 
 1. **Static First**: Keep the site fast and lightweight. Do not introduce heavy runtime JavaScript libraries or client-side frameworks when vanilla TypeScript or CSS can do the job.
 2. **Type Safety**: Strictly adhere to TypeScript types. Avoid `any` types wherever possible.
-3. **Styling**: Use Tailwind CSS utility classes. Prefer existing color variables and design tokens for consistency across light/dark themes.
+3. **Styling**: The site is intentionally **dark-only** (`<html class="dark">` in `src/layouts/BaseLayout.astro`; `color-scheme: dark` and `@theme` tokens `--color-surface`, `--color-soft`, and `--color-accent` in `src/styles/global.css`). Use Tailwind CSS utility classes and existing design tokens directly rather than adding `dark:` variants or light-theme styles.
 4. **Never Edit `dist/` Directly**: The `dist/` folder is build-generated and overwritten by `pnpm build`. Always make modifications in `src/`, `public/`, or `scripts/`.
-5. **Preserve Existing Functionality**: Take care not to break client-side enhancements (code copy buttons, image lightbox, tag filtering, language switcher, or Giscus comments).
+5. **Preserve Existing Functionality**: Take care not to break client-side enhancements (code copy buttons, image lightbox, tag filtering, language switcher, Table of Contents, scroll-to-top button, or Giscus comments). The scroll-to-top button in `src/layouts/BaseLayout.astro` intentionally uses `[data-header-jump]` with `"Jump to start"` / `"Jump to start of page"` labels — do not rename it to `data-back-to-top`, `"Back to top"`, or `"Scroll to top"`, as ad/annoyance-blocker cosmetic rules target those selectors.
+6. **Content Security Policy & Self-Hosted Assets**: `src/layouts/BaseLayout.astro` enforces a strict `<meta http-equiv="Content-Security-Policy">` (`default-src 'self'`, `font-src 'self'`, and explicit `script-src` / `img-src` / `connect-src` / `frame-src` allowlists), and all fonts are self-hosted under `public/fonts/`. Do not introduce external CDN stylesheets, third-party fonts, or unallowlisted remote origins without updating the CSP.
