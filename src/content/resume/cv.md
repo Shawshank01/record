@@ -16,11 +16,12 @@ image: "/cv/persona.jpeg"
 
 | Category | Technologies |
 | :--- | :--- |
-| **Languages** | TypeScript, JavaScript, Python, Bash / Shell Script, HTML, CSS, Java, C++ |
+| **Languages** | TypeScript, JavaScript, Python, Bash / Shell Script, SQL, HTML, CSS, Java, C++ |
 | **Frameworks & Runtimes** | React, Node.js, Express, FastAPI, Electron, Astro, Vite, Tailwind CSS |
 | **AI & Natural Language Processing** | Open-source AI models (Hugging Face), ONNX, PySpark ML, Prompt Engineering & API Integration |
 | **Data Engineering & Databases** | Apache Kafka, Apache Spark, Oracle 26ai, PostgreSQL, MongoDB, YugabyteDB |
-| **DevOps & Cloud** | Linux, Docker, Docker Compose, CI/CD, Git, Vercel, Azure, AWS, GCP |
+| **DevOps & Cloud** | Linux, systemd, CI/CD, Git, GitHub Actions, Vercel, Azure, AWS, GCP |
+| **Containers & Orchestration** | Docker, Docker Compose, Docker Buildx, Kubernetes concepts |
 | **Networking & Security** | REST / JSON-RPC APIs, WebSockets, TLS, HTTP/2, OpenSSL |
 
 ---
@@ -43,6 +44,21 @@ image: "/cv/persona.jpeg"
 
 ---
 
+## Cloud & Virtualisation Labs
+
+- **Microsoft Azure** — Provisioned virtual machines, virtual networks and
+  network security groups, and troubleshot connectivity and access to cloud
+  services.
+- **Microsoft 365 & Entra ID** — Administered 20+ user accounts in a Microsoft
+  365 E5 developer tenant. Managed account provisioning, permissions, licence
+  assignments, security groups, Conditional Access and MFA recovery.
+- **Microsoft Intune** — Tested device enrolment, baseline security
+  configuration profiles and device compliance policies.
+- **VMware Workstation Pro** — Ran multiple Linux distributions in local
+  virtual machines.
+
+---
+
 ## MSc Final Year Team Project <sup>as Team Leader</sup>
 
 [Social Threat Guardian](https://github.com/Shawshank01/social-threat-guardian)
@@ -55,7 +71,12 @@ Homepage Top
 ![Homepage1](/cv/UI-Walkthrough-01.jpeg)
 Homepage Bottom
 
-- **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers across weekly Agile/Scrum sprint cycles, facilitating sprint planning, daily stand-ups, backlog grooming, and retrospectives. Actively mediated technical friction across frontend, backend and data tiers, balancing task allocation to consistently deliver working increments on schedule.
+- **Agile Leadership & Sprint Cadence:** Served as Team Lead for 3 developers
+  across weekly Agile/Scrum sprint cycles, facilitating sprint planning, daily
+  stand-ups, backlog grooming, and retrospectives. Tracked milestones,
+  dependencies and blockers across the frontend, backend and data tiers,
+  resolved integration issues and coordinated task allocation to deliver
+  working increments on schedule.
 - **User Needs Elicitation & Requirements Traceability:** Drove end-to-end user research by conducting target demographic surveys and designing interactive **Figma** prototypes. Executed usability testing and face-to-face pilot interviews, translating qualitative user feedback into prioritised product backlog features (e.g., customizable threat thresholds, keyword filters, and dark mode).
 - **System Architecture, Subsystem Interfaces & Integration:** Designed a resilient, multi-tier architecture with clean interface contracts. Engineered an **Express/Node.js** backend integrating bidirectional **WebSockets** for live gauge telemetry and an automated background monitoring engine with intelligent cooldown throttling to prevent alert fatigue.
 - **CI/CD Pipeline & Cloud Deployment:** Established production-like CI/CD workflows, deploying the **React, TypeScript, and Vite** frontend via **Vercel** with Git-driven automated builds and preview environments. Configured cloud infrastructure with environment isolation, CORS whitelisting, TLS/SSL termination, and secure Oracle Cloud Wallet credentials.
@@ -141,10 +162,25 @@ Electron 45 · Node.js (ES modules) · yt-dlp · FFmpeg · LLM tool calling (Gem
 
 - **Trade Data Processing & ETL Automation:** Processed, cleaned, and reconciled large volumes of multi-currency international trade, customs, and logistics datasets. Transitioned legacy manual spreadsheet workflows into automated **Python** and **SQL** data-cleaning pipelines to eliminate formatting discrepancies and accelerate monthly financial reporting.
 
-- **ERP Administration & Inventory Governance:** Managed end-to-end inventory lifecycles, SKU tracking, and supply-chain data synchronization within the enterprise **ERP system**. Configured custom database queries, validation rules, and automated data imports/exports to maintain real-time stock accuracy across global suppliers and warehouses.
+- **ERP Administration & Inventory Governance:** Managed end-to-end inventory
+  lifecycles, SKU tracking, and supply-chain data synchronisation within the
+  enterprise **ERP system**. Configured custom database queries, validation
+  rules, and automated data imports/exports to maintain real-time stock
+  accuracy across global suppliers and warehouses. Administered ERP user
+  accounts and role permissions.
 
 - **Network & IT Infrastructure Management:** Served as the primary IT administrator for office network infrastructure, configuring and maintaining routers, switches, firewalls, VLANs, and secure VPN/proxy tunnels to ensure stable, low-latency international connectivity and reliable access to global trade platforms such as LME and Bloomberg.
 
+- **Incident Triage & Vendor Escalation** — Triaged recurring ERP application
+  issues, documented resolutions and escalated complex issues to external
+  software vendors.
+
 - **Cross-Functional Stakeholder & Global Partner Coordination:** Directed multilingual commercial and operational communications with international counterparties across Japan, Switzerland, Brazil, and Russia, while acting as the internal technical liaison to software vendors to streamline ERP system workflows.
 
-- **Key Achievement - Cross-Border Factory Relocation (Shenzhen to the Philippines):** Spearheaded the end-to-end project management and execution of a full-scale factory relocation from Shenzhen to the Philippines. Coordinated cross-border equipment logistics, customs compliance, and the seamless migration of ERP inventory ledgers, supply-chain workflows, and on-site IT/network connectivity to bring the overseas facility into full operational readiness on schedule.
+- **Cross-Border Factory Relocation (Shenzhen to the Philippines)** — Led the
+  planning and delivery of a full-scale factory relocation. Maintained
+  timelines, action logs and hardware provisioning schedules while
+  coordinating on-site installers, network vendors and internal teams.
+  Oversaw cross-border equipment logistics, customs compliance, and the
+  migration of ERP inventory ledgers, supply-chain workflows and on-site IT
+  and network infrastructure to bring the facility into operation on schedule.
