@@ -2,7 +2,7 @@
 title: "The best Safari extension: uBlock Origin Lite"
 description: "Let's get rid of YouTube Shorts!"
 pubDate: 2026-01-17
-updateDate: 2026-10-15
+updateDate: 2026-11-27
 tags:
   - macOS
   - iOS
@@ -73,10 +73,9 @@ www.youtube.com##ytd-item-section-renderer[page-subtype]:has(>#contents>[is-hist
 ! YT Mobile - Hide the Shorts Menu button
 m.youtube.com##ytm-pivot-bar-item-renderer:has(>.pivot-shorts)
 ! YT Mobile - Hide the Shorts sections
-m.youtube.com##ytm-reel-shelf-renderer
-m.youtube.com##ytm-rich-section-renderer:has([d^="M17.77,10.32l-1.2"])
+m.youtube.com##:is(ytm-rich-section-renderer,grid-shelf-view-model):has([href^="/shorts/"])
 ! YT Mobile - Search - Hide Shorts
-m.youtube.com##ytm-search ytm-video-with-context-renderer:has([data-style="SHORTS"])
+m.youtube.com##ytm-search ytm-video-with-context-renderer:has([href^="/shorts/"])
 ! YT Mobile - Channels - Hide the Shorts button
 m.youtube.com##[tab-title="Shorts"]
 ! YT Mobile - History - Hide Shorts
