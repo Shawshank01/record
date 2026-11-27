@@ -98,7 +98,7 @@ m.youtube.com##[tab-title="Shorts"]
 m.youtube.com##[tab-identifier="FEhistory"] ytm-compact-video-renderer:has(>div>a[href^="/shorts/"])
 ```
 
-> These rules may change from time to time, so it's a good idea to check the [official wiki page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/#wiki_shorts) for the latest updates.
+> These rules may change from time to time, so it's a good idea to check the [Reddit page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/) for the latest updates. Some of the rules on this page might also be outdated. If you ever find that none of the rules work, you are more than welcome to email me, and I'd be more than happy to help find a solution together!
 
 Then, in the dashboard, go to **Custom filters > Import / Export**, paste what you just copied and click **✓Add** button. It should look similar to this after clicking:
 
