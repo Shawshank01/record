@@ -49,46 +49,53 @@ By following the steps above, we've managed to get rid of ads and most of the an
 First, copy these rules by click the copy button below:
 
 ```text
-! YT - Homepage and Subscriptions (Grid View) - Hide the Shorts section
-youtube.com##[is-shorts]
-! YT - Menu - Hide the Shorts button
-www.youtube.com###guide [title="Shorts"], .ytd-mini-guide-entry-renderer[title="Shorts"]
-! YT - Search - Hide Shorts
-www.youtube.com##ytd-search ytd-video-renderer:has([overlay-style="SHORTS"],[href^="/shorts/"])
-! YT - Search, Channels, Subscriptions (List View) and Sidebar/Below Player Recommendations - Hide the Shorts sections
-www.youtube.com##ytd-reel-shelf-renderer
-! YT - Channels - Hide the Shorts tab
-www.youtube.com##[tab-title="Shorts"]
-! YT - Subscriptions - Hide Shorts - Grid View
-www.youtube.com##ytd-browse[page-subtype="subscriptions"] ytd-grid-video-renderer:has([overlay-style="SHORTS"],[href^="/shorts/"])
-! YT - Subscriptions - Hide Shorts - List View
-www.youtube.com##ytd-browse[page-subtype="subscriptions"] ytd-video-renderer:has([overlay-style="SHORTS"],[href^="/shorts/"])
-! YT - Subscriptions - New Layout - Hide Shorts
-www.youtube.com##ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer:has([overlay-style="SHORTS"],[href^="/shorts/"])
-! YT - Sidebar - Hide Shorts
-www.youtube.com###related :is(ytd-compact-video-renderer,yt-lockup-view-model):has([overlay-style="SHORTS"],[href^="/shorts/"])
-! YT - History - Hide Shorts
-www.youtube.com##ytd-item-section-renderer[page-subtype]:has(>#contents>[is-history]>#dismissible>ytd-thumbnail>#thumbnail[href^="/shorts/"])
+! YT Desktop - Homepage and Subscriptions - Hide Shorts shelves
+www.youtube.com##ytd-rich-shelf-renderer[is-shorts]
+www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])
 
-! YT Mobile - Hide the Shorts Menu button
+! YT Desktop - Menu - Hide Shorts button
+www.youtube.com###guide [title="Shorts"], .ytd-mini-guide-entry-renderer[title="Shorts"]
+
+! YT Desktop - Search - Hide Shorts videos
+www.youtube.com##ytd-search ytd-video-renderer:has([overlay-style="SHORTS"],a[href^="/shorts/"],[aria-label="Shorts"])
+
+! YT Desktop - Hide Shorts shelves
+www.youtube.com##ytd-reel-shelf-renderer
+www.youtube.com##ytd-search grid-shelf-view-model:has(a[href^="/shorts/"])
+
+! YT Desktop - Channels - Hide Shorts tab
+www.youtube.com##[tab-title="Shorts"]
+
+! YT Desktop - Subscriptions - Grid View
+www.youtube.com##ytd-browse[page-subtype="subscriptions"] ytd-grid-video-renderer:has([overlay-style="SHORTS"],a[href^="/shorts/"])
+
+! YT Desktop - Subscriptions - List View
+www.youtube.com##ytd-browse[page-subtype="subscriptions"] ytd-video-renderer:has([overlay-style="SHORTS"],a[href^="/shorts/"])
+
+! YT Desktop - Homepage and Subscriptions - Rich Layout
+www.youtube.com##ytd-rich-item-renderer:has([overlay-style="SHORTS"],a[href^="/shorts/"])
+
+! YT Desktop - Sidebar - Hide Shorts
+www.youtube.com###related :is(ytd-compact-video-renderer,yt-lockup-view-model):has([overlay-style="SHORTS"],a[href^="/shorts/"])
+
+! YT Desktop - History - Hide individual Shorts
+www.youtube.com##ytd-browse[page-subtype="history"] ytd-video-renderer:has(a[href^="/shorts/"])
+
+! YT Mobile - Hide Shorts menu button
 m.youtube.com##ytm-pivot-bar-item-renderer:has(>.pivot-shorts)
-! YT Mobile - Hide the Shorts sections
-m.youtube.com##:is(ytm-rich-section-renderer,grid-shelf-view-model):has([href^="/shorts/"])
+
+! YT Mobile - Hide Shorts sections
+m.youtube.com##:is(ytm-rich-section-renderer,grid-shelf-view-model):has(a[href^="/shorts/"])
+m.youtube.com##ytm-reel-shelf-renderer
+
 ! YT Mobile - Search - Hide Shorts
-m.youtube.com##ytm-search ytm-video-with-context-renderer:has([href^="/shorts/"])
-! YT Mobile - Channels - Hide the Shorts button
+m.youtube.com##ytm-search ytm-video-with-context-renderer:has(a[href^="/shorts/"])
+
+! YT Mobile - Channels - Hide Shorts tab
 m.youtube.com##[tab-title="Shorts"]
+
 ! YT Mobile - History - Hide Shorts
 m.youtube.com##[tab-identifier="FEhistory"] ytm-compact-video-renderer:has(>div>a[href^="/shorts/"])
-
-! YT Search - keep only videos (no shorts)
-youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
-
-! YT Search - keep only videos (no shorts) and channels
-youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,ytd-channel-renderer,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
-
-! YT Search - keep only videos (no shorts), channels and playlists
-youtube.com##ytd-search ytd-item-section-renderer>#contents>:is(:not(ytd-video-renderer,ytd-channel-renderer,ytd-playlist-renderer,yt-lockup-view-model,yt-showing-results-for-renderer,[icon-name="promo-full-height:EMPTY_SEARCH"]),ytd-video-renderer:has([aria-label="Shorts"])),ytd-secondary-search-container-renderer
 ```
 
 > These rules may change from time to time, so it's a good idea to check the [official wiki page](https://www.reddit.com/r/uBlockOrigin/wiki/solutions/youtube/#wiki_shorts) for the latest updates.
